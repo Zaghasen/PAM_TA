@@ -1,2 +1,3 @@
-# PAM_TA
-Tugas akhir Pemrograman Aplikasi Mobile membuat aplikasi bertemakan "Sistem Informasi Penyewaan Alat Pendakian" - TAPAK JEJAK
+# tugas_akhir_097
+
+A new Flutter project.
