@@ -9,7 +9,7 @@ class WishlistPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final wishlist = MainScreenState.wishlistItems;
     return Scaffold(
-      appBar: AppBar(title: const Text('Wishlist Saya')),
+      appBar: AppBar(title: const Text('Wishlist Saya'), centerTitle: true),
       body: wishlist.isEmpty
           ? const Center(child: Text('Wishlist Anda masih kosong.'))
           : ListView.builder(

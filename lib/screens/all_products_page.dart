@@ -9,7 +9,7 @@ class AllProductsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Semua Produk')),
+      appBar: AppBar(title: const Text('Semua Produk'), centerTitle: true),
       body: GridView.builder(
         padding: const EdgeInsets.all(16.0),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

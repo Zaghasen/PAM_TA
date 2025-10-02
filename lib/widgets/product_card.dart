@@ -17,6 +17,20 @@ class ProductCard extends StatefulWidget {
   State<ProductCard> createState() => _ProductCardState();
 }
 
+String formatPrice(double price) {
+  String priceStr = price.toInt().toString();
+  String result = '';
+  int count = 0;
+  for (int i = priceStr.length - 1; i >= 0; i--) {
+    result = priceStr[i] + result;
+    count++;
+    if (count % 3 == 0 && i > 0) {
+      result = '.' + result;
+    }
+  }
+  return result;
+}
+
 class _ProductCardState extends State<ProductCard> {
   @override
   Widget build(BuildContext context) {
@@ -58,7 +72,7 @@ class _ProductCardState extends State<ProductCard> {
                     style: const TextStyle(fontWeight: FontWeight.bold),
                     maxLines: 1,
                   ),
-                  Text('Rp ${widget.product.pricePerDay.toInt()}/hari'),
+                  Text('Rp ${formatPrice(widget.product.pricePerDay)}/hari'),
                 ],
               ),
             ),

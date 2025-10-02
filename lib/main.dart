@@ -20,11 +20,11 @@ class MyApp extends StatelessWidget {
 
       // Pengaturan tema global untuk seluruh aplikasi.
       theme: ThemeData(
-        primarySwatch: Colors.teal,
+        primaryColor: const Color(0xFF2A4D3A),
         visualDensity: VisualDensity.adaptivePlatformDensity,
         scaffoldBackgroundColor: Colors.grey[100],
         appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.teal,
+          backgroundColor: const Color(0xFF2A4D3A),
           foregroundColor: Colors.white,
           elevation: 1,
         ),

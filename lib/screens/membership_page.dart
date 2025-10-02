@@ -6,7 +6,7 @@ class MembershipPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Status Membership')),
+      appBar: AppBar(title: const Text('Status Membership'), centerTitle: true),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),

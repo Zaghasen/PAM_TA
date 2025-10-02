@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tugas_akhir_097/screens/login_screen.dart';
 import 'package:tugas_akhir_097/screens/membership_page.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -7,20 +8,44 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Profil Saya')),
+      appBar: AppBar(title: const Text('Profil Saya'), centerTitle: true),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              const CircleAvatar(
+              CircleAvatar(
                 radius: 60,
-                // Ganti dengan foto jika ada URL-nya
-                child: Icon(Icons.person, size: 60),
+                backgroundImage: const AssetImage('assets/profile.png'),
+                child: Container(
+                  width: 60,
+                  height: 60,
+                  decoration: const BoxDecoration(shape: BoxShape.circle),
+                ),
               ),
               const SizedBox(height: 20),
-              _buildProfileInfo('Nama', 'Zalfa Ghalib Hussein'),
-              _buildProfileInfo('NIM', '124230097'),
+              _buildProfileInfo('Nama', 'Zalfa Ghalib Hussein', Icons.person),
+              _buildProfileInfo('NIM', '124230097', Icons.badge),
+              _buildProfileInfo('Tempat', 'Magelang', Icons.location_on),
+              _buildProfileInfo(
+                'Tanggal Lahir',
+                '11 November 2004',
+                Icons.cake,
+              ),
+              _buildProfileInfo('Hobi', 'Mendaki', Icons.hiking),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () => Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                ),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 50),
+                  backgroundColor: const Color(0xFF2A4D3A),
+                  foregroundColor: Colors.white,
+                ),
+                child: const Text('Logout'),
+              ),
               const SizedBox(height: 20),
               _buildHomeCard(
                 context,
@@ -41,14 +66,12 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileInfo(String title, String subtitle) {
+  Widget _buildProfileInfo(String title, String subtitle, IconData icon) {
     return Card(
       child: ListTile(
-        title: Text(title),
-        subtitle: Text(
-          subtitle,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
+        leading: Icon(icon, color: const Color(0xFF2A4D3A)),
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+        subtitle: Text(subtitle),
       ),
     );
   }
@@ -62,7 +85,7 @@ class ProfilePage extends StatelessWidget {
   ) {
     return Card(
       child: ListTile(
-        leading: Icon(icon, size: 40, color: Colors.teal),
+        leading: Icon(icon, size: 40, color: const Color(0xFF2A4D3A)),
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Text(subtitle),
         onTap: onTap,

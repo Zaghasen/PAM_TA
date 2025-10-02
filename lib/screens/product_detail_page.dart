@@ -15,7 +15,7 @@ class ProductDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(product.name)),
+      appBar: AppBar(title: Text(product.name), centerTitle: true),
       body: Column(
         children: [
           Expanded(
@@ -51,7 +51,7 @@ class ProductDetailPage extends StatelessWidget {
                           'Rp ${product.pricePerDay.toInt()}/hari',
                           style: const TextStyle(
                             fontSize: 20,
-                            color: Colors.teal,
+                            color: const Color(0xFF2A4D3A),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -69,7 +69,7 @@ class ProductDetailPage extends StatelessWidget {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 50),
-                backgroundColor: Colors.teal,
+                backgroundColor: const Color(0xFF2A4D3A),
                 foregroundColor: Colors.white,
               ),
               onPressed: () {

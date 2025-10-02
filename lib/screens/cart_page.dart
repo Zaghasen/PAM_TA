@@ -12,7 +12,7 @@ class CartPage extends StatelessWidget {
     double total = cart.fold(0, (sum, item) => sum + item.pricePerDay);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Keranjang Saya')),
+      appBar: AppBar(title: const Text('Keranjang Saya'), centerTitle: true),
       body: Column(
         children: [
           Expanded(
@@ -69,7 +69,7 @@ class CartPage extends StatelessWidget {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 50),
-                      backgroundColor: Colors.teal,
+                      backgroundColor: const Color(0xFF2A4D3A),
                       foregroundColor: Colors.white,
                     ),
                     onPressed: () {

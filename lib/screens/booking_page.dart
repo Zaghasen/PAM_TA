@@ -11,7 +11,7 @@ class BookingPage extends StatelessWidget {
     double total = cart.fold(0, (sum, item) => sum + item.pricePerDay);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Pemesanan')),
+      appBar: AppBar(title: const Text('Pemesanan'), centerTitle: true),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -58,7 +58,7 @@ class BookingPage extends StatelessWidget {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 50),
-                backgroundColor: Colors.teal,
+                backgroundColor: const Color(0xFF2A4D3A),
                 foregroundColor: Colors.white,
               ),
               onPressed: () {
