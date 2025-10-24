@@ -58,6 +58,8 @@ class MainScreenState extends State<MainScreen> {
         currentIndex: _selectedIndex,
         selectedItemColor: const Color(0xFF2A4D3A),
         unselectedItemColor: Colors.grey,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
         onTap: _onItemTapped,
       ),
     );

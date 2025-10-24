@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
     // MaterialApp adalah widget dasar untuk aplikasi yang menggunakan Material Design.
     return MaterialApp(
       // Judul aplikasi yang muncul di task manager.
-      title: 'Penyewaan Alat Pendakian',
+      title: 'Aplikasi Pendakian - TAPAK JEJAK',
 
       // Pengaturan tema global untuk seluruh aplikasi.
       theme: ThemeData(

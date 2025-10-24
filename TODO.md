@@ -1,0 +1,4 @@
+- [x] Modify lib/screens/main_screen.dart to replace BottomNavigationBar with a custom widget
+- [x] Implement the custom navbar with Container styled like the CSS (background #ffcc80, border-radius 20px, box-shadow), but horizontal
+- [x] Add AnimatedContainer for each icon with scale animation when selected
+- [x] Use GestureDetector for taps on each item

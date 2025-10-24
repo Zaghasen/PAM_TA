@@ -3,6 +3,18 @@ import 'package:tapak_jejak/data/mock_data.dart';
 import 'package:tapak_jejak/models/brand.dart';
 import 'package:tapak_jejak/models/product.dart';
 import 'package:tapak_jejak/screens/all_products_page.dart';
+import 'package:tapak_jejak/screens/icons/blog.dart';
+import 'package:tapak_jejak/screens/icons/camping_ground.dart';
+import 'package:tapak_jejak/screens/icons/cuaca.dart';
+import 'package:tapak_jejak/screens/icons/eat&stay.dart';
+import 'package:tapak_jejak/screens/icons/event.dart';
+import 'package:tapak_jejak/screens/icons/keamanan.dart';
+import 'package:tapak_jejak/screens/icons/porter&guide.dart';
+import 'package:tapak_jejak/screens/icons/private&open_trip.dart';
+import 'package:tapak_jejak/screens/icons/sewa_alat.dart';
+import 'package:tapak_jejak/screens/icons/tiket_masuk.dart';
+import 'package:tapak_jejak/screens/icons/travel&ojek.dart';
+import 'package:tapak_jejak/screens/icons/tutorial.dart';
 import 'package:tapak_jejak/widgets/product_card.dart';
 
 class HomePage extends StatefulWidget {
@@ -88,14 +100,83 @@ class _HomePageState extends State<HomePage> {
                       _buildServiceIcon(
                         Icons.confirmation_number,
                         'Tiket Masuk',
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const TiketMasukPage(),
+                          ),
+                        ),
                       ),
-                      _buildServiceIcon(Icons.directions_car, 'Travel & Ojek'),
-                      _buildServiceIcon(Icons.person, 'Porter & Guide'),
-                      _buildServiceIcon(Icons.build, 'Sewa Alat'),
-                      _buildServiceIcon(Icons.group, 'Private & Open Trip'),
-                      _buildServiceIcon(Icons.terrain, 'Camping Ground'),
-                      _buildServiceIcon(Icons.event, 'Event'),
-                      _buildServiceIcon(Icons.restaurant, 'Eat & Stay'),
+                      _buildServiceIcon(
+                        Icons.directions_car,
+                        'Travel & Ojek',
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const TravelOjekPage(),
+                          ),
+                        ),
+                      ),
+                      _buildServiceIcon(
+                        Icons.person,
+                        'Porter & Guide',
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PorterGuidePage(),
+                          ),
+                        ),
+                      ),
+                      _buildServiceIcon(
+                        Icons.build,
+                        'Sewa Alat',
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SewaAlatPage(),
+                          ),
+                        ),
+                      ),
+                      _buildServiceIcon(
+                        Icons.group,
+                        'Private & Open Trip',
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PrivateOpenTripPage(),
+                          ),
+                        ),
+                      ),
+                      _buildServiceIcon(
+                        Icons.terrain,
+                        'Camping Ground',
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const CampingGroundPage(),
+                          ),
+                        ),
+                      ),
+                      _buildServiceIcon(
+                        Icons.event,
+                        'Event',
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const EventPage(),
+                          ),
+                        ),
+                      ),
+                      _buildServiceIcon(
+                        Icons.restaurant,
+                        'Eat & Stay',
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const EatStayPage(),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -128,10 +209,46 @@ class _HomePageState extends State<HomePage> {
                         mainAxisSpacing: 16.0,
                         crossAxisSpacing: 16.0,
                         children: [
-                          _buildMonitoringIcon(Icons.security, 'Keamanan'),
-                          _buildMonitoringIcon(Icons.wb_sunny, 'Cuaca'),
-                          _buildMonitoringIcon(Icons.article, 'Blog'),
-                          _buildMonitoringIcon(Icons.school, 'Tutorial'),
+                          _buildMonitoringIcon(
+                            Icons.security,
+                            'Keamanan',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const KeamananPage(),
+                              ),
+                            ),
+                          ),
+                          _buildMonitoringIcon(
+                            Icons.wb_sunny,
+                            'Cuaca',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const CuacaPage(),
+                              ),
+                            ),
+                          ),
+                          _buildMonitoringIcon(
+                            Icons.article,
+                            'Blog',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const BlogPage(),
+                              ),
+                            ),
+                          ),
+                          _buildMonitoringIcon(
+                            Icons.school,
+                            'Tutorial',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const TutorialPage(),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ],
@@ -177,20 +294,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
-                Center(
-                  child: Text(
-                    'Produk Unggulan',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: const Color(0xFF2A4D3A),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                // Grid menu
                 GridView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -285,39 +388,45 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildServiceIcon(IconData icon, String label) {
-    return Column(
-      children: [
-        CircleAvatar(
-          radius: 30,
-          backgroundColor: const Color(0xFF2A4D3A),
-          child: Icon(icon, color: Colors.white, size: 30),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-          textAlign: TextAlign.center,
-        ),
-      ],
+  Widget _buildServiceIcon(IconData icon, String label, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 30,
+            backgroundColor: const Color(0xFF2A4D3A),
+            child: Icon(icon, color: Colors.white, size: 30),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildMonitoringIcon(IconData icon, String label) {
-    return Column(
-      children: [
-        CircleAvatar(
-          radius: 25,
-          backgroundColor: const Color(0xFF2A4D3A),
-          child: Icon(icon, color: Colors.white, size: 25),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-          textAlign: TextAlign.center,
-        ),
-      ],
+  Widget _buildMonitoringIcon(IconData icon, String label, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 25,
+            backgroundColor: const Color(0xFF2A4D3A),
+            child: Icon(icon, color: Colors.white, size: 25),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 }
