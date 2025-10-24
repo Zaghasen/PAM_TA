@@ -194,9 +194,29 @@ final List<Product> mockProducts = [
 
 // Daftar brand yang akan kita tampilkan
 final List<Brand> mockBrands = [
-  Brand(name: 'Eiger', logoUrl: 'assets/LOGO.jpg'),
-  Brand(name: 'Anatrestar', logoUrl: 'assets/LOGO.jpg'),
-  Brand(name: 'Arei', logoUrl: 'assets/LOGO.jpg'),
-  Brand(name: 'Consina', logoUrl: 'assets/LOGO.jpg'),
-  Brand(name: 'Carumby', logoUrl: 'assets/LOGO.jpg'),
+  Brand(
+    name: 'Eiger',
+    logoUrl: 'assets/eiger.jpg',
+    description: 'Brand terkemuka untuk peralatan outdoor.',
+  ),
+  Brand(
+    name: 'Anatrestar',
+    logoUrl: 'assets/antarestar.jpg',
+    description: 'Spesialis dalam tenda dan aksesori berkemah.',
+  ),
+  Brand(
+    name: 'Arei',
+    logoUrl: 'assets/arei.jpg',
+    description: 'Penyedia jaket dan pakaian outdoor berkualitas.',
+  ),
+  Brand(
+    name: 'Consina',
+    logoUrl: 'assets/consina.jpg',
+    description: 'Fokus pada sepatu dan perlengkapan hiking.',
+  ),
+  Brand(
+    name: 'Carumby',
+    logoUrl: 'assets/carumby.jpg',
+    description: 'Ekspert dalam tas dan carrier untuk petualangan.',
+  ),
 ];

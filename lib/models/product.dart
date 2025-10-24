@@ -7,6 +7,7 @@ class Product {
   final String imageUrl;
   final String description;
   bool isWishlisted;
+  int totalLike;
 
   Product({
     required this.id,
@@ -17,5 +18,6 @@ class Product {
     this.description =
         'Deskripsi produk belum tersedia. Item ini adalah salah satu yang terbaik di kelasnya, cocok untuk petualangan Anda.',
     this.isWishlisted = false,
+    this.totalLike = 0,
   });
 }

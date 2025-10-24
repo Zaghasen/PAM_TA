@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tugas_akhir_097/models/product.dart';
 import 'package:tugas_akhir_097/screens/login_screen.dart';
+import 'package:tugas_akhir_097/screens/product_detail_page.dart';
 
 // -- ENTRY POINT APLIKASI --
 // Fungsi main() adalah yang pertama kali dijalankan saat aplikasi dibuka.
@@ -24,7 +26,7 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
         scaffoldBackgroundColor: Colors.grey[100],
         appBarTheme: const AppBarTheme(
-          backgroundColor: const Color(0xFF2A4D3A),
+          backgroundColor: Color(0xFF2A4D3A),
           foregroundColor: Colors.white,
           elevation: 1,
         ),

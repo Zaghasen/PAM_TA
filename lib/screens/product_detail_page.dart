@@ -51,7 +51,7 @@ class ProductDetailPage extends StatelessWidget {
                           'Rp ${product.pricePerDay.toInt()}/hari',
                           style: const TextStyle(
                             fontSize: 20,
-                            color: const Color(0xFF2A4D3A),
+                            color: Color(0xFF2A4D3A),
                             fontWeight: FontWeight.bold,
                           ),
                         ),

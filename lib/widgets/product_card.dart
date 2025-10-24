@@ -6,11 +6,15 @@ import 'package:tugas_akhir_097/screens/product_detail_page.dart';
 class ProductCard extends StatefulWidget {
   final Product product;
   final VoidCallback refreshCallback;
+  final int likeCount;
+  final ValueChanged<bool> onLike;
 
   const ProductCard({
     super.key,
     required this.product,
     required this.refreshCallback,
+    required this.likeCount,
+    required this.onLike,
   });
 
   @override
@@ -25,7 +29,7 @@ String formatPrice(double price) {
     result = priceStr[i] + result;
     count++;
     if (count % 3 == 0 && i > 0) {
-      result = '.' + result;
+      result = '.$result';
     }
   }
   return result;
@@ -76,29 +80,39 @@ class _ProductCardState extends State<ProductCard> {
                 ],
               ),
             ),
-            Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                icon: Icon(
-                  widget.product.isWishlisted
-                      ? Icons.favorite
-                      : Icons.favorite_border,
-                  color: widget.product.isWishlisted ? Colors.red : Colors.grey,
+            Row(
+              children: [
+                IconButton(
+                  icon: Icon(
+                    widget.product.isWishlisted
+                        ? Icons.favorite
+                        : Icons.favorite_border,
+                    color: widget.product.isWishlisted
+                        ? Colors.red
+                        : Colors.grey,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      widget.product.isWishlisted =
+                          !widget.product.isWishlisted;
+                      if (widget.product.isWishlisted) {
+                        MainScreenState.wishlistItems.add(widget.product);
+                        widget.onLike(true);
+                      } else {
+                        MainScreenState.wishlistItems.removeWhere(
+                          (p) => p.id == widget.product.id,
+                        );
+                        widget.onLike(false);
+                      }
+                    });
+                    widget.refreshCallback();
+                  },
                 ),
-                onPressed: () {
-                  setState(() {
-                    widget.product.isWishlisted = !widget.product.isWishlisted;
-                    if (widget.product.isWishlisted) {
-                      MainScreenState.wishlistItems.add(widget.product);
-                    } else {
-                      MainScreenState.wishlistItems.removeWhere(
-                        (p) => p.id == widget.product.id,
-                      );
-                    }
-                  });
-                  widget.refreshCallback();
-                },
-              ),
+                Text(
+                  widget.likeCount.toString(),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
           ],
         ),

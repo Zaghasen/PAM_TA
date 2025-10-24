@@ -1,13 +1,3 @@
-- [x] Edit lib/screens/profile_page.dart: Add import for login_screen.dart, add profile info cards for Tempat, Tanggal Lahir, Hobi, add logout button above membership card.
-- [x] Edit lib/screens/home_screen.dart: Convert to StatefulWidget, add search controller and filtered products, add \_searchMenu method, modify build method to include banner, search bar, and change featured products to GridView.
-- [x] Edit lib/screens/login_screen.dart: Change logo to assets/LOGO.jpg, add password visibility toggle.
-- [x] Edit lib/screens/profile_page.dart: Change layout to centered card with new design, remove logout and membership.
-- [x] Edit pubspec.yaml: Add assets declaration.
-- [x] Edit lib/screens/profile_page.dart: Revert to old layout with icons next to profile info.
-- [x] Edit lib/screens/login_screen.dart: Change background to #173928 and adjust colors.
-- [x] Change all teal colors to 0xFF2A4D3A.
-- [x] Add back logout button and membership card to profile page.
-- [x] Center all app bar titles.
-- [x] Change profile avatar to use assets/profile.png.
-- [x] Add profile.png to pubspec.yaml assets.
-- [x] Test the new changes.
+- [ ] Remove the search bar from home_screen.dart
+- [ ] Add a horizontal list of service icons (tiket masuk, travel & ojek, porter & guide, sewa alat, private & open trip, camping ground, event, eat & stay) below the banner
+- [ ] Add a section with title "Pantau Kondisi Gunung Sebelum Mendaki" and below it a horizontal list of monitoring icons (keamanan, cuaca, blog, tutorial)
