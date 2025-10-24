@@ -1,5 +1,5 @@
-import 'package:tugas_akhir_097/models/brand.dart';
-import 'package:tugas_akhir_097/models/product.dart';
+import 'package:tapak_jejak/models/brand.dart';
+import 'package:tapak_jejak/models/product.dart';
 
 // Daftar produk yang akan kita tampilkan di aplikasi
 final List<Product> mockProducts = [

@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.tugas_akhir_097"
+    namespace = "com.example.tapak_jejak"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -21,7 +21,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.tugas_akhir_097"
+        applicationId = "com.example.tapak_jejak"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion

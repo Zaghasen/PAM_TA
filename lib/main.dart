@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_akhir_097/models/product.dart';
-import 'package:tugas_akhir_097/screens/login_screen.dart';
-import 'package:tugas_akhir_097/screens/product_detail_page.dart';
+import 'package:tapak_jejak/screens/login_screen.dart';
 
 // -- ENTRY POINT APLIKASI --
 // Fungsi main() adalah yang pertama kali dijalankan saat aplikasi dibuka.

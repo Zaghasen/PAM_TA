@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_akhir_097/data/mock_data.dart';
-import 'package:tugas_akhir_097/models/product.dart';
-import 'package:tugas_akhir_097/screens/main_screen.dart';
-import 'package:tugas_akhir_097/screens/payment_page.dart';
-import 'package:tugas_akhir_097/screens/product_detail_page.dart';
-import 'package:tugas_akhir_097/widgets/product_card.dart';
+import 'package:tapak_jejak/data/mock_data.dart';
+import 'package:tapak_jejak/models/product.dart';
+import 'package:tapak_jejak/screens/main_screen.dart';
+import 'package:tapak_jejak/screens/product_detail_page.dart';
 
 class AllProductsPage extends StatefulWidget {
   final VoidCallback refreshCallback;
@@ -83,7 +81,6 @@ class _AllProductsPageState extends State<AllProductsPage> {
               itemCount: filteredProducts.length,
               itemBuilder: (context, index) {
                 final item = filteredProducts[index];
-                int originalIndex = filteredProducts.indexOf(item);
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(

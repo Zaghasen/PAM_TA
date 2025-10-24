@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_akhir_097/models/cart_item.dart';
-import 'package:tugas_akhir_097/models/product.dart';
-import 'package:tugas_akhir_097/screens/cart_page.dart';
-import 'package:tugas_akhir_097/screens/home_screen.dart';
-import 'package:tugas_akhir_097/screens/profile_page.dart';
-import 'package:tugas_akhir_097/screens/wishlist_page.dart';
+// removed unused import: cart_item
+import 'package:tapak_jejak/models/product.dart';
+import 'package:tapak_jejak/screens/cart_page.dart';
+import 'package:tapak_jejak/screens/home_screen.dart';
+import 'package:tapak_jejak/screens/profile_page.dart';
+import 'package:tapak_jejak/screens/wishlist_page.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});

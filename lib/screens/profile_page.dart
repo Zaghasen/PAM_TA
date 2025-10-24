@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_akhir_097/screens/login_screen.dart';
-import 'package:tugas_akhir_097/screens/membership_page.dart';
+import 'package:tapak_jejak/screens/login_screen.dart';
+import 'package:tapak_jejak/screens/membership_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});

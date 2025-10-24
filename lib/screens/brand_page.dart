@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_akhir_097/data/mock_data.dart';
+import 'package:tapak_jejak/data/mock_data.dart';
 
 class BrandPage extends StatelessWidget {
   const BrandPage({super.key});

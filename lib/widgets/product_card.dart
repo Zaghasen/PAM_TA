@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_akhir_097/models/product.dart';
-import 'package:tugas_akhir_097/screens/main_screen.dart';
-import 'package:tugas_akhir_097/screens/product_detail_page.dart';
+import 'package:tapak_jejak/models/product.dart';
+import 'package:tapak_jejak/screens/main_screen.dart';
+import 'package:tapak_jejak/screens/product_detail_page.dart';
 
 class ProductCard extends StatefulWidget {
   final Product product;

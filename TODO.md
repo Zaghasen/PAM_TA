@@ -1,3 +1,0 @@
-- [ ] Remove the search bar from home_screen.dart
-- [ ] Add a horizontal list of service icons (tiket masuk, travel & ojek, porter & guide, sewa alat, private & open trip, camping ground, event, eat & stay) below the banner
-- [ ] Add a section with title "Pantau Kondisi Gunung Sebelum Mendaki" and below it a horizontal list of monitoring icons (keamanan, cuaca, blog, tutorial)

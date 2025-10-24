@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_akhir_097/data/mock_data.dart';
-import 'package:tugas_akhir_097/models/brand.dart';
-import 'package:tugas_akhir_097/models/product.dart';
-import 'package:tugas_akhir_097/screens/all_products_page.dart';
-import 'package:tugas_akhir_097/widgets/product_card.dart';
+import 'package:tapak_jejak/data/mock_data.dart';
+import 'package:tapak_jejak/models/brand.dart';
+import 'package:tapak_jejak/models/product.dart';
+import 'package:tapak_jejak/screens/all_products_page.dart';
+import 'package:tapak_jejak/widgets/product_card.dart';
 
 class HomePage extends StatefulWidget {
   final VoidCallback refreshCallback;
