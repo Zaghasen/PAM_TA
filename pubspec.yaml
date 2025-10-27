@@ -9,6 +9,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  http: ^1.2.1
+  flutter_map: ^6.1.0
+  latlong2: ^0.9.1
+  provider: ^6.1.1
 
 dev_dependencies:
   flutter_test:
@@ -19,7 +23,9 @@ flutter:
   uses-material-design: true
   assets:
     - assets/LOGO.jpg
-    - assets/banner.png
+    - assets/banner_1.jpg
+    - assets/banner_2.jpg
+    - assets/banner_3.jpg
     - assets/profile.png
     - assets/eiger.jpg
     - assets/antarestar.jpg

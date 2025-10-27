@@ -71,16 +71,22 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 5),
-                // Banner
+                // Banner Carousel
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12.0),
-                    child: Image.asset(
-                      'assets/banner.png', // Sesuaikan nama banner jika berbeda
+                    child: SizedBox(
                       height: 180,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
+                      child: PageView.builder(
+                        itemCount: 3,
+                        itemBuilder: (context, index) {
+                          return Image.asset(
+                            'assets/banner_${index + 1}.jpg',
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),
