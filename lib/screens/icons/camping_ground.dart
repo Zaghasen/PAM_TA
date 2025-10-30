@@ -11,12 +11,14 @@ class CampingGroundPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Coming Soon',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
+            Image(image: AssetImage('assets/comingsoon1.png')),
             SizedBox(height: 20),
-            SizedBox(width: 120, child: LinearProgressIndicator()),
+            SizedBox(
+              width: 120,
+              child: LinearProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+              ),
+            ),
           ],
         ),
       ),

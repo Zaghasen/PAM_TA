@@ -184,8 +184,8 @@ class _HomePageState extends State<HomePage> {
                     mainAxisSpacing: 16.0,
                     crossAxisSpacing: 16.0,
                     children: [
-                      _buildServiceIcon(
-                        Icons.local_activity,
+                      _buildCustomServiceIcon(
+                        Image.asset('assets/tiket_masuk.png'),
                         'Tiket Masuk',
                         () => Navigator.push(
                           context,
@@ -194,8 +194,8 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      _buildServiceIcon(
-                        Icons.two_wheeler,
+                      _buildCustomServiceIcon(
+                        Image.asset('assets/travel_ojek.png'),
                         'Travel & Ojek',
                         () => Navigator.push(
                           context,
@@ -204,8 +204,8 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      _buildServiceIcon(
-                        Icons.hiking,
+                      _buildCustomServiceIcon(
+                        Image.asset('assets/porter_guide.png'),
                         'Porter & Guide',
                         () => Navigator.push(
                           context,
@@ -214,8 +214,8 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      _buildServiceIcon(
-                        Icons.handyman,
+                      _buildCustomServiceIcon(
+                        Image.asset('assets/sewa_alat.png'),
                         'Sewa Alat',
                         () => Navigator.push(
                           context,
@@ -224,8 +224,8 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      _buildServiceIcon(
-                        Icons.route,
+                      _buildCustomServiceIcon(
+                        Image.asset('assets/private_open_trip.png'),
                         'Private & Open Trip',
                         () => Navigator.push(
                           context,
@@ -234,8 +234,8 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      _buildServiceIcon(
-                        Icons.terrain,
+                      _buildCustomServiceIcon(
+                        Image.asset('assets/camping_ground.png'),
                         'Camping Ground',
                         () => Navigator.push(
                           context,
@@ -244,8 +244,8 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      _buildServiceIcon(
-                        Icons.calendar_today,
+                      _buildCustomServiceIcon(
+                        Image.asset('assets/event.png'),
                         'Event',
                         () => Navigator.push(
                           context,
@@ -254,8 +254,8 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      _buildServiceIcon(
-                        Icons.home,
+                      _buildCustomServiceIcon(
+                        Image.asset('assets/eat_stay.png'),
                         'Eat & Stay',
                         () => Navigator.push(
                           context,
@@ -319,8 +319,8 @@ class _HomePageState extends State<HomePage> {
                         mainAxisSpacing: 16.0,
                         crossAxisSpacing: 16.0,
                         children: [
-                          _buildMonitoringIcon(
-                            Icons.shield,
+                          _buildCustomServiceIcon(
+                            Image.asset('assets/keamanan.png'),
                             'Keamanan',
                             () => Navigator.push(
                               context,
@@ -329,8 +329,8 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                           ),
-                          _buildMonitoringIcon(
-                            Icons.cloud,
+                          _buildCustomServiceIcon(
+                            Image.asset('assets/cuaca.png'),
                             'Cuaca',
                             () => Navigator.push(
                               context,
@@ -339,8 +339,8 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                           ),
-                          _buildMonitoringIcon(
-                            Icons.book,
+                          _buildCustomServiceIcon(
+                            Image.asset('assets/blog.png'),
                             'Blog',
                             () => Navigator.push(
                               context,
@@ -349,8 +349,8 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                           ),
-                          _buildMonitoringIcon(
-                            Icons.lightbulb,
+                          _buildCustomServiceIcon(
+                            Image.asset('assets/tutorial.png'),
                             'Tutorial',
                             () => Navigator.push(
                               context,
@@ -615,6 +615,51 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             children: [
               Icon(icon, size: 40, color: const Color(0xFF2A4D3A)),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCustomServiceIcon(
+    Widget iconWidget,
+    String label,
+    VoidCallback onTap,
+  ) {
+    bool isHighlighted = false;
+    return StatefulBuilder(
+      builder: (context, setState) => InkWell(
+        onTap: onTap,
+        onHighlightChanged: (highlighted) {
+          setState(() => isHighlighted = highlighted);
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: isHighlighted ? 10 : 5,
+                offset: Offset(0, isHighlighted ? 4 : 2),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              SizedBox(height: 40, width: 40, child: iconWidget),
               const SizedBox(height: 4),
               Text(
                 label,

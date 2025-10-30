@@ -3,13 +3,63 @@ import 'package:tapak_jejak/screens/all_products_page.dart';
 import 'package:tapak_jejak/screens/booking_page.dart';
 import 'package:tapak_jejak/screens/main_screen.dart';
 
-class CartPage extends StatelessWidget {
+enum CartCategory { semua, tiket_masuk, porter_guide, private_open_trip }
+
+class CartPage extends StatefulWidget {
   final VoidCallback refreshCallback;
   const CartPage({super.key, required this.refreshCallback});
 
   @override
+  State<CartPage> createState() => _CartPageState();
+}
+
+class _CartPageState extends State<CartPage> {
+  CartCategory selectedCategory = CartCategory.semua;
+
+  Map<String, dynamic> _getCategoryData(CartCategory category) {
+    switch (category) {
+      case CartCategory.semua:
+        return {
+          'icon': Icons.all_inclusive,
+          'label': 'Semua',
+          'color': Colors.orange,
+        };
+      case CartCategory.tiket_masuk:
+        return {
+          'icon': Icons.confirmation_number,
+          'label': 'Tiket Masuk',
+          'color': Colors.orange,
+        };
+      case CartCategory.porter_guide:
+        return {
+          'icon': Icons.hiking,
+          'label': 'Porter & Guide',
+          'color': Colors.orange,
+        };
+      case CartCategory.private_open_trip:
+        return {
+          'icon': Icons.group,
+          'label': 'Private Trip',
+          'color': Colors.orange,
+        };
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final cart = MainScreenState.cartItems;
+    final cart = MainScreenState.cartItems.where((product) {
+      switch (selectedCategory) {
+        case CartCategory.tiket_masuk:
+          return product.category == 'tiket_masuk';
+        case CartCategory.porter_guide:
+          return product.category == 'porter_guide';
+        case CartCategory.private_open_trip:
+          return product.category == 'private_open_trip';
+        default:
+          return true; // semua
+      }
+    }).toList();
+
     double total = cart.fold(0, (sum, item) => sum + item.pricePerDay);
 
     return Scaffold(
@@ -103,6 +153,103 @@ class CartPage extends StatelessWidget {
       ),
       body: Column(
         children: [
+          // Creative Category filter tabs
+          Container(
+            height: 80,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                children: CartCategory.values.map((category) {
+                  final isSelected = selectedCategory == category;
+                  final categoryData = _getCategoryData(category);
+
+                  return AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    margin: const EdgeInsets.only(right: 12),
+                    child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          selectedCategory = category;
+                        });
+                      },
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          gradient: isSelected
+                              ? LinearGradient(
+                                  colors: [
+                                    categoryData['color'] as Color,
+                                    (categoryData['color'] as Color)
+                                        .withOpacity(0.8),
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                )
+                              : LinearGradient(
+                                  colors: [
+                                    Colors.grey.shade100,
+                                    Colors.grey.shade200,
+                                  ],
+                                ),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: isSelected
+                              ? [
+                                  BoxShadow(
+                                    color: (categoryData['color'] as Color)
+                                        .withOpacity(0.3),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ]
+                              : null,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              categoryData['icon'] as IconData,
+                              color: isSelected
+                                  ? Colors.white
+                                  : Colors.grey.shade600,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              categoryData['label'] as String,
+                              style: TextStyle(
+                                color: isSelected
+                                    ? Colors.white
+                                    : Colors.black87,
+                                fontWeight: isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.w500,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ),
           Expanded(
             child: cart.isEmpty
                 ? Center(
@@ -147,7 +294,7 @@ class CartPage extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => AllProductsPage(
-                                  refreshCallback: refreshCallback,
+                                  refreshCallback: widget.refreshCallback,
                                 ),
                               ),
                             );
@@ -174,9 +321,35 @@ class CartPage extends StatelessWidget {
                         ),
                         trailing: IconButton(
                           icon: const Icon(Icons.remove_circle_outline),
-                          onPressed: () {
-                            MainScreenState.cartItems.remove(product);
-                            refreshCallback();
+                          onPressed: () async {
+                            final shouldDelete = await showDialog<bool>(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('Konfirmasi Hapus'),
+                                content: Text(
+                                  'Apakah Anda yakin ingin menghapus "${product.name}" dari keranjang?',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(false),
+                                    child: const Text('Batal'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(true),
+                                    child: const Text('Hapus'),
+                                  ),
+                                ],
+                              ),
+                            );
+
+                            if (shouldDelete == true) {
+                              setState(() {
+                                MainScreenState.cartItems.remove(product);
+                              });
+                              widget.refreshCallback();
+                            }
                           },
                         ),
                       );

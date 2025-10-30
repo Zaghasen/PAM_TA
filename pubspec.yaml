@@ -13,6 +13,11 @@ dependencies:
   flutter_map: ^6.1.0
   latlong2: ^0.9.1
   provider: ^6.1.1
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  flutter_secure_storage: ^9.0.0
+  shared_preferences: ^2.2.2
+  image_picker: ^1.0.7
 
 dev_dependencies:
   flutter_test:
@@ -33,3 +38,20 @@ flutter:
     - assets/consina.jpg
     - assets/carumby.jpg
     - assets/kosong.png
+    - assets/comingsoon1.png
+    - assets/gunung.jpeg
+    - assets/tipe A.jpeg
+    - assets/tipe B.jpeg
+    - assets/tipe C.jpeg
+    - assets/tiket_masuk.png
+    - assets/travel_ojek.png
+    - assets/porter_guide.png
+    - assets/sewa_alat.png
+    - assets/private_open_trip.png
+    - assets/camping_ground.png
+    - assets/event.png
+    - assets/eat_stay.png
+    - assets/keamanan.png
+    - assets/cuaca.png
+    - assets/blog.png
+    - assets/tutorial.png

@@ -9,6 +9,7 @@ final List<Product> mockProducts = [
     brand: 'Eiger',
     pricePerDay: 40000,
     imageUrl: 'assets/eiger/tas1.jpg',
+    category: 'sewa_alat',
   ),
   // Tents
   Product(
@@ -17,6 +18,7 @@ final List<Product> mockProducts = [
     brand: 'Anatrestar',
     pricePerDay: 70000,
     imageUrl: 'assets/antarestar/tenda1.jpg',
+    category: 'camping_ground',
   ),
   Product(
     id: 9,
@@ -24,6 +26,7 @@ final List<Product> mockProducts = [
     brand: 'Arei',
     pricePerDay: 90000,
     imageUrl: 'assets/arei/tenda1.jpg',
+    category: 'camping_ground',
   ),
   Product(
     id: 10,
@@ -31,6 +34,7 @@ final List<Product> mockProducts = [
     brand: 'Consina',
     pricePerDay: 80000,
     imageUrl: 'assets/consina/tenda1.jpg',
+    category: 'camping_ground',
   ),
   Product(
     id: 11,
@@ -38,6 +42,7 @@ final List<Product> mockProducts = [
     brand: 'Carumby',
     pricePerDay: 95000,
     imageUrl: 'assets/carumby/tenda1.jpg',
+    category: 'camping_ground',
   ),
   Product(
     id: 12,
@@ -45,6 +50,7 @@ final List<Product> mockProducts = [
     brand: 'Eiger',
     pricePerDay: 65000,
     imageUrl: 'assets/eiger/tenda2.jpg',
+    category: 'camping_ground',
   ),
   // Tracking Poles
   Product(
@@ -53,6 +59,7 @@ final List<Product> mockProducts = [
     brand: 'Anatrestar',
     pricePerDay: 35000,
     imageUrl: 'assets/antarestar/tp1.jpg',
+    category: 'sewa_alat',
   ),
   Product(
     id: 14,
@@ -60,6 +67,7 @@ final List<Product> mockProducts = [
     brand: 'Arei',
     pricePerDay: 45000,
     imageUrl: 'assets/arei/tp1.jpg',
+    category: 'sewa_alat',
   ),
   Product(
     id: 15,
@@ -67,6 +75,7 @@ final List<Product> mockProducts = [
     brand: 'Consina',
     pricePerDay: 30000,
     imageUrl: 'assets/consina/tp1.jpg',
+    category: 'sewa_alat',
   ),
   Product(
     id: 16,
@@ -74,6 +83,7 @@ final List<Product> mockProducts = [
     brand: 'Carumby',
     pricePerDay: 40000,
     imageUrl: 'assets/carumby/tp1.jpg',
+    category: 'sewa_alat',
   ),
   Product(
     id: 17,
@@ -81,6 +91,7 @@ final List<Product> mockProducts = [
     brand: 'Eiger',
     pricePerDay: 32000,
     imageUrl: 'assets/eiger/tp1.jpg',
+    category: 'sewa_alat',
   ),
   // Jackets
   Product(
@@ -89,6 +100,7 @@ final List<Product> mockProducts = [
     brand: 'Anatrestar',
     pricePerDay: 120000,
     imageUrl: 'assets/antarestar/jaket1.jpg',
+    category: 'sewa_alat',
   ),
   Product(
     id: 19,
@@ -96,6 +108,7 @@ final List<Product> mockProducts = [
     brand: 'Arei',
     pricePerDay: 100000,
     imageUrl: 'assets/arei/jaket1.jpg',
+    category: 'sewa_alat',
   ),
   Product(
     id: 20,
@@ -103,6 +116,7 @@ final List<Product> mockProducts = [
     brand: 'Consina',
     pricePerDay: 110000,
     imageUrl: 'assets/consina/jaket1.jpg',
+    category: 'sewa_alat',
   ),
   Product(
     id: 21,
@@ -110,6 +124,7 @@ final List<Product> mockProducts = [
     brand: 'Carumby',
     pricePerDay: 130000,
     imageUrl: 'assets/carumby/jaket1.jpg',
+    category: 'sewa_alat',
   ),
   Product(
     id: 22,
@@ -117,6 +132,7 @@ final List<Product> mockProducts = [
     brand: 'Eiger',
     pricePerDay: 115000,
     imageUrl: 'assets/eiger/jaket1.jpg',
+    category: 'sewa_alat',
   ),
   // Carriers
   Product(
@@ -125,6 +141,7 @@ final List<Product> mockProducts = [
     brand: 'Anatrestar',
     pricePerDay: 55000,
     imageUrl: 'assets/antarestar/tas1.jpg',
+    category: 'sewa_alat',
   ),
   Product(
     id: 24,
@@ -132,6 +149,7 @@ final List<Product> mockProducts = [
     brand: 'Arei',
     pricePerDay: 48000,
     imageUrl: 'assets/arei/tas1.jpg',
+    category: 'sewa_alat',
   ),
   Product(
     id: 25,
@@ -139,6 +157,7 @@ final List<Product> mockProducts = [
     brand: 'Consina',
     pricePerDay: 52000,
     imageUrl: 'assets/consina/tas1.jpg',
+    category: 'sewa_alat',
   ),
   Product(
     id: 26,
@@ -146,6 +165,7 @@ final List<Product> mockProducts = [
     brand: 'Carumby',
     pricePerDay: 60000,
     imageUrl: 'assets/carumby/tas1.jpg',
+    category: 'sewa_alat',
   ),
   Product(
     id: 27,
@@ -153,6 +173,7 @@ final List<Product> mockProducts = [
     brand: 'Eiger',
     pricePerDay: 50000,
     imageUrl: 'assets/eiger/tas1.jpg',
+    category: 'sewa_alat',
   ),
   // Shoes
   Product(
@@ -161,6 +182,7 @@ final List<Product> mockProducts = [
     brand: 'Anatrestar',
     pricePerDay: 85000,
     imageUrl: 'assets/antarestar/sepatu1.jpg',
+    category: 'sewa_alat',
   ),
   Product(
     id: 29,
@@ -168,6 +190,7 @@ final List<Product> mockProducts = [
     brand: 'Arei',
     pricePerDay: 78000,
     imageUrl: 'assets/arei/sepatu1.jpg',
+    category: 'sewa_alat',
   ),
   Product(
     id: 30,
@@ -175,6 +198,7 @@ final List<Product> mockProducts = [
     brand: 'Consina',
     pricePerDay: 82000,
     imageUrl: 'assets/consina/sepatu1.jpg',
+    category: 'sewa_alat',
   ),
   Product(
     id: 31,
@@ -182,6 +206,7 @@ final List<Product> mockProducts = [
     brand: 'Carumby',
     pricePerDay: 90000,
     imageUrl: 'assets/carumby/sepatu1.jpg',
+    category: 'sewa_alat',
   ),
   Product(
     id: 32,
@@ -189,6 +214,7 @@ final List<Product> mockProducts = [
     brand: 'Eiger',
     pricePerDay: 88000,
     imageUrl: 'assets/eiger/sepatu1.jpg',
+    category: 'sewa_alat',
   ),
 ];
 

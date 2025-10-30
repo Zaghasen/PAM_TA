@@ -1,11 +1,17 @@
-# TODO: Reverted Hive Integration
+# Integration Plan for Hive Functionality
 
-The Hive database integration for login with encryption and sessions has been reverted. The code is now back to its original state with hardcoded login credentials.
+## Completed Tasks
 
-## Mock Weather Data Completion
+- [x] Analyze current code and plan integration
+- [x] Create TODO.md file
+- [x] Update pubspec.yaml with required dependencies (hive, hive_flutter, flutter_secure_storage, shared_preferences, image_picker)
+- [x] Create lib/services/hive_service.dart for managing user data
+- [x] Update main.dart to initialize Hive
+- [x] Update lib/models/user.dart to include biodata fields
+- [x] Modify lib/screens/login_screen.dart to add sign up/sign in functionality
+- [x] Modify lib/screens/profile_page.dart to load/edit user data from Hive
+- [x] Run flutter pub get
 
-- [x] Add missing Jayapura entry for December 2021 (already present)
-- [x] Add complete data for 2022 (12 months x 18 regions) (already present)
-- [x] Add complete data for 2023 (12 months x 18 regions)
-- [x] Add complete data for 2024 (12 months x 18 regions)
-- [x] Verify data integrity and format
+## Pending Tasks
+
+- [ ] Test login, sign up, profile editing, and logout

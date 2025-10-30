@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:tapak_jejak/screens/login_screen.dart';
+import 'package:tapak_jejak/services/hive_service.dart';
 
 // -- ENTRY POINT APLIKASI --
 // Fungsi main() adalah yang pertama kali dijalankan saat aplikasi dibuka.
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  final hiveService = HiveService();
+  await hiveService.initHive();
   runApp(const MyApp());
 }
 

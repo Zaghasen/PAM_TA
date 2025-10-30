@@ -1,65 +1,128 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tapak_jejak/models/user.dart';
 import 'package:tapak_jejak/screens/main_screen.dart';
+import 'package:tapak_jejak/services/hive_service.dart';
+import 'dart:convert';
+
+const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  bool _isSignUp = false;
   bool _isPasswordVisible = false;
+  String? _errorMessage;
 
-  void _login() {
-    String username = _usernameController.text.trim();
-    String password = _passwordController.text.trim();
+  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
-    if (username.isEmpty || password.isEmpty) {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('Error'),
-          content: const Text('Username dan Password harus terisi!'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: const Text('OK', style: TextStyle(color: Colors.black)),
-            ),
-          ],
-        ),
-      );
+  final HiveService _hiveService = HiveService();
+
+  Future<void> _signUp() async {
+    final username = _usernameController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+
+    if (username.isEmpty || email.isEmpty || password.isEmpty) {
+      setState(() {
+        _errorMessage = 'All fields are required';
+      });
       return;
     }
 
-    if ((username == 'admin' ||
-            username == 'hussein' ||
-            username == 'Zalfa Ghalib Hussein') &&
-        (password == 'admin' || password == '097' || password == '124230097')) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const MainScreen()),
-      );
-    } else {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('Login Gagal!'),
-          backgroundColor: Colors.white,
-          titleTextStyle: const TextStyle(color: Colors.black),
-          content: const Text('Username atau password salah.'),
-          contentTextStyle: const TextStyle(color: Colors.black),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: const Text('OK', style: TextStyle(color: Colors.black)),
-            ),
-          ],
-        ),
-      );
+    String? storedData = await secureStorage.read(key: 'accounts');
+    List<Map<String, String>> accounts = [];
+
+    if (storedData != null) {
+      var decodedData = json.decode(storedData);
+      if (decodedData is List) {
+        accounts = List<Map<String, String>>.from(
+          decodedData.map((item) => Map<String, String>.from(item)),
+        );
+      }
     }
+
+    for (var account in accounts) {
+      if (account['username'] == username) {
+        setState(() {
+          _errorMessage = 'Username already exists';
+        });
+        return;
+      }
+    }
+
+    accounts.add({'username': username, 'email': email, 'password': password});
+
+    await secureStorage.write(key: 'accounts', value: json.encode(accounts));
+
+    final user = User(username: username, password: password, email: email);
+    await _hiveService.saveUserData(username, user);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Data berhasil dibuat!'),
+        backgroundColor: Colors.green,
+      ),
+    );
+
+    setState(() {
+      _isSignUp = false;
+      _errorMessage = null;
+      _usernameController.clear();
+      _emailController.clear();
+      _passwordController.clear();
+    });
+  }
+
+  Future<void> _signIn() async {
+    final username = _usernameController.text;
+    final password = _passwordController.text;
+
+    String? storedData = await secureStorage.read(key: 'accounts');
+    if (storedData == null) {
+      setState(() {
+        _errorMessage = 'No accounts found';
+      });
+      return;
+    }
+
+    List<dynamic> decodedData = json.decode(storedData);
+    List<Map<String, String>> accounts = decodedData
+        .map((account) => Map<String, String>.from(account))
+        .toList();
+
+    for (var account in accounts) {
+      if (account['username'] == username && account['password'] == password) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('username', username);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Login Success'),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainScreen()),
+        );
+        return;
+      }
+    }
+
+    setState(() {
+      _errorMessage = 'Invalid username or password';
+    });
   }
 
   @override
@@ -96,6 +159,22 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 16),
+              if (_isSignUp)
+                TextField(
+                  controller: _emailController,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                    labelStyle: const TextStyle(color: Colors.white70),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    prefixIcon: const Icon(Icons.email, color: Colors.white70),
+                    filled: true,
+                    fillColor: const Color(0xFF2A4D3A),
+                  ),
+                ),
+              const SizedBox(height: 16),
               TextField(
                 controller: _passwordController,
                 obscureText:
@@ -131,6 +210,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   fillColor: const Color(0xFF2A4D3A),
                 ),
               ),
+              if (_errorMessage != null) ...[
+                const SizedBox(height: 10),
+                Text(_errorMessage!, style: const TextStyle(color: Colors.red)),
+              ],
               const SizedBox(height: 24),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -138,8 +221,39 @@ class _LoginScreenState extends State<LoginScreen> {
                   backgroundColor: const Color(0xFF2A4D3A),
                   foregroundColor: Colors.white,
                 ),
-                onPressed: _login,
-                child: const Text('Login'),
+                onPressed: _isSignUp ? _signUp : _signIn,
+                child: Text(_isSignUp ? 'Sign Up' : 'Sign In'),
+              ),
+              const SizedBox(height: 20),
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    _isSignUp = !_isSignUp;
+                    _errorMessage = null;
+                    _usernameController.clear();
+                    _emailController.clear();
+                    _passwordController.clear();
+                  });
+                },
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: _isSignUp
+                            ? "Already have an account? "
+                            : "Don't have an account? ",
+                        style: const TextStyle(color: Colors.white70),
+                      ),
+                      TextSpan(
+                        text: _isSignUp ? "Sign In" : "Sign Up",
+                        style: const TextStyle(
+                          color: Colors.blueAccent,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
