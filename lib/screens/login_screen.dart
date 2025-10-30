@@ -72,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('assets/LOGO.jpg', height: 180),
+              Image.asset('assets/LOGO.png', height: 180),
               const SizedBox(height: 20),
               Text(
                 'Selamat Datang, Pendaki!',

@@ -56,12 +56,93 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Penyewaan Alat Pendakian Tapak Jejak',
-          textAlign: TextAlign.center,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(60),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.green.shade400,
+                Colors.green.shade300,
+                Colors.green.shade200,
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 10,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            title: Row(
+              children: [
+                Image.asset('assets/LOGO.png', height: 40, width: 40),
+                const SizedBox(width: 8),
+                Text(
+                  'TAPAK JEJAK',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black.withOpacity(0.5),
+                        offset: const Offset(1, 1),
+                        blurRadius: 3,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              Stack(
+                children: [
+                  IconButton(
+                    icon: const Icon(
+                      Icons.notifications,
+                      color: Colors.white,
+                      size: 28,
+                    ),
+                    onPressed: () {
+                      // Add notification functionality
+                    },
+                  ),
+                  Positioned(
+                    right: 8,
+                    top: 8,
+                    child: Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      constraints: const BoxConstraints(
+                        minWidth: 16,
+                        minHeight: 16,
+                      ),
+                      child: const Text(
+                        '3',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
-        centerTitle: true,
       ),
       body: ListView(
         children: [
@@ -104,7 +185,7 @@ class _HomePageState extends State<HomePage> {
                     crossAxisSpacing: 16.0,
                     children: [
                       _buildServiceIcon(
-                        Icons.confirmation_number,
+                        Icons.local_activity,
                         'Tiket Masuk',
                         () => Navigator.push(
                           context,
@@ -114,7 +195,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       _buildServiceIcon(
-                        Icons.directions_car,
+                        Icons.two_wheeler,
                         'Travel & Ojek',
                         () => Navigator.push(
                           context,
@@ -124,7 +205,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       _buildServiceIcon(
-                        Icons.person,
+                        Icons.hiking,
                         'Porter & Guide',
                         () => Navigator.push(
                           context,
@@ -134,7 +215,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       _buildServiceIcon(
-                        Icons.build,
+                        Icons.handyman,
                         'Sewa Alat',
                         () => Navigator.push(
                           context,
@@ -144,7 +225,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       _buildServiceIcon(
-                        Icons.group,
+                        Icons.route,
                         'Private & Open Trip',
                         () => Navigator.push(
                           context,
@@ -164,7 +245,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       _buildServiceIcon(
-                        Icons.event,
+                        Icons.calendar_today,
                         'Event',
                         () => Navigator.push(
                           context,
@@ -174,7 +255,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       _buildServiceIcon(
-                        Icons.restaurant,
+                        Icons.home,
                         'Eat & Stay',
                         () => Navigator.push(
                           context,
@@ -187,22 +268,45 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 // Monitoring Section
-                Padding(
-                  padding: const EdgeInsets.symmetric(
+                Container(
+                  margin: const EdgeInsets.symmetric(
                     horizontal: 16.0,
                     vertical: 8.0,
+                  ),
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.green.shade100, Colors.green.shade50],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Center(
                         child: Text(
-                          'Pantau Kondisi Gunung Sebelum Mendaki',
+                          'Pantau Kondisi Gunung untuk Pendakian Aman!',
                           style: Theme.of(context).textTheme.titleLarge
                               ?.copyWith(
                                 color: const Color(0xFF2A4D3A),
                                 fontWeight: FontWeight.bold,
                                 fontSize: 24,
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.black.withOpacity(0.3),
+                                    offset: const Offset(1, 1),
+                                    blurRadius: 2,
+                                  ),
+                                ],
                               ),
                           textAlign: TextAlign.center,
                         ),
@@ -216,7 +320,7 @@ class _HomePageState extends State<HomePage> {
                         crossAxisSpacing: 16.0,
                         children: [
                           _buildMonitoringIcon(
-                            Icons.security,
+                            Icons.shield,
                             'Keamanan',
                             () => Navigator.push(
                               context,
@@ -226,7 +330,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           _buildMonitoringIcon(
-                            Icons.wb_sunny,
+                            Icons.cloud,
                             'Cuaca',
                             () => Navigator.push(
                               context,
@@ -236,7 +340,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           _buildMonitoringIcon(
-                            Icons.article,
+                            Icons.book,
                             'Blog',
                             () => Navigator.push(
                               context,
@@ -246,7 +350,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           _buildMonitoringIcon(
-                            Icons.school,
+                            Icons.lightbulb,
                             'Tutorial',
                             () => Navigator.push(
                               context,
@@ -260,45 +364,137 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                _buildHomeCard(
-                  context,
-                  'Lihat Semua Produk',
-                  'Jelajahi semua koleksi alat pendakian kami.',
-                  Icons.inventory_2,
-                  () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AllProductsPage(
-                        refreshCallback: widget.refreshCallback,
+                // Lihat Semua Produk Section
+                Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 8.0,
+                  ),
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.green.shade200, Colors.green.shade100],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5),
                       ),
+                    ],
+                  ),
+                  child: InkWell(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AllProductsPage(
+                          refreshCallback: widget.refreshCallback,
+                        ),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.inventory_2,
+                          size: 50,
+                          color: const Color(0xFF2A4D3A),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Lihat Semua Produk',
+                                style: Theme.of(context).textTheme.titleMedium
+                                    ?.copyWith(
+                                      color: const Color(0xFF2A4D3A),
+                                      fontWeight: FontWeight.bold,
+                                      shadows: [
+                                        Shadow(
+                                          color: Colors.black.withOpacity(0.3),
+                                          offset: const Offset(1, 1),
+                                          blurRadius: 2,
+                                        ),
+                                      ],
+                                    ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Jelajahi semua koleksi alat pendakian kami.',
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(color: Colors.black87),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Icon(
+                          Icons.chevron_right,
+                          color: Color(0xFF2A4D3A),
+                        ),
+                      ],
                     ),
                   ),
                 ),
                 const SizedBox(height: 20),
-                Column(
-                  children: [
-                    Center(
-                      child: Text(
-                        'Brand Unggulan',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: const Color(0xFF2A4D3A),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24,
+                // Brand Unggulan Section
+                Container(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 8.0,
+                  ),
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.green.shade300, Colors.green.shade200],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      Center(
+                        child: Text(
+                          'Brand Unggulan',
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(
+                                color: const Color(0xFF2A4D3A),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 24,
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.black.withOpacity(0.3),
+                                    offset: const Offset(1, 1),
+                                    blurRadius: 2,
+                                  ),
+                                ],
+                              ),
+                          textAlign: TextAlign.center,
                         ),
-                        textAlign: TextAlign.center,
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    SizedBox(
-                      height: 200,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: mockBrands.length,
-                        itemBuilder: (context, index) =>
-                            _buildBrandCard(mockBrands[index]),
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        height: 200,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: mockBrands.length,
+                          itemBuilder: (context, index) =>
+                              _buildBrandCard(mockBrands[index]),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 GridView.builder(
                   shrinkWrap: true,
@@ -395,43 +591,83 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildServiceIcon(IconData icon, String label, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        children: [
-          CircleAvatar(
-            radius: 30,
-            backgroundColor: const Color(0xFF2A4D3A),
-            child: Icon(icon, color: Colors.white, size: 30),
+    bool isHighlighted = false;
+    return StatefulBuilder(
+      builder: (context, setState) => InkWell(
+        onTap: onTap,
+        onHighlightChanged: (highlighted) {
+          setState(() => isHighlighted = highlighted);
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: isHighlighted ? 10 : 5,
+                offset: Offset(0, isHighlighted ? 4 : 2),
+              ),
+            ],
           ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-            textAlign: TextAlign.center,
+          child: Column(
+            children: [
+              Icon(icon, size: 40, color: const Color(0xFF2A4D3A)),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
   Widget _buildMonitoringIcon(IconData icon, String label, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        children: [
-          CircleAvatar(
-            radius: 25,
-            backgroundColor: const Color(0xFF2A4D3A),
-            child: Icon(icon, color: Colors.white, size: 25),
+    bool isHighlighted = false;
+    return StatefulBuilder(
+      builder: (context, setState) => InkWell(
+        onTap: onTap,
+        onHighlightChanged: (highlighted) {
+          setState(() => isHighlighted = highlighted);
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: isHighlighted ? 10 : 5,
+                offset: Offset(0, isHighlighted ? 4 : 2),
+              ),
+            ],
           ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-            textAlign: TextAlign.center,
+          child: Column(
+            children: [
+              Icon(icon, size: 40, color: const Color(0xFF2A4D3A)),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
