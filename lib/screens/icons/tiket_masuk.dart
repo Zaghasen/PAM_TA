@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:tapak_jejak/screens/icons/details/tiket_detail_page.dart';
+import 'package:tapak_jejak/models/mountain.dart';
 
-class TiketMasukPage extends StatelessWidget {
+class TiketMasukPage extends StatefulWidget {
   const TiketMasukPage({super.key});
+
+  @override
+  State<TiketMasukPage> createState() => _TiketMasukPageState();
+}
+
+class _TiketMasukPageState extends State<TiketMasukPage> {
+  String? selectedProvince;
 
   static String _formatCurrency(int value) {
     return value.toString().replaceAllMapped(
@@ -11,10 +19,8 @@ class TiketMasukPage extends StatelessWidget {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    // Mountain data using actual images from assets/tiket_masuk
-    final List<Mountain> mountains = [
+  List<Mountain> _getFilteredMountains() {
+    final List<Mountain> allMountains = [
       Mountain(
         image: 'assets/tiket_masuk/merapi.jpg',
         name: 'Gunung Merapi',
@@ -270,6 +276,19 @@ class TiketMasukPage extends StatelessWidget {
       ),
     ];
 
+    if (selectedProvince == null || selectedProvince == 'Semua') {
+      return allMountains;
+    }
+
+    return allMountains.where((mountain) {
+      return mountain.location.contains(selectedProvince!);
+    }).toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final mountains = _getFilteredMountains();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tiket Masuk'),
@@ -285,267 +304,484 @@ class TiketMasukPage extends StatelessWidget {
             colors: [Colors.green.shade50, Colors.white],
           ),
         ),
-        child: ListView.builder(
-          padding: const EdgeInsets.all(16.0),
-          itemCount: mountains.length,
-          itemBuilder: (context, index) {
-            final mountain = mountains[index];
-            return Container(
-              margin: const EdgeInsets.only(bottom: 20.0),
+        child: Column(
+          children: [
+            // Filter Section
+            Container(
+              margin: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 8.0,
+              ),
               decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color(0xFF2A4D3A).withOpacity(0.9),
+                    Color(0xFF4A7C59).withOpacity(0.9),
+                  ],
+                ),
                 borderRadius: BorderRadius.circular(20.0),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withOpacity(0.2),
                     blurRadius: 15,
                     offset: const Offset(0, 8),
                   ),
                 ],
               ),
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TiketDetailPage(mountain: mountain),
-                    ),
-                  );
-                },
-                child: ClipRRect(
+              child: Container(
+                padding: const EdgeInsets.all(20.0),
+                decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20.0),
-                  child: Container(
-                    color: Colors.white,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  color: Colors.white.withOpacity(0.95),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       children: [
-                        // Hero Image with Gradient Overlay
-                        Stack(
-                          children: [
-                            Image.asset(
-                              mountain.image,
-                              height: 220,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
-                            Container(
-                              height: 220,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Colors.transparent,
-                                    Colors.black.withOpacity(0.7),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 16,
-                              left: 16,
-                              right: 16,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    mountain.name,
-                                    style: TextStyle(
-                                      fontSize: 28,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                      shadows: [
-                                        Shadow(
-                                          color: Colors.black.withOpacity(0.5),
-                                          offset: const Offset(1, 1),
-                                          blurRadius: 3,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.location_on,
-                                        color: Colors.white,
-                                        size: 16,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        mountain.location,
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Positioned(
-                              top: 16,
-                              right: 16,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 6,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.9),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.height,
-                                      size: 16,
-                                      color: Color(0xFF2A4D3A),
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      '${mountain.height} mdpl',
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFF2A4D3A),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Color(0xFF2A4D3A),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(
+                            Icons.filter_list,
+                            color: Colors.white,
+                            size: 24,
+                          ),
                         ),
-
-                        // Content Section
-                        Padding(
-                          padding: const EdgeInsets.all(20.0),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            'Filter Berdasarkan Provinsi',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF2A4D3A),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.green.shade100,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            '${_getFilteredMountains().length} Gunung',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF2A4D3A),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: Colors.green.shade200,
+                          width: 2,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.green.shade100.withOpacity(0.5),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: DropdownButtonFormField<String>(
+                        decoration: InputDecoration(
+                          labelText: 'Pilih Provinsi',
+                          labelStyle: TextStyle(
+                            color: Color(0xFF2A4D3A),
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                            backgroundColor: Colors.green.shade50.withOpacity(
+                              0.7,
+                            ),
+                            letterSpacing: 0.5,
+                          ),
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                          suffixIcon: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Color(0xFF2A4D3A),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(
+                              Icons.arrow_drop_down,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                        value: selectedProvince,
+                        style: TextStyle(
+                          color: Color(0xFF2A4D3A),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        dropdownColor: Colors.white,
+                        items: [
+                          DropdownMenuItem(
+                            value: 'Semua',
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.public,
+                                  color: Color(0xFF2A4D3A),
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 8),
+                                Text('Semua Provinsi'),
+                              ],
+                            ),
+                          ),
+                          DropdownMenuItem(
+                            value: 'Jawa Tengah',
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.location_on,
+                                  color: Color(0xFF2A4D3A),
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 8),
+                                Text('Jawa Tengah'),
+                              ],
+                            ),
+                          ),
+                          DropdownMenuItem(
+                            value: 'Jawa Timur',
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.location_on,
+                                  color: Color(0xFF2A4D3A),
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 8),
+                                Text('Jawa Timur'),
+                              ],
+                            ),
+                          ),
+                          DropdownMenuItem(
+                            value: 'Nusa Tenggara Barat',
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.location_on,
+                                  color: Color(0xFF2A4D3A),
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 8),
+                                Text('Nusa Tenggara Barat'),
+                              ],
+                            ),
+                          ),
+                        ],
+                        onChanged: (value) =>
+                            setState(() => selectedProvince = value),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            // Mountain List
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.all(16.0),
+                itemCount: mountains.length,
+                itemBuilder: (context, index) {
+                  final mountain = mountains[index];
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 20.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 15,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                TiketDetailPage(mountain: mountain),
+                          ),
+                        );
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20.0),
+                        child: Container(
+                          color: Colors.white,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Description
-                              Text(
-                                mountain.description,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.grey.shade700,
-                                  height: 1.5,
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-
-                              // Managed By
-                              Row(
+                              // Hero Image with Gradient Overlay
+                              Stack(
                                 children: [
-                                  Icon(
-                                    Icons.business,
-                                    size: 20,
-                                    color: Colors.grey.shade600,
+                                  Image.asset(
+                                    mountain.image,
+                                    height: 220,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
                                   ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      'Dikelola oleh: ${mountain.managedBy}',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.grey.shade600,
-                                        fontWeight: FontWeight.w500,
+                                  Container(
+                                    height: 220,
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          Colors.transparent,
+                                          Colors.black.withOpacity(0.7),
+                                        ],
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
-                              const SizedBox(height: 20),
-
-                              // Pricing Section
-                              Container(
-                                padding: const EdgeInsets.all(16),
-                                decoration: BoxDecoration(
-                                  color: Colors.green.shade50,
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    color: Colors.green.shade200,
-                                    width: 1,
-                                  ),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
+                                  Positioned(
+                                    bottom: 16,
+                                    left: 16,
+                                    right: 16,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        Icon(
-                                          Icons.payment,
-                                          size: 20,
-                                          color: const Color(0xFF2A4D3A),
-                                        ),
-                                        const SizedBox(width: 8),
                                         Text(
-                                          'Tarif Masuk',
+                                          mountain.name,
                                           style: TextStyle(
-                                            fontSize: 18,
+                                            fontSize: 28,
                                             fontWeight: FontWeight.bold,
-                                            color: Color(0xFF2A4D3A),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 12),
-                                    ...mountain.prices.entries.map((entry) {
-                                      return Container(
-                                        margin: const EdgeInsets.only(
-                                          bottom: 8,
-                                        ),
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 12,
-                                          vertical: 8,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                          border: Border.all(
-                                            color: Colors.grey.shade200,
-                                          ),
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              entry.key,
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w500,
+                                            color: Colors.white,
+                                            shadows: [
+                                              Shadow(
+                                                color: Colors.black.withOpacity(
+                                                  0.5,
+                                                ),
+                                                offset: const Offset(1, 1),
+                                                blurRadius: 3,
                                               ),
+                                            ],
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.location_on,
+                                              color: Colors.white,
+                                              size: 16,
                                             ),
+                                            const SizedBox(width: 4),
                                             Text(
-                                              'Rp ${_formatCurrency(entry.value)}',
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                                color: Color(0xFF2A4D3A),
+                                              mountain.location,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w500,
                                               ),
                                             ),
                                           ],
                                         ),
-                                      );
-                                    }),
+                                      ],
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 16,
+                                    right: 16,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 6,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withOpacity(0.9),
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.height,
+                                            size: 16,
+                                            color: Color(0xFF2A4D3A),
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            '${mountain.height} mdpl',
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xFF2A4D3A),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              // Content Section
+                              Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Description
+                                    Text(
+                                      mountain.description,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey.shade700,
+                                        height: 1.5,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+
+                                    // Managed By
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.business,
+                                          size: 20,
+                                          color: Colors.grey.shade600,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Expanded(
+                                          child: Text(
+                                            'Dikelola oleh: ${mountain.managedBy}',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.grey.shade600,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 20),
+
+                                    // Pricing Section
+                                    Container(
+                                      padding: const EdgeInsets.all(16),
+                                      decoration: BoxDecoration(
+                                        color: Colors.green.shade50,
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
+                                          color: Colors.green.shade200,
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                Icons.payment,
+                                                size: 20,
+                                                color: const Color(0xFF2A4D3A),
+                                              ),
+                                              const SizedBox(width: 8),
+                                              Text(
+                                                'Tarif Masuk',
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Color(0xFF2A4D3A),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 12),
+                                          ...mountain.prices.entries.map((
+                                            entry,
+                                          ) {
+                                            return Container(
+                                              margin: const EdgeInsets.only(
+                                                bottom: 8,
+                                              ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 12,
+                                                    vertical: 8,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                border: Border.all(
+                                                  color: Colors.grey.shade200,
+                                                ),
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    entry.key,
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    'Rp ${_formatCurrency(entry.value)}',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Color(0xFF2A4D3A),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          }),
+                                        ],
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
                             ],
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
-            );
-          },
+            ),
+          ],
         ),
       ),
     );

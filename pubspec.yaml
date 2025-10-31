@@ -51,6 +51,7 @@ flutter:
     - assets/private_open_trip.png
     - assets/camping_ground.png
     - assets/event.png
+    - assets/event_background.png
     - assets/eat_stay.png
     - assets/keamanan.png
     - assets/cuaca.png

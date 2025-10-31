@@ -2,26 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
-
-class Mountain {
-  final String image;
-  final String name;
-  final String managedBy;
-  final Map<String, int> prices;
-  final String description;
-  final String location;
-  final double height;
-
-  Mountain({
-    required this.image,
-    required this.name,
-    required this.managedBy,
-    required this.prices,
-    required this.description,
-    required this.location,
-    required this.height,
-  });
-}
+import 'package:tapak_jejak/models/mountain.dart';
+import 'package:tapak_jejak/models/product.dart';
+import 'package:tapak_jejak/screens/main_screen.dart';
 
 class TiketDetailPage extends StatefulWidget {
   final Mountain mountain;
@@ -53,6 +36,90 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
       'nationality': 'WNI',
     },
   ];
+
+  List<String> _getBasecampOptions() {
+    switch (widget.mountain.name) {
+      case 'Gunung Andong':
+        return [
+          'via Sawit (Magelang)',
+          'via Pendem (Magelang)',
+          'via Gogik (Magelang)',
+        ];
+      case 'Gunung Bismo':
+        return ['via Sikunang (Wonosobo)', 'via Deroduwur', 'via Silandak'];
+      case 'Gunung Buthak':
+        return ['via Panderman (Batu)', 'via Sirah Kencong (Blitar)'];
+      case 'Gunung Kembang':
+        return ['via Blembem (Wonosobo)'];
+      case 'Gunung Lawu':
+        return [
+          'via Cemoro Sewu (Magetan)',
+          'via Cemoro Kandang (Karanganyar)',
+          'via Candi Cetho (Karanganyar)',
+        ];
+      case 'Gunung Merapi':
+        return ['via Selo (Boyolali)', 'via Babadan (Magelang)'];
+      case 'Gunung Merbabu':
+        return [
+          'via Selo (Boyolali)',
+          'via Suwanting (Magelang)',
+          'via Wekas (Magelang)',
+          'via Cuntel (Semarang)',
+          'via Thekelan (Semarang)',
+        ];
+      case 'Gunung Pakuwaja':
+        return ['via Sikunang (Dieng)', 'via Wates (Dieng)'];
+      case 'Gunung Prau':
+        return [
+          'via Patak Banteng (Wonosobo)',
+          'via Dieng (Wonosobo)',
+          'via Kalilembu (Wonosobo)',
+          'via Wates (Temanggung)',
+        ];
+      case 'Gunung Raung':
+        return ['via Kalibaru (Banyuwangi)', 'via Sumberwringin (Bondowoso)'];
+      case 'Gunung Rinjani':
+        return [
+          'via Sembalun (Lombok Timur)',
+          'via Senaru (Lombok Utara)',
+          'via Torean (Lombok Utara)',
+          'via Aik Berik (Lombok Tengah)',
+        ];
+      case 'Gunung Semeru':
+        return ['via Ranu Pani (Lumajang)'];
+      case 'Gunung Sindoro':
+        return [
+          'via Kledung (Temanggung)',
+          'via Sigedang (Wonosobo)',
+          'via Bansari (Temanggung)',
+          'via Alang-alang Sewu (Wonosobo)',
+        ];
+      case 'Gunung Slamet':
+        return [
+          'via Bambangan (Purbalingga)',
+          'via Guci (Tegal)',
+          'via Dipajaya (Pemalang)',
+          'via Baturraden (Banyumas)',
+        ];
+      case 'Gunung Sumbing':
+        return [
+          'via Garung (Wonosobo)',
+          'via Butuh/Mangli (Magelang)',
+          'via Gajah Mungkur (Wonosobo)',
+          'via Batusari (Temanggung)',
+        ];
+      case 'Gunung Telomoyo':
+        return ['via Pandean (Magelang)', 'via Sepakung (Kab. Semarang)'];
+      case 'Gunung Ungaran':
+        return [
+          'via Basecamp Mawar (Kab. Semarang)',
+          'via Promasan (Kendal)',
+          'via Candi Gedong Songo (Kab. Semarang)',
+        ];
+      default:
+        return ['Basecamp A', 'Basecamp B', 'Basecamp C'];
+    }
+  }
 
   @override
   void initState() {
@@ -356,73 +423,71 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    Row(
+                    Column(
                       children: [
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 4,
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade50,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.grey.shade300),
+                          ),
+                          child: DropdownButtonFormField<String>(
+                            decoration: const InputDecoration(
+                              labelText: 'Pos Masuk',
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.zero,
                             ),
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade50,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.grey.shade300),
-                            ),
-                            child: DropdownButtonFormField<String>(
-                              decoration: const InputDecoration(
-                                labelText: 'Pos Masuk',
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.zero,
-                              ),
-                              initialValue: selectedEntryPoint,
-                              items: ['Basecamp A', 'Basecamp B', 'Basecamp C']
-                                  .map(
-                                    (point) => DropdownMenuItem(
-                                      value: point,
-                                      child: Text(point),
-                                    ),
-                                  )
-                                  .toList(),
-                              onChanged: (value) =>
-                                  setState(() => selectedEntryPoint = value),
-                              validator: (value) =>
-                                  value == null ? 'Pilih pos masuk' : null,
-                            ),
+                            initialValue: selectedEntryPoint,
+                            items: _getBasecampOptions()
+                                .map(
+                                  (point) => DropdownMenuItem(
+                                    value: point,
+                                    child: Text(point),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: (value) =>
+                                setState(() => selectedEntryPoint = value),
+                            validator: (value) =>
+                                value == null ? 'Pilih pos masuk' : null,
                           ),
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 4,
+                        const SizedBox(height: 16),
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade50,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.grey.shade300),
+                          ),
+                          child: DropdownButtonFormField<String>(
+                            decoration: const InputDecoration(
+                              labelText: 'Pos Keluar',
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.zero,
                             ),
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade50,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.grey.shade300),
-                            ),
-                            child: DropdownButtonFormField<String>(
-                              decoration: const InputDecoration(
-                                labelText: 'Pos Keluar',
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.zero,
-                              ),
-                              initialValue: selectedExitPoint,
-                              items: ['Basecamp A', 'Basecamp B', 'Basecamp C']
-                                  .map(
-                                    (point) => DropdownMenuItem(
-                                      value: point,
-                                      child: Text(point),
-                                    ),
-                                  )
-                                  .toList(),
-                              onChanged: (value) =>
-                                  setState(() => selectedExitPoint = value),
-                              validator: (value) =>
-                                  value == null ? 'Pilih pos keluar' : null,
-                            ),
+                            initialValue: selectedExitPoint,
+                            items: _getBasecampOptions()
+                                .map(
+                                  (point) => DropdownMenuItem(
+                                    value: point,
+                                    child: Text(point),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: (value) =>
+                                setState(() => selectedExitPoint = value),
+                            validator: (value) =>
+                                value == null ? 'Pilih pos keluar' : null,
                           ),
                         ),
                       ],
@@ -867,7 +932,22 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
-                          // Add to cart logic
+                          // Create a Product object from the form data
+                          Product ticketProduct = Product(
+                            id: DateTime.now()
+                                .millisecondsSinceEpoch, // Unique ID
+                            name: 'Tiket ${widget.mountain.name}',
+                            brand: widget.mountain.managedBy,
+                            pricePerDay: _calculatePrice(),
+                            imageUrl: widget.mountain.image,
+                            category: 'tiket_masuk',
+                            description:
+                                'Tiket pendakian untuk ${widget.mountain.name} dari ${startDate != null ? DateFormat('dd/MM/yyyy').format(startDate!) : ''} sampai ${endDate != null ? DateFormat('dd/MM/yyyy').format(endDate!) : ''}',
+                          );
+
+                          // Add to cart
+                          MainScreen.cartItems.add(ticketProduct);
+
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text('Ditambahkan ke keranjang'),

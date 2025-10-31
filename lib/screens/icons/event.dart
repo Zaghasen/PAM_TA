@@ -7,17 +7,26 @@ class EventPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Event')),
-      body: const Center(
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image(image: AssetImage('assets/comingsoon1.png')),
-            SizedBox(height: 20),
-            SizedBox(
-              width: 120,
-              child: LinearProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+            Image.asset('assets/event_background.png', height: 250, width: 250),
+            const SizedBox(height: 20),
+            const Text(
+              'Event Tidak Tersedia',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF2A4D3A),
               ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Event yang anda nantikan belum tersedia,\nsilahkan kembali di lain waktu',
+              style: TextStyle(fontSize: 16, color: Color(0xFF2A4D3A)),
+              textAlign: TextAlign.center,
             ),
           ],
         ),

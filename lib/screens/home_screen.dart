@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tapak_jejak/data/mock_data.dart';
 import 'package:tapak_jejak/models/brand.dart';
 import 'package:tapak_jejak/models/product.dart';
-import 'package:tapak_jejak/screens/all_products_screen.dart';
+import 'package:tapak_jejak/screens/all_products_page.dart';
 import 'package:tapak_jejak/screens/icons/blog.dart';
 import 'package:tapak_jejak/screens/icons/camping_ground.dart';
 import 'package:tapak_jejak/screens/icons/cuaca.dart';
@@ -15,7 +15,7 @@ import 'package:tapak_jejak/screens/icons/sewa_alat.dart';
 import 'package:tapak_jejak/screens/icons/tiket_masuk.dart';
 import 'package:tapak_jejak/screens/icons/travel&ojek.dart';
 import 'package:tapak_jejak/screens/icons/tutorial.dart';
-import 'package:tapak_jejak/screens/terms_screen.dart';
+import 'package:tapak_jejak/screens/terms_page.dart';
 import 'package:tapak_jejak/widgets/product_card.dart';
 
 class HomeScreen extends StatefulWidget {
