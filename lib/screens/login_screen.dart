@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tapak_jejak/models/user.dart';
 import 'package:tapak_jejak/screens/main_screen.dart';
@@ -67,13 +66,6 @@ class _LoginScreenState extends State<LoginScreen> {
     final user = User(username: username, password: password, email: email);
     await _hiveService.saveUserData(username, user);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Data berhasil dibuat!'),
-        backgroundColor: Colors.green,
-      ),
-    );
-
     setState(() {
       _isSignUp = false;
       _errorMessage = null;
@@ -88,6 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final password = _passwordController.text;
 
     String? storedData = await secureStorage.read(key: 'accounts');
+
     if (storedData == null) {
       setState(() {
         _errorMessage = 'No accounts found';

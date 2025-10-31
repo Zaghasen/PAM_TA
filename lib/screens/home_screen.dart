@@ -15,6 +15,7 @@ import 'package:tapak_jejak/screens/icons/sewa_alat.dart';
 import 'package:tapak_jejak/screens/icons/tiket_masuk.dart';
 import 'package:tapak_jejak/screens/icons/travel&ojek.dart';
 import 'package:tapak_jejak/screens/icons/tutorial.dart';
+
 import 'package:tapak_jejak/widgets/product_card.dart';
 
 class HomePage extends StatefulWidget {
@@ -101,46 +102,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-            actions: [
-              Stack(
-                children: [
-                  IconButton(
-                    icon: const Icon(
-                      Icons.notifications,
-                      color: Colors.white,
-                      size: 28,
-                    ),
-                    onPressed: () {
-                      // Add notification functionality
-                    },
-                  ),
-                  Positioned(
-                    right: 8,
-                    top: 8,
-                    child: Container(
-                      padding: const EdgeInsets.all(2),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      constraints: const BoxConstraints(
-                        minWidth: 16,
-                        minHeight: 16,
-                      ),
-                      child: const Text(
-                        '3',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+            actions: [],
           ),
         ),
       ),

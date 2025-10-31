@@ -10,6 +10,7 @@ void main() async {
   await Hive.initFlutter();
   final hiveService = HiveService();
   await hiveService.initHive();
+
   runApp(const MyApp());
 }
 
