@@ -4,7 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:tapak_jejak/models/user.dart';
-import 'package:tapak_jejak/screens/login_screen.dart';
+import 'package:tapak_jejak/screens/login_page.dart';
 import 'package:tapak_jejak/screens/membership_page.dart';
 import 'package:tapak_jejak/services/hive_service.dart';
 

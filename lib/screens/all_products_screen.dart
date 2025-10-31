@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:tapak_jejak/data/mock_data.dart';
 import 'package:tapak_jejak/models/product.dart';
 import 'package:tapak_jejak/screens/main_screen.dart';
-import 'package:tapak_jejak/screens/product_detail_page.dart';
+import 'package:tapak_jejak/screens/icons/details/product_detail_page.dart';
 
-class AllProductsPage extends StatefulWidget {
+class AllProductsScreen extends StatefulWidget {
   final VoidCallback refreshCallback;
-  const AllProductsPage({super.key, required this.refreshCallback});
+  const AllProductsScreen({super.key, required this.refreshCallback});
 
   @override
-  State<AllProductsPage> createState() => _AllProductsPageState();
+  State<AllProductsScreen> createState() => _AllProductsScreenState();
 }
 
-class _AllProductsPageState extends State<AllProductsPage> {
+class _AllProductsScreenState extends State<AllProductsScreen> {
   late TextEditingController searchController;
   late List<Product> filteredProducts;
   late Map<int, bool> isLiked;
@@ -259,18 +259,15 @@ class _AllProductsPageState extends State<AllProductsPage> {
                                         ),
                                       );
                                       if (isLiked[item.id] ?? false) {
-                                        if (!MainScreenState.wishlistItems.any(
+                                        if (!MainScreen.wishlistItems.any(
                                           (p) => p.id == item.id,
                                         )) {
-                                          MainScreenState.wishlistItems.add(
-                                            item,
-                                          );
+                                          MainScreen.wishlistItems.add(item);
                                         }
                                       } else {
-                                        MainScreenState.wishlistItems
-                                            .removeWhere(
-                                              (p) => p.id == item.id,
-                                            );
+                                        MainScreen.wishlistItems.removeWhere(
+                                          (p) => p.id == item.id,
+                                        );
                                       }
                                       widget.refreshCallback();
                                     },
@@ -282,7 +279,7 @@ class _AllProductsPageState extends State<AllProductsPage> {
                               ),
                               IconButton(
                                 icon: Icon(
-                                  MainScreenState.cartItems.any(
+                                  MainScreen.cartItems.any(
                                         (p) => p.id == item.id,
                                       )
                                       ? Icons.shopping_cart
@@ -291,20 +288,20 @@ class _AllProductsPageState extends State<AllProductsPage> {
                                 ),
                                 onPressed: () {
                                   setState(() {
-                                    if (MainScreenState.cartItems.any(
+                                    if (MainScreen.cartItems.any(
                                       (p) => p.id == item.id,
                                     )) {
-                                      MainScreenState.cartItems.removeWhere(
+                                      MainScreen.cartItems.removeWhere(
                                         (p) => p.id == item.id,
                                       );
                                     } else {
-                                      MainScreenState.cartItems.add(item);
+                                      MainScreen.cartItems.add(item);
                                     }
                                   });
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text(
-                                        MainScreenState.cartItems.any(
+                                        MainScreen.cartItems.any(
                                               (p) => p.id == item.id,
                                             )
                                             ? 'Produk disimpan di keranjang'

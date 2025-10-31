@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tapak_jejak/data/mock_data.dart';
 import 'package:tapak_jejak/models/brand.dart';
 import 'package:tapak_jejak/models/product.dart';
-import 'package:tapak_jejak/screens/all_products_page.dart';
+import 'package:tapak_jejak/screens/all_products_screen.dart';
 import 'package:tapak_jejak/screens/icons/blog.dart';
 import 'package:tapak_jejak/screens/icons/camping_ground.dart';
 import 'package:tapak_jejak/screens/icons/cuaca.dart';
@@ -15,18 +15,18 @@ import 'package:tapak_jejak/screens/icons/sewa_alat.dart';
 import 'package:tapak_jejak/screens/icons/tiket_masuk.dart';
 import 'package:tapak_jejak/screens/icons/travel&ojek.dart';
 import 'package:tapak_jejak/screens/icons/tutorial.dart';
-
+import 'package:tapak_jejak/screens/terms_screen.dart';
 import 'package:tapak_jejak/widgets/product_card.dart';
 
-class HomePage extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
   final VoidCallback refreshCallback;
-  const HomePage({super.key, required this.refreshCallback});
+  const HomeScreen({super.key, required this.refreshCallback});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomeScreenState extends State<HomeScreen> {
   late List<Product> uniqueProducts;
   late Map<int, int> likeCounts;
 
@@ -152,7 +152,8 @@ class _HomePageState extends State<HomePage> {
                         () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const TiketMasukPage(),
+                            builder: (context) =>
+                                TermsScreen(nextPage: const TiketMasukPage()),
                           ),
                         ),
                       ),
@@ -162,7 +163,8 @@ class _HomePageState extends State<HomePage> {
                         () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const TravelOjekPage(),
+                            builder: (context) =>
+                                TermsScreen(nextPage: const TravelOjekPage()),
                           ),
                         ),
                       ),
@@ -172,7 +174,8 @@ class _HomePageState extends State<HomePage> {
                         () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const PorterGuidePage(),
+                            builder: (context) =>
+                                TermsScreen(nextPage: const PorterGuidePage()),
                           ),
                         ),
                       ),
@@ -182,7 +185,8 @@ class _HomePageState extends State<HomePage> {
                         () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const SewaAlatPage(),
+                            builder: (context) =>
+                                TermsScreen(nextPage: const SewaAlatPage()),
                           ),
                         ),
                       ),
@@ -192,7 +196,9 @@ class _HomePageState extends State<HomePage> {
                         () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const PrivateOpenTripPage(),
+                            builder: (context) => TermsScreen(
+                              nextPage: const PrivateOpenTripPage(),
+                            ),
                           ),
                         ),
                       ),
@@ -202,7 +208,9 @@ class _HomePageState extends State<HomePage> {
                         () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const CampingGroundPage(),
+                            builder: (context) => TermsScreen(
+                              nextPage: const CampingGroundPage(),
+                            ),
                           ),
                         ),
                       ),
@@ -352,7 +360,7 @@ class _HomePageState extends State<HomePage> {
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => AllProductsPage(
+                        builder: (context) => AllProductsScreen(
                           refreshCallback: widget.refreshCallback,
                         ),
                       ),

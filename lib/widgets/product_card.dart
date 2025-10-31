@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tapak_jejak/models/product.dart';
 import 'package:tapak_jejak/screens/main_screen.dart';
-import 'package:tapak_jejak/screens/product_detail_page.dart';
+import 'package:tapak_jejak/screens/icons/details/product_detail_page.dart';
 
 class ProductCard extends StatefulWidget {
   final Product product;
@@ -96,10 +96,10 @@ class _ProductCardState extends State<ProductCard> {
                       widget.product.isWishlisted =
                           !widget.product.isWishlisted;
                       if (widget.product.isWishlisted) {
-                        MainScreenState.wishlistItems.add(widget.product);
+                        MainScreen.wishlistItems.add(widget.product);
                         widget.onLike(true);
                       } else {
-                        MainScreenState.wishlistItems.removeWhere(
+                        MainScreen.wishlistItems.removeWhere(
                           (p) => p.id == widget.product.id,
                         );
                         widget.onLike(false);

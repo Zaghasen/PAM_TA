@@ -160,7 +160,7 @@ class ProductDetailPage extends StatelessWidget {
                 foregroundColor: Colors.white,
               ),
               onPressed: () {
-                MainScreenState.cartItems.add(product);
+                MainScreen.cartItems.add(product);
                 refreshCallback();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(

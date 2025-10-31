@@ -7,16 +7,16 @@ import 'package:tapak_jejak/screens/profile_page.dart';
 import 'package:tapak_jejak/screens/wishlist_page.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
-
-  @override
-  State<MainScreen> createState() => MainScreenState();
-}
-
-class MainScreenState extends State<MainScreen> {
   static List<Product> wishlistItems = [];
   static List<Product> cartItems = [];
 
+  const MainScreen({super.key});
+
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
   late final List<Widget> _pages;
@@ -25,7 +25,7 @@ class MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     _pages = [
-      HomePage(refreshCallback: () => setState(() {})),
+      HomeScreen(refreshCallback: () => setState(() {})),
       WishlistPage(refreshCallback: () => setState(() {})),
       CartPage(refreshCallback: () => setState(() {})),
       const ProfilePage(),

@@ -4,7 +4,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import '../../models/weather_data.dart';
 import '../../services/weather_service.dart';
-import '../weather_detail_page.dart';
+import 'details/weather_detail_page.dart';
 
 class WeatherProvider extends ChangeNotifier {
   List<WeatherData> _weatherData = [];

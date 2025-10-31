@@ -1,24 +1,37 @@
-# TODO List for Tiket Detail Page Implementation
+# Rename \_page.dart to \_screen.dart Task
 
-## Completed Tasks
+## Information Gathered
 
-- [x] Create lib/screens/tiket_detail_page.dart with comprehensive booking form
-- [x] Implement form validation and state management
-- [x] Add API integration for currency exchange rates
-- [x] Implement dynamic price calculation based on form inputs
-- [x] Update tiket_masuk.dart to make mountain cards clickable and navigate to detail page
-- [x] Add necessary dependencies (http, intl) to pubspec.yaml
-- [x] Run flutter pub get to install dependencies
+- Main screen files to rename: all_products_page.dart, booking_page.dart, cart_page.dart, home_page.dart, login_page.dart, main_page.dart, membership_page.dart, profile_page.dart, wishlist_page.dart
+- Detail pages to rename: product_detail_page.dart, tiket_detail_page.dart, weather_detail_page.dart
+- All import statements and class references need updating based on grep search results
+- Total ~21 files reference these pages that need import updates
 
-## Pending Tasks
+## Plan
 
-- [ ] Test navigation from mountain cards to detail page
-- [ ] Test form functionality and price calculation
-- [ ] Verify API integration for currency conversion
-- [ ] Test form validation
-- [ ] Test date picker functionality
-- [ ] Test ticket count increment/decrement
-- [ ] Test personal data form management (add/remove persons)
-- [ ] Test leader selection functionality
-- [ ] Test currency conversion dropdown
-- [ ] Test action buttons (Add to Cart, Create Order)
+1. Rename all main screen files (\_page.dart → \_screen.dart)
+2. Rename detail page files (\_page.dart → \_screen.dart)
+3. Update class names inside renamed files (Page → Screen)
+4. Update all import statements in dependent files
+5. Update navigation references (MaterialPageRoute builders)
+6. Test compilation to ensure no errors
+
+## Dependent Files to Edit
+
+- lib/main.dart
+- lib/screens/main_page.dart (will become main_screen.dart)
+- lib/screens/home_page.dart (will become home_screen.dart)
+- lib/screens/cart_page.dart (will become cart_screen.dart)
+- lib/screens/wishlist_page.dart (will become wishlist_screen.dart)
+- lib/screens/profile_page.dart (will become profile_screen.dart)
+- lib/screens/login_page.dart (will become login_screen.dart)
+- lib/screens/all_products_page.dart (will become all_products_screen.dart)
+- lib/widgets/product_card.dart
+- lib/screens/icons/\*.dart files
+- lib/screens/icons/details/\*.dart files
+
+## Followup Steps
+
+- Run flutter analyze to check for errors
+- Run flutter run to test functionality
+- Verify all navigation still works

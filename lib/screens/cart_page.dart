@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tapak_jejak/screens/all_products_page.dart';
+import 'package:tapak_jejak/screens/all_products_screen.dart';
 import 'package:tapak_jejak/screens/booking_page.dart';
 import 'package:tapak_jejak/screens/main_screen.dart';
 
@@ -47,7 +47,7 @@ class _CartPageState extends State<CartPage> {
 
   @override
   Widget build(BuildContext context) {
-    final cart = MainScreenState.cartItems.where((product) {
+    final cart = MainScreen.cartItems.where((product) {
       switch (selectedCategory) {
         case CartCategory.tiket_masuk:
           return product.category == 'tiket_masuk';
@@ -293,7 +293,7 @@ class _CartPageState extends State<CartPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => AllProductsPage(
+                                builder: (context) => AllProductsScreen(
                                   refreshCallback: widget.refreshCallback,
                                 ),
                               ),
@@ -346,7 +346,7 @@ class _CartPageState extends State<CartPage> {
 
                             if (shouldDelete == true) {
                               setState(() {
-                                MainScreenState.cartItems.remove(product);
+                                MainScreen.cartItems.remove(product);
                               });
                               widget.refreshCallback();
                             }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:tapak_jejak/screens/login_screen.dart';
+import 'package:tapak_jejak/screens/login_page.dart';
 import 'package:tapak_jejak/services/hive_service.dart';
 
 // -- ENTRY POINT APLIKASI --

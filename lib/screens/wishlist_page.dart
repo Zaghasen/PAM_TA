@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tapak_jejak/screens/all_products_page.dart';
+import 'package:tapak_jejak/screens/all_products_screen.dart';
 import 'package:tapak_jejak/screens/main_screen.dart';
 
 enum WishlistCategory { semua, tiket_masuk, porter_guide, private_open_trip }
@@ -46,7 +46,7 @@ class _WishlistPageState extends State<WishlistPage> {
 
   @override
   Widget build(BuildContext context) {
-    final wishlist = MainScreenState.wishlistItems.where((product) {
+    final wishlist = MainScreen.wishlistItems.where((product) {
       switch (selectedCategory) {
         case WishlistCategory.tiket_masuk:
           return product.category == 'tiket_masuk';
@@ -289,7 +289,7 @@ class _WishlistPageState extends State<WishlistPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => AllProductsPage(
+                                builder: (context) => AllProductsScreen(
                                   refreshCallback: widget.refreshCallback,
                                 ),
                               ),
@@ -343,7 +343,7 @@ class _WishlistPageState extends State<WishlistPage> {
                             if (shouldDelete == true) {
                               setState(() {
                                 product.isWishlisted = false;
-                                MainScreenState.wishlistItems.removeWhere(
+                                MainScreen.wishlistItems.removeWhere(
                                   (p) => p.id == product.id,
                                 );
                               });

@@ -433,259 +433,365 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
               const SizedBox(height: 20),
 
               // Dates
-              Text(
-                'Tanggal Pendakian',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  Expanded(
-                    child: InkWell(
-                      onTap: () async {
-                        final picked = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime.now(),
-                          lastDate: DateTime.now().add(
-                            const Duration(days: 365),
-                          ),
-                        );
-                        if (picked != null) setState(() => startDate = picked);
-                      },
-                      child: InputDecorator(
-                        decoration: const InputDecoration(
-                          labelText: 'Tanggal Naik',
-                          border: OutlineInputBorder(),
-                        ),
-                        child: Text(
-                          startDate != null
-                              ? DateFormat('dd/MM/yyyy').format(startDate!)
-                              : 'Pilih tanggal',
-                        ),
-                      ),
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
                     ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: InkWell(
-                      onTap: () async {
-                        if (startDate == null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Pilih tanggal naik terlebih dahulu',
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.calendar_today,
+                          color: Color(0xFF2A4D3A),
+                          size: 24,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Tanggal Pendakian',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF2A4D3A),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: InkWell(
+                            onTap: () async {
+                              final picked = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime.now(),
+                                lastDate: DateTime.now().add(
+                                  const Duration(days: 365),
+                                ),
+                              );
+                              if (picked != null)
+                                setState(() => startDate = picked);
+                            },
+                            child: InputDecorator(
+                              decoration: const InputDecoration(
+                                labelText: 'Tanggal Naik',
+                                border: OutlineInputBorder(),
+                              ),
+                              child: Text(
+                                startDate != null
+                                    ? DateFormat(
+                                        'dd/MM/yyyy',
+                                      ).format(startDate!)
+                                    : 'Pilih tanggal',
                               ),
                             ),
-                          );
-                          return;
-                        }
-                        final picked = await showDatePicker(
-                          context: context,
-                          initialDate: startDate!,
-                          firstDate: startDate!,
-                          lastDate: startDate!.add(const Duration(days: 30)),
-                        );
-                        if (picked != null) setState(() => endDate = picked);
-                      },
-                      child: InputDecorator(
-                        decoration: const InputDecoration(
-                          labelText: 'Tanggal Turun',
-                          border: OutlineInputBorder(),
+                          ),
                         ),
-                        child: Text(
-                          endDate != null
-                              ? DateFormat('dd/MM/yyyy').format(endDate!)
-                              : 'Pilih tanggal',
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: InkWell(
+                            onTap: () async {
+                              if (startDate == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Pilih tanggal naik terlebih dahulu',
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
+                              final picked = await showDatePicker(
+                                context: context,
+                                initialDate: startDate!,
+                                firstDate: startDate!,
+                                lastDate: startDate!.add(
+                                  const Duration(days: 30),
+                                ),
+                              );
+                              if (picked != null)
+                                setState(() => endDate = picked);
+                            },
+                            child: InputDecorator(
+                              decoration: const InputDecoration(
+                                labelText: 'Tanggal Turun',
+                                border: OutlineInputBorder(),
+                              ),
+                              child: Text(
+                                endDate != null
+                                    ? DateFormat('dd/MM/yyyy').format(endDate!)
+                                    : 'Pilih tanggal',
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               const SizedBox(height: 20),
 
               // Ticket Count
-              const Text(
-                'Jumlah Tiket',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  IconButton(
-                    onPressed: ticketCount > 1
-                        ? () => setState(() => ticketCount--)
-                        : null,
-                    icon: const Icon(Icons.remove),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
                     ),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(4),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.confirmation_number,
+                          color: Color(0xFF2A4D3A),
+                          size: 24,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Jumlah Tiket',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF2A4D3A),
+                          ),
+                        ),
+                      ],
                     ),
-                    child: Text(
-                      ticketCount.toString(),
-                      style: const TextStyle(fontSize: 16),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: ticketCount > 1
+                              ? () => setState(() => ticketCount--)
+                              : null,
+                          icon: const Icon(Icons.remove),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            ticketCount.toString(),
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            setState(() => ticketCount++);
+                            if (personalData.length < ticketCount) {
+                              _addPerson();
+                            }
+                          },
+                          icon: const Icon(Icons.add),
+                        ),
+                      ],
                     ),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      setState(() => ticketCount++);
-                      if (personalData.length < ticketCount) {
-                        _addPerson();
-                      }
-                    },
-                    icon: const Icon(Icons.add),
-                  ),
-                ],
+                  ],
+                ),
               ),
               const SizedBox(height: 20),
 
               // Personal Data
-              const Text(
-                'Data Pribadi',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              ...List.generate(personalData.length, (index) {
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 16),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Orang ke-${index + 1}',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            if (personalData.length > 1)
-                              IconButton(
-                                onPressed: () => _removePerson(index),
-                                icon: const Icon(
-                                  Icons.delete,
-                                  color: Colors.red,
-                                ),
-                              ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            labelText: 'Nama Lengkap',
-                            border: OutlineInputBorder(),
+                        Icon(Icons.person, color: Color(0xFF2A4D3A), size: 24),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Data Pribadi',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF2A4D3A),
                           ),
-                          onChanged: (value) =>
-                              personalData[index]['name'] = value,
-                          validator: (value) => value?.isEmpty ?? true
-                              ? 'Nama wajib diisi'
-                              : null,
-                        ),
-                        const SizedBox(height: 10),
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            labelText: 'Nomor KTP',
-                            border: OutlineInputBorder(),
-                          ),
-                          keyboardType: TextInputType.number,
-                          onChanged: (value) =>
-                              personalData[index]['ktp'] = value,
-                          validator: (value) =>
-                              value?.isEmpty ?? true ? 'KTP wajib diisi' : null,
-                        ),
-                        const SizedBox(height: 10),
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            labelText: 'Tempat Tinggal',
-                            border: OutlineInputBorder(),
-                          ),
-                          onChanged: (value) =>
-                              personalData[index]['address'] = value,
-                          validator: (value) => value?.isEmpty ?? true
-                              ? 'Alamat wajib diisi'
-                              : null,
-                        ),
-                        const SizedBox(height: 10),
-                        InkWell(
-                          onTap: () async {
-                            final picked = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now().subtract(
-                                const Duration(days: 365 * 18),
-                              ),
-                              firstDate: DateTime(1900),
-                              lastDate: DateTime.now(),
-                            );
-                            if (picked != null) {
-                              setState(
-                                () => personalData[index]['birthDate'] = picked,
-                              );
-                            }
-                          },
-                          child: InputDecorator(
-                            decoration: const InputDecoration(
-                              labelText: 'Tanggal Lahir',
-                              border: OutlineInputBorder(),
-                            ),
-                            child: Text(
-                              personalData[index]['birthDate'] != null
-                                  ? DateFormat(
-                                      'dd/MM/yyyy',
-                                    ).format(personalData[index]['birthDate'])
-                                  : 'Pilih tanggal lahir',
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        DropdownButtonFormField<String>(
-                          decoration: const InputDecoration(
-                            labelText: 'Kewarganegaraan',
-                            border: OutlineInputBorder(),
-                          ),
-                          initialValue: personalData[index]['nationality'],
-                          items: ['WNI', 'WNA']
-                              .map(
-                                (nat) => DropdownMenuItem(
-                                  value: nat,
-                                  child: Text(nat),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: (value) => setState(
-                            () => personalData[index]['nationality'] = value,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        CheckboxListTile(
-                          title: const Text('Jadikan Ketua Rombongan'),
-                          value: leaderIndex == index,
-                          onChanged: (value) {
-                            setState(() {
-                              leaderIndex = value == true ? index : null;
-                            });
-                          },
                         ),
                       ],
                     ),
-                  ),
-                );
-              }),
-              if (ticketCount > personalData.length)
-                ElevatedButton(
-                  onPressed: _addPerson,
-                  child: const Text('Tambah Data Orang'),
+                    const SizedBox(height: 16),
+                    ...List.generate(personalData.length, (index) {
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 16),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Orang ke-${index + 1}',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  if (personalData.length > 1)
+                                    IconButton(
+                                      onPressed: () => _removePerson(index),
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              TextFormField(
+                                decoration: const InputDecoration(
+                                  labelText: 'Nama Lengkap',
+                                  border: OutlineInputBorder(),
+                                ),
+                                onChanged: (value) =>
+                                    personalData[index]['name'] = value,
+                                validator: (value) => value?.isEmpty ?? true
+                                    ? 'Nama wajib diisi'
+                                    : null,
+                              ),
+                              const SizedBox(height: 10),
+                              TextFormField(
+                                decoration: const InputDecoration(
+                                  labelText: 'Nomor KTP',
+                                  border: OutlineInputBorder(),
+                                ),
+                                keyboardType: TextInputType.number,
+                                onChanged: (value) =>
+                                    personalData[index]['ktp'] = value,
+                                validator: (value) => value?.isEmpty ?? true
+                                    ? 'KTP wajib diisi'
+                                    : null,
+                              ),
+                              const SizedBox(height: 10),
+                              TextFormField(
+                                decoration: const InputDecoration(
+                                  labelText: 'Tempat Tinggal',
+                                  border: OutlineInputBorder(),
+                                ),
+                                onChanged: (value) =>
+                                    personalData[index]['address'] = value,
+                                validator: (value) => value?.isEmpty ?? true
+                                    ? 'Alamat wajib diisi'
+                                    : null,
+                              ),
+                              const SizedBox(height: 10),
+                              InkWell(
+                                onTap: () async {
+                                  final picked = await showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now().subtract(
+                                      const Duration(days: 365 * 18),
+                                    ),
+                                    firstDate: DateTime(1900),
+                                    lastDate: DateTime.now(),
+                                  );
+                                  if (picked != null) {
+                                    setState(
+                                      () => personalData[index]['birthDate'] =
+                                          picked,
+                                    );
+                                  }
+                                },
+                                child: InputDecorator(
+                                  decoration: const InputDecoration(
+                                    labelText: 'Tanggal Lahir',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  child: Text(
+                                    personalData[index]['birthDate'] != null
+                                        ? DateFormat('dd/MM/yyyy').format(
+                                            personalData[index]['birthDate'],
+                                          )
+                                        : 'Pilih tanggal lahir',
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              DropdownButtonFormField<String>(
+                                decoration: const InputDecoration(
+                                  labelText: 'Kewarganegaraan',
+                                  border: OutlineInputBorder(),
+                                ),
+                                initialValue:
+                                    personalData[index]['nationality'],
+                                items: ['WNI', 'WNA']
+                                    .map(
+                                      (nat) => DropdownMenuItem(
+                                        value: nat,
+                                        child: Text(nat),
+                                      ),
+                                    )
+                                    .toList(),
+                                onChanged: (value) => setState(
+                                  () => personalData[index]['nationality'] =
+                                      value,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              CheckboxListTile(
+                                title: const Text('Jadikan Ketua Rombongan'),
+                                value: leaderIndex == index,
+                                onChanged: (value) {
+                                  setState(() {
+                                    leaderIndex = value == true ? index : null;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
+                    if (ticketCount > personalData.length)
+                      ElevatedButton(
+                        onPressed: _addPerson,
+                        child: const Text('Tambah Data Orang'),
+                      ),
+                  ],
                 ),
+              ),
               const SizedBox(height: 20),
 
               // Price Summary
