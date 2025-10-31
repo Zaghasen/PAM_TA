@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tapak_jejak/screens/all_products_page.dart';
-import 'package:tapak_jejak/screens/booking_page.dart';
+import 'package:tapak_jejak/screens/icons/details/pesanan_detail_page.dart';
 import 'package:tapak_jejak/screens/main_screen.dart';
 
 enum CartCategory { semua, tiket_masuk, porter_guide, private_open_trip }
@@ -385,10 +385,26 @@ class _CartPageState extends State<CartPage> {
                       foregroundColor: Colors.white,
                     ),
                     onPressed: () {
+                      // For now, navigate to a placeholder - in real app, pass order data
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const BookingPage(),
+                          builder: (context) => PesananDetailPage(
+                            mountain: MainScreen.cartItems.isNotEmpty
+                                ? MainScreen.cartItems.firstWhere(
+                                        (item) =>
+                                            item.category == 'tiket_masuk',
+                                        orElse: () =>
+                                            MainScreen.cartItems.first,
+                                      )
+                                      as dynamic // This needs proper Mountain object
+                                : null as dynamic,
+                            orderData: {
+                              'ticketCount': 1,
+                              'totalPrice': total,
+                              'personalData': [],
+                            },
+                          ),
                         ),
                       );
                     },

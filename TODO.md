@@ -2,7 +2,8 @@
 
 ## Information Gathered
 
-- Main screen files to rename: all_products_page.dart, booking_page.dart, cart_page.dart, home_page.dart, login_page.dart, main_page.dart, membership_page.dart, profile_page.dart, wishlist_page.dart
+- Main screen files to rename: all_products_page.dart, cart_page.dart, home_page.dart, login_page.dart, main_page.dart, membership_page.dart, profile_page.dart, wishlist_page.dart
+- booking_page.dart has been deleted and replaced with pesanan_detail_page.dart
 - Detail pages to rename: product_detail_page.dart, tiket_detail_page.dart, weather_detail_page.dart
 - All import statements and class references need updating based on grep search results
 - Total ~21 files reference these pages that need import updates

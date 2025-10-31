@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:tapak_jejak/models/mountain.dart';
 import 'package:tapak_jejak/models/product.dart';
 import 'package:tapak_jejak/screens/main_screen.dart';
+import 'package:tapak_jejak/screens/icons/details/pesanan_detail_page.dart';
 
 class TiketDetailPage extends StatefulWidget {
   final Mountain mountain;
@@ -949,8 +950,30 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                           MainScreen.cartItems.add(ticketProduct);
 
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Ditambahkan ke keranjang'),
+                            SnackBar(
+                              content: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.check_circle,
+                                    color: Colors.white,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      'Yeay! Tiket ${widget.mountain.name} sudah masuk keranjang. Ayo lanjutkan petualanganmu!',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              backgroundColor: Colors.green.shade600,
+                              duration: const Duration(seconds: 4),
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
                             ),
                           );
                         }
@@ -972,7 +995,57 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                         if (_formKey.currentState?.validate() ?? false) {
                           // Create order logic
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Pesanan dibuat')),
+                            SnackBar(
+                              content: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.celebration,
+                                    color: Colors.white,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      'Horay! Pesanan tiket ${widget.mountain.name} berhasil dibuat. Siapkan dirimu untuk petualangan epik!',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              backgroundColor: Colors.blue.shade600,
+                              duration: const Duration(seconds: 5),
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              action: SnackBarAction(
+                                label: 'Lihat Detail',
+                                textColor: Colors.yellow,
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => PesananDetailPage(
+                                        mountain: widget.mountain,
+                                        orderData: {
+                                          'selectedEntryPoint':
+                                              selectedEntryPoint,
+                                          'selectedExitPoint':
+                                              selectedExitPoint,
+                                          'startDate': startDate,
+                                          'endDate': endDate,
+                                          'ticketCount': ticketCount,
+                                          'personalData': personalData,
+                                          'totalPrice': _calculatePrice(),
+                                          'selectedCurrency': selectedCurrency,
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
                           );
                         }
                       },
