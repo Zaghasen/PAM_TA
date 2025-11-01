@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
-import '../../models/weather_data.dart';
-import '../../services/weather_service.dart';
-import 'details/weather_detail_page.dart';
+import '../../../models/weather_data.dart';
+import '../../../services/weather_service.dart';
+import 'cuaca_detail_page.dart';
 
 class WeatherProvider extends ChangeNotifier {
   List<WeatherData> _weatherData = [];

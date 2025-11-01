@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:tapak_jejak/models/mountain.dart';
 import 'package:tapak_jejak/models/product.dart';
 import 'package:tapak_jejak/screens/main_page.dart';
-import 'package:tapak_jejak/screens/icons/details/pesanan(tiket)_detail_page.dart'
+import 'package:tapak_jejak/screens/icons/tiket_masuk/pesanan(tiket)_detail_page.dart'
     as tiket_detail;
 
 class TiketDetailPage extends StatefulWidget {

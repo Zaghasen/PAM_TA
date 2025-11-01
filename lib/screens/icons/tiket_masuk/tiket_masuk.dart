@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:tapak_jejak/screens/icons/details/travel&ojek_detail_page.dart';
+import 'package:tapak_jejak/screens/icons/tiket_masuk/tiket_detail_page.dart';
 import 'package:tapak_jejak/models/mountain.dart';
 
-class TravelOjekPage extends StatefulWidget {
-  const TravelOjekPage({super.key});
+class TiketMasukPage extends StatefulWidget {
+  const TiketMasukPage({super.key});
 
   @override
-  State<TravelOjekPage> createState() => _TravelOjekPageState();
+  State<TiketMasukPage> createState() => _TiketMasukPageState();
 }
 
-class _TravelOjekPageState extends State<TravelOjekPage> {
+class _TiketMasukPageState extends State<TiketMasukPage> {
   String? selectedProvince;
 
   static String _formatCurrency(int value) {
@@ -704,7 +704,7 @@ class _TravelOjekPageState extends State<TravelOjekPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Travel & Ojek'),
+        title: const Text('Tiket Masuk'),
         backgroundColor: const Color(0xFF2A4D3A),
         foregroundColor: Colors.white,
         elevation: 0,
@@ -908,7 +908,7 @@ class _TravelOjekPageState extends State<TravelOjekPage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                TravelOjekDetailPage(mountain: mountain),
+                                TiketDetailPage(mountain: mountain),
                           ),
                         );
                       },
@@ -1060,6 +1060,91 @@ class _TravelOjekPageState extends State<TravelOjekPage> {
                                           ),
                                         ),
                                       ],
+                                    ),
+                                    const SizedBox(height: 20),
+
+                                    // Pricing Section
+                                    Container(
+                                      padding: const EdgeInsets.all(16),
+                                      decoration: BoxDecoration(
+                                        color: Colors.green.shade50,
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
+                                          color: Colors.green.shade200,
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                Icons.payment,
+                                                size: 20,
+                                                color: const Color(0xFF2A4D3A),
+                                              ),
+                                              const SizedBox(width: 8),
+                                              Text(
+                                                'Tarif Masuk',
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Color(0xFF2A4D3A),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 12),
+                                          ...mountain.prices.entries.map((
+                                            entry,
+                                          ) {
+                                            return Container(
+                                              margin: const EdgeInsets.only(
+                                                bottom: 8,
+                                              ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 12,
+                                                    vertical: 8,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                border: Border.all(
+                                                  color: Colors.grey.shade200,
+                                                ),
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    entry.key,
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    'Rp ${_formatCurrency(entry.value)}',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Color(0xFF2A4D3A),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          }),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),

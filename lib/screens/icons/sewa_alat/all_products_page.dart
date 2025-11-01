@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tapak_jejak/data/mock_data.dart';
 import 'package:tapak_jejak/models/product.dart';
 import 'package:tapak_jejak/screens/main_page.dart';
-import 'package:tapak_jejak/screens/icons/details/product_detail_page.dart';
+import 'package:tapak_jejak/screens/icons/sewa_alat/product_detail_page.dart';
 
 class AllProductsScreen extends StatefulWidget {
   final VoidCallback refreshCallback;
