@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tapak_jejak/screens/all_products_page.dart';
-import 'package:tapak_jejak/screens/icons/details/pesanan_detail_page.dart';
-import 'package:tapak_jejak/screens/main_screen.dart';
+import 'package:tapak_jejak/screens/icons/details/pesanan(tiket)_detail_page.dart';
+import 'package:tapak_jejak/screens/main_page.dart';
 
 enum CartCategory { semua, tiket_masuk, porter_guide, private_open_trip }
 

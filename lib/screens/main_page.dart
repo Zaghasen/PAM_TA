@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 // removed unused import: cart_item
 import 'package:tapak_jejak/models/product.dart';
 import 'package:tapak_jejak/screens/cart_page.dart';
-import 'package:tapak_jejak/screens/home_screen.dart';
+import 'package:tapak_jejak/screens/home_page.dart';
 import 'package:tapak_jejak/screens/profile_page.dart';
 import 'package:tapak_jejak/screens/wishlist_page.dart';
 

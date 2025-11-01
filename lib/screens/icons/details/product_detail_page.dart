@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tapak_jejak/models/product.dart';
-import 'package:tapak_jejak/screens/main_screen.dart';
+import 'package:tapak_jejak/screens/main_page.dart';
 
 class ProductDetailPage extends StatelessWidget {
   final Product product;

@@ -1,45 +1,56 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:tapak_jejak/models/mountain.dart';
 import 'package:tapak_jejak/models/product.dart';
 import 'package:tapak_jejak/screens/main_page.dart';
-import 'package:tapak_jejak/screens/icons/details/pesanan(tiket)_detail_page.dart'
-    as tiket_detail;
+import 'pesanan(travel)_detail_page.dart';
 
-class TiketDetailPage extends StatefulWidget {
+class TravelOjekDetailPage extends StatefulWidget {
   final Mountain mountain;
 
-  const TiketDetailPage({super.key, required this.mountain});
+  const TravelOjekDetailPage({super.key, required this.mountain});
 
   @override
-  State<TiketDetailPage> createState() => _TiketDetailPageState();
+  State<TravelOjekDetailPage> createState() => _TravelOjekDetailPageState();
 }
 
-class _TiketDetailPageState extends State<TiketDetailPage> {
+class _TravelOjekDetailPageState extends State<TravelOjekDetailPage> {
   final _formKey = GlobalKey<FormState>();
-  String? selectedEntryPoint;
-  String? selectedExitPoint;
-  DateTime? startDate;
-  DateTime? endDate;
-  int ticketCount = 1;
-  int? leaderIndex;
-  String selectedCurrency = 'IDR';
-  Map<String, dynamic>? exchangeRates;
-  bool isLoadingRates = false;
+  String? selectedPickupLocation;
+  String? selectedDestination;
+  String? selectedVehicle;
+  int passengerCount = 1;
+  int vehicleCount = 1;
+  DateTime? pickupDate;
+  TimeOfDay? pickupTime;
+  String selectedTimeZone = 'WIB';
 
-  List<Map<String, dynamic>> personalData = [
-    {
-      'name': '',
-      'ktp': '',
-      'address': '',
-      'birthDate': null,
-      'nationality': 'WNI',
-    },
+  List<String> pickupLocations = [
+    'Jakarta',
+    'Semarang',
+    'Yogyakarta',
+    'Surabaya',
   ];
 
-  List<String> _getBasecampOptions() {
+  List<String> vehicles = [
+    'Toyota Avanza',
+    'Toyota Innova',
+    'Mitsubishi Pajero',
+    'Suzuki Ertiga',
+    'Honda Mobilio',
+    'Toyota Hiace',
+    'Isuzu Elf',
+    'Mercedes-Benz Sprinter',
+  ];
+
+  Map<String, int> timeZoneOffsets = {
+    'WIB': 7,
+    'WIT': 8,
+    'WITA': 9,
+    'London': 0,
+  };
+
+  List<String> _getDestinationOptions() {
     switch (widget.mountain.name) {
       case 'Gunung Andong':
         return [
@@ -184,95 +195,24 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _loadExchangeRates();
+  String _convertTimeZone(DateTime dateTime, String fromZone, String toZone) {
+    int fromOffset = timeZoneOffsets[fromZone] ?? 0;
+    int toOffset = timeZoneOffsets[toZone] ?? 0;
+    int difference = toOffset - fromOffset;
+    DateTime converted = dateTime.add(Duration(hours: difference));
+    return DateFormat('HH:mm').format(converted);
   }
 
-  Future<void> _loadExchangeRates() async {
-    setState(() => isLoadingRates = true);
-    try {
-      final response = await http.get(
-        Uri.parse(
-          'https://v6.exchangerate-api.com/v6/77d1037daf793bd583386ce0/latest/USD',
-        ),
-      );
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        setState(() {
-          exchangeRates = data['conversion_rates'];
-          isLoadingRates = false;
-        });
-      }
-    } catch (e) {
-      setState(() => isLoadingRates = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Gagal memuat kurs mata uang')),
-      );
-    }
+  List<String> _getBasecampOptions() {
+    return _getDestinationOptions();
   }
 
   double _calculatePrice() {
-    if (startDate == null || endDate == null) return 0;
-
-    int days = endDate!.difference(startDate!).inDays + 1;
-    double basePrice = 0;
-
-    // Get price based on nationality of first person (assuming all same for simplicity)
-    String nationality = personalData[0]['nationality'];
-    bool isHoliday = _isHoliday(startDate!) || _isHoliday(endDate!);
-
-    if (nationality == 'WNI') {
-      basePrice = isHoliday
-          ? widget.mountain.prices['Hari Libur WNI']!.toDouble()
-          : widget.mountain.prices['Hari Kerja WNI']!.toDouble();
-    } else {
-      basePrice = isHoliday
-          ? widget.mountain.prices['Hari Libur WNA']!.toDouble()
-          : widget.mountain.prices['Hari Kerja WNA']!.toDouble();
-    }
-
-    double total = days * basePrice * ticketCount;
-
-    // Convert currency if needed
-    if (selectedCurrency != 'IDR' && exchangeRates != null) {
-      double rate = exchangeRates![selectedCurrency] ?? 1;
-      total = total / exchangeRates!['IDR'] * rate;
-    }
-
-    return total;
-  }
-
-  bool _isHoliday(DateTime date) {
-    // Simple holiday check - you can expand this
-    int day = date.weekday;
-    return day == DateTime.saturday || day == DateTime.sunday;
-  }
-
-  void _addPerson() {
-    setState(() {
-      personalData.add({
-        'name': '',
-        'ktp': '',
-        'address': '',
-        'birthDate': null,
-        'nationality': 'WNI',
-      });
-    });
-  }
-
-  void _removePerson(int index) {
-    if (personalData.length > 1) {
-      setState(() {
-        personalData.removeAt(index);
-        if (leaderIndex == index) {
-          leaderIndex = null;
-        } else if (leaderIndex != null && leaderIndex! > index)
-          leaderIndex = leaderIndex! - 1;
-      });
-    }
+    // Simple pricing logic for travel ojek
+    double basePrice = 50000; // Base price per vehicle
+    double passengerMultiplier = passengerCount * 10000;
+    double vehicleMultiplier = vehicleCount * 20000;
+    return (basePrice + passengerMultiplier + vehicleMultiplier) * vehicleCount;
   }
 
   @override
@@ -281,7 +221,7 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text(
-          'Pemesanan Tiket',
+          'Travel ${widget.mountain.name}',
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
         backgroundColor: Colors.transparent,
@@ -450,7 +390,7 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
               ),
               const SizedBox(height: 20),
 
-              // Entry/Exit Points
+              // Lokasi Penjemputan
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
@@ -470,13 +410,13 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                     Row(
                       children: [
                         Icon(
-                          Icons.location_pin,
+                          Icons.location_on,
                           color: Color(0xFF2A4D3A),
                           size: 24,
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          'Pos Perizinan',
+                          'Lokasi Penjemputan',
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -486,81 +426,113 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    Column(
-                      children: [
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade50,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.grey.shade300),
-                          ),
-                          child: DropdownButtonFormField<String>(
-                            decoration: const InputDecoration(
-                              labelText: 'Pos Masuk',
-                              border: InputBorder.none,
-                              contentPadding: EdgeInsets.zero,
-                            ),
-                            initialValue: selectedEntryPoint,
-                            items: _getBasecampOptions()
-                                .map(
-                                  (point) => DropdownMenuItem(
-                                    value: point,
-                                    child: Text(point),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: (value) =>
-                                setState(() => selectedEntryPoint = value),
-                            validator: (value) =>
-                                value == null ? 'Pilih pos masuk' : null,
-                          ),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: DropdownButtonFormField<String>(
+                        decoration: const InputDecoration(
+                          labelText: 'Pilih Lokasi',
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
                         ),
-                        const SizedBox(height: 16),
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade50,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.grey.shade300),
-                          ),
-                          child: DropdownButtonFormField<String>(
-                            decoration: const InputDecoration(
-                              labelText: 'Pos Keluar',
-                              border: InputBorder.none,
-                              contentPadding: EdgeInsets.zero,
-                            ),
-                            initialValue: selectedExitPoint,
-                            items: _getBasecampOptions()
-                                .map(
-                                  (point) => DropdownMenuItem(
-                                    value: point,
-                                    child: Text(point),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: (value) =>
-                                setState(() => selectedExitPoint = value),
-                            validator: (value) =>
-                                value == null ? 'Pilih pos keluar' : null,
-                          ),
-                        ),
-                      ],
+                        value: selectedPickupLocation,
+                        items: pickupLocations
+                            .map(
+                              (location) => DropdownMenuItem(
+                                value: location,
+                                child: Text(location),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (value) =>
+                            setState(() => selectedPickupLocation = value),
+                        validator: (value) =>
+                            value == null ? 'Pilih lokasi penjemputan' : null,
+                      ),
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 20),
 
-              // Dates
+              // Lokasi Tujuan
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.flag, color: Color(0xFF2A4D3A), size: 24),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Lokasi Tujuan',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF2A4D3A),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: DropdownButtonFormField<String>(
+                        decoration: const InputDecoration(
+                          labelText: 'Pilih Basecamp',
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                        value: selectedDestination,
+                        items: _getDestinationOptions()
+                            .map(
+                              (destination) => DropdownMenuItem(
+                                value: destination,
+                                child: Text(destination),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (value) =>
+                            setState(() => selectedDestination = value),
+                        validator: (value) =>
+                            value == null ? 'Pilih lokasi tujuan' : null,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Pilih Kendaraan
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
@@ -580,13 +552,218 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                     Row(
                       children: [
                         Icon(
-                          Icons.calendar_today,
+                          Icons.directions_car,
                           color: Color(0xFF2A4D3A),
                           size: 24,
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          'Tanggal Pendakian',
+                          'Pilih Kendaraan',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF2A4D3A),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: DropdownButtonFormField<String>(
+                        decoration: const InputDecoration(
+                          labelText: 'Pilih Kendaraan',
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                        value: selectedVehicle,
+                        items: vehicles
+                            .map(
+                              (vehicle) => DropdownMenuItem(
+                                value: vehicle,
+                                child: Text(vehicle),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (value) =>
+                            setState(() => selectedVehicle = value),
+                        validator: (value) =>
+                            value == null ? 'Pilih kendaraan' : null,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Jumlah Penumpang & Kendaraan
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.people, color: Color(0xFF2A4D3A), size: 24),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Jumlah Penumpang & Kendaraan',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF2A4D3A),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Penumpang',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF2A4D3A),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  IconButton(
+                                    onPressed: passengerCount > 1
+                                        ? () => setState(() => passengerCount--)
+                                        : null,
+                                    icon: const Icon(Icons.remove),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 8,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.grey),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: Text(
+                                      passengerCount.toString(),
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () =>
+                                        setState(() => passengerCount++),
+                                    icon: const Icon(Icons.add),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Kendaraan',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF2A4D3A),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  IconButton(
+                                    onPressed: vehicleCount > 1
+                                        ? () => setState(() => vehicleCount--)
+                                        : null,
+                                    icon: const Icon(Icons.remove),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 8,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.grey),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: Text(
+                                      vehicleCount.toString(),
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () =>
+                                        setState(() => vehicleCount++),
+                                    icon: const Icon(Icons.add),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Waktu Penjemputan
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.access_time,
+                          color: Color(0xFF2A4D3A),
+                          size: 24,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Waktu Penjemputan',
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -603,26 +780,26 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                             onTap: () async {
                               final picked = await showDatePicker(
                                 context: context,
-                                initialDate: DateTime.now(),
+                                initialDate: pickupDate ?? DateTime.now(),
                                 firstDate: DateTime.now(),
                                 lastDate: DateTime.now().add(
                                   const Duration(days: 365),
                                 ),
                               );
                               if (picked != null) {
-                                setState(() => startDate = picked);
+                                setState(() => pickupDate = picked);
                               }
                             },
                             child: InputDecorator(
                               decoration: const InputDecoration(
-                                labelText: 'Tanggal Naik',
+                                labelText: 'Tanggal',
                                 border: OutlineInputBorder(),
                               ),
                               child: Text(
-                                startDate != null
+                                pickupDate != null
                                     ? DateFormat(
                                         'dd/MM/yyyy',
-                                      ).format(startDate!)
+                                      ).format(pickupDate!)
                                     : 'Pilih tanggal',
                               ),
                             ),
@@ -632,362 +809,70 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                         Expanded(
                           child: InkWell(
                             onTap: () async {
-                              if (startDate == null) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      'Pilih tanggal naik terlebih dahulu',
-                                    ),
-                                  ),
-                                );
-                                return;
-                              }
-                              final picked = await showDatePicker(
+                              final picked = await showTimePicker(
                                 context: context,
-                                initialDate: startDate!,
-                                firstDate: startDate!,
-                                lastDate: startDate!.add(
-                                  const Duration(days: 30),
-                                ),
+                                initialTime: pickupTime ?? TimeOfDay.now(),
                               );
                               if (picked != null) {
-                                setState(() => endDate = picked);
+                                setState(() => pickupTime = picked);
                               }
                             },
                             child: InputDecorator(
                               decoration: const InputDecoration(
-                                labelText: 'Tanggal Turun',
+                                labelText: 'Waktu',
                                 border: OutlineInputBorder(),
                               ),
                               child: Text(
-                                endDate != null
-                                    ? DateFormat('dd/MM/yyyy').format(endDate!)
-                                    : 'Pilih tanggal',
+                                pickupTime != null
+                                    ? pickupTime!.format(context)
+                                    : 'Pilih waktu',
                               ),
                             ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // Ticket Count
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.confirmation_number,
-                          color: Color(0xFF2A4D3A),
-                          size: 24,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Jumlah Tiket',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF2A4D3A),
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        IconButton(
-                          onPressed: ticketCount > 1
-                              ? () => setState(() => ticketCount--)
-                              : null,
-                          icon: const Icon(Icons.remove),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            ticketCount.toString(),
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            setState(() => ticketCount++);
-                            if (personalData.length < ticketCount) {
-                              _addPerson();
-                            }
-                          },
-                          icon: const Icon(Icons.add),
-                        ),
-                      ],
+                    DropdownButtonFormField<String>(
+                      decoration: const InputDecoration(
+                        labelText: 'Zona Waktu',
+                        border: OutlineInputBorder(),
+                      ),
+                      value: selectedTimeZone,
+                      items: timeZoneOffsets.keys
+                          .map(
+                            (zone) => DropdownMenuItem(
+                              value: zone,
+                              child: Text(zone),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (value) =>
+                          setState(() => selectedTimeZone = value!),
                     ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // Personal Data
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.person, color: Color(0xFF2A4D3A), size: 24),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Data Pribadi',
+                    if (pickupDate != null && pickupTime != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Text(
+                          'Waktu Konversi: ${_convertTimeZone(DateTime(pickupDate!.year, pickupDate!.month, pickupDate!.day, pickupTime!.hour, pickupTime!.minute), selectedTimeZone, selectedTimeZone == 'WIB'
+                              ? 'WIT'
+                              : selectedTimeZone == 'WIT'
+                              ? 'WITA'
+                              : 'WIB')} (${selectedTimeZone == 'WIB'
+                              ? 'WIT'
+                              : selectedTimeZone == 'WIT'
+                              ? 'WITA'
+                              : 'WIB'})',
                           style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF2A4D3A),
+                            fontSize: 14,
+                            color: Colors.grey.shade600,
                           ),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    ...List.generate(personalData.length, (index) {
-                      return Card(
-                        margin: const EdgeInsets.only(bottom: 16),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Orang ke-${index + 1}',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  if (personalData.length > 1)
-                                    IconButton(
-                                      onPressed: () => _removePerson(index),
-                                      icon: const Icon(
-                                        Icons.delete,
-                                        color: Colors.red,
-                                      ),
-                                    ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              TextFormField(
-                                decoration: const InputDecoration(
-                                  labelText: 'Nama Lengkap',
-                                  border: OutlineInputBorder(),
-                                ),
-                                onChanged: (value) =>
-                                    personalData[index]['name'] = value,
-                                validator: (value) => value?.isEmpty ?? true
-                                    ? 'Nama wajib diisi'
-                                    : null,
-                              ),
-                              const SizedBox(height: 10),
-                              TextFormField(
-                                decoration: const InputDecoration(
-                                  labelText: 'Nomor KTP',
-                                  border: OutlineInputBorder(),
-                                ),
-                                keyboardType: TextInputType.number,
-                                onChanged: (value) =>
-                                    personalData[index]['ktp'] = value,
-                                validator: (value) => value?.isEmpty ?? true
-                                    ? 'KTP wajib diisi'
-                                    : null,
-                              ),
-                              const SizedBox(height: 10),
-                              TextFormField(
-                                decoration: const InputDecoration(
-                                  labelText: 'Tempat Tinggal',
-                                  border: OutlineInputBorder(),
-                                ),
-                                onChanged: (value) =>
-                                    personalData[index]['address'] = value,
-                                validator: (value) => value?.isEmpty ?? true
-                                    ? 'Alamat wajib diisi'
-                                    : null,
-                              ),
-                              const SizedBox(height: 10),
-                              InkWell(
-                                onTap: () async {
-                                  final picked = await showDatePicker(
-                                    context: context,
-                                    initialDate: DateTime.now().subtract(
-                                      const Duration(days: 365 * 18),
-                                    ),
-                                    firstDate: DateTime(1900),
-                                    lastDate: DateTime.now(),
-                                  );
-                                  if (picked != null) {
-                                    setState(
-                                      () => personalData[index]['birthDate'] =
-                                          picked,
-                                    );
-                                  }
-                                },
-                                child: InputDecorator(
-                                  decoration: const InputDecoration(
-                                    labelText: 'Tanggal Lahir',
-                                    border: OutlineInputBorder(),
-                                  ),
-                                  child: Text(
-                                    personalData[index]['birthDate'] != null
-                                        ? DateFormat('dd/MM/yyyy').format(
-                                            personalData[index]['birthDate'],
-                                          )
-                                        : 'Pilih tanggal lahir',
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              DropdownButtonFormField<String>(
-                                decoration: const InputDecoration(
-                                  labelText: 'Kewarganegaraan',
-                                  border: OutlineInputBorder(),
-                                ),
-                                initialValue:
-                                    personalData[index]['nationality'],
-                                items: ['WNI', 'WNA']
-                                    .map(
-                                      (nat) => DropdownMenuItem(
-                                        value: nat,
-                                        child: Text(nat),
-                                      ),
-                                    )
-                                    .toList(),
-                                onChanged: (value) => setState(
-                                  () => personalData[index]['nationality'] =
-                                      value,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              CheckboxListTile(
-                                title: const Text('Jadikan Ketua Rombongan'),
-                                value: leaderIndex == index,
-                                onChanged: (value) {
-                                  setState(() {
-                                    leaderIndex = value == true ? index : null;
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }),
-                    if (ticketCount > personalData.length)
-                      ElevatedButton(
-                        onPressed: _addPerson,
-                        child: const Text('Tambah Data Orang'),
                       ),
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
 
-              // Price Summary
-              Card(
-                color: Colors.green.shade50,
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Rincian Harga',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF2A4D3A),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      if (startDate != null && endDate != null)
-                        Text(
-                          'Durasi: ${endDate!.difference(startDate!).inDays + 1} hari',
-                        ),
-                      Text('Jumlah orang: $ticketCount'),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Total:',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            NumberFormat.currency(
-                              locale: 'id_ID',
-                              symbol: selectedCurrency == 'IDR' ? 'Rp ' : '\$',
-                            ).format(_calculatePrice()),
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF2A4D3A),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      DropdownButton<String>(
-                        value: selectedCurrency,
-                        items: ['IDR', 'USD', 'EUR', 'JPY']
-                            .map(
-                              (currency) => DropdownMenuItem(
-                                value: currency,
-                                child: Text(currency),
-                              ),
-                            )
-                            .toList(),
-                        onChanged: (value) =>
-                            setState(() => selectedCurrency = value!),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
               const SizedBox(height: 20),
 
               // Action Buttons
@@ -998,20 +883,20 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                       onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
                           // Create a Product object from the form data
-                          Product ticketProduct = Product(
+                          Product travelProduct = Product(
                             id: DateTime.now()
                                 .millisecondsSinceEpoch, // Unique ID
-                            name: 'Tiket ${widget.mountain.name}',
+                            name: 'Travel Ojek ${widget.mountain.name}',
                             brand: widget.mountain.managedBy,
                             pricePerDay: _calculatePrice(),
                             imageUrl: widget.mountain.image,
-                            category: 'tiket_masuk',
+                            category: 'travel_ojek',
                             description:
-                                'Tiket pendakian untuk ${widget.mountain.name} dari ${startDate != null ? DateFormat('dd/MM/yyyy').format(startDate!) : ''} sampai ${endDate != null ? DateFormat('dd/MM/yyyy').format(endDate!) : ''}',
+                                'Travel ojek ke ${widget.mountain.name} dari ${selectedPickupLocation} ke ${selectedDestination} pada ${pickupDate != null ? DateFormat('dd/MM/yyyy').format(pickupDate!) : ''} pukul ${pickupTime != null ? pickupTime!.format(context) : ''}',
                           );
 
                           // Add to cart
-                          MainScreen.cartItems.add(ticketProduct);
+                          MainScreen.cartItems.add(travelProduct);
 
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -1024,7 +909,7 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: Text(
-                                      'Yeay! Tiket ${widget.mountain.name} sudah masuk keranjang. Ayo lanjutkan petualanganmu!',
+                                      'Yeay! Travel ojek ${widget.mountain.name} sudah masuk keranjang. Ayo lanjutkan petualanganmu!',
                                       style: const TextStyle(
                                         color: Colors.white,
                                       ),
@@ -1069,7 +954,7 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: Text(
-                                      'Horay! Pesanan tiket ${widget.mountain.name} berhasil dibuat. Siapkan dirimu untuk petualangan epik!',
+                                      'Horay! Pesanan travel ojek ${widget.mountain.name} berhasil dibuat. Siapkan dirimu untuk petualangan epik!',
                                       style: const TextStyle(
                                         color: Colors.white,
                                       ),
@@ -1090,23 +975,22 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          tiket_detail.PesananDetailPage(
-                                            mountain: widget.mountain,
-                                            orderData: {
-                                              'selectedEntryPoint':
-                                                  selectedEntryPoint,
-                                              'selectedExitPoint':
-                                                  selectedExitPoint,
-                                              'startDate': startDate,
-                                              'endDate': endDate,
-                                              'ticketCount': ticketCount,
-                                              'personalData': personalData,
-                                              'totalPrice': _calculatePrice(),
-                                              'selectedCurrency':
-                                                  selectedCurrency,
-                                            },
-                                          ),
+                                      builder: (context) => PesananDetailPage(
+                                        mountain: widget.mountain,
+                                        orderData: {
+                                          'selectedPickupLocation':
+                                              selectedPickupLocation,
+                                          'selectedDestination':
+                                              selectedDestination,
+                                          'selectedVehicle': selectedVehicle,
+                                          'passengerCount': passengerCount,
+                                          'vehicleCount': vehicleCount,
+                                          'pickupDate': pickupDate,
+                                          'pickupTime': pickupTime,
+                                          'selectedTimeZone': selectedTimeZone,
+                                          'totalPrice': _calculatePrice(),
+                                        },
+                                      ),
                                     ),
                                   );
                                 },

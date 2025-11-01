@@ -274,6 +274,402 @@ class _TiketMasukPageState extends State<TiketMasukPage> {
           'Hari Libur WNA': 150000,
         },
       ),
+      Mountain(
+        image: 'assets/tiket_masuk/agung.jpg',
+        name: 'Gunung Agung',
+        managedBy: 'Taman Nasional Bali Barat',
+        description:
+            'Gunung berapi aktif di Bali dengan pemandangan spiritual dan budaya yang kaya.',
+        location: 'Karangasem, Bali',
+        height: 3142,
+        prices: {
+          'Hari Kerja WNI': 20000,
+          'Hari Kerja WNA': 200000,
+          'Hari Libur WNI': 25000,
+          'Hari Libur WNA': 250000,
+        },
+      ),
+      Mountain(
+        image: 'assets/tiket_masuk/argopuro.jpg',
+        name: 'Gunung Argopuro',
+        managedBy: 'Balai Konservasi Sumber Daya Alam',
+        description:
+            'Gunung dengan hutan hujan tropis dan jalur pendakian yang menantang.',
+        location: 'Probolinggo, Jawa Timur',
+        height: 3088,
+        prices: {
+          'Hari Kerja WNI': 15000,
+          'Hari Kerja WNA': 150000,
+          'Hari Libur WNI': 20000,
+          'Hari Libur WNA': 200000,
+        },
+      ),
+      Mountain(
+        image: 'assets/tiket_masuk/arjuno.jpg',
+        name: 'Gunung Arjuno',
+        managedBy: 'Perhutani',
+        description: 'Gunung dengan pemandangan danau dan vegetasi yang subur.',
+        location: 'Malang, Jawa Timur',
+        height: 3339,
+        prices: {
+          'Hari Kerja WNI': 12000,
+          'Hari Kerja WNA': 120000,
+          'Hari Libur WNI': 18000,
+          'Hari Libur WNA': 180000,
+        },
+      ),
+      Mountain(
+        image: 'assets/tiket_masuk/bawakaraeng.jpg',
+        name: 'Gunung Bawakaraeng',
+        managedBy: 'Taman Nasional Bantimurung Bulusaraung',
+        description:
+            'Gunung dengan pemandangan laut dan hutan yang masih alami.',
+        location: 'Gowa, Sulawesi Selatan',
+        height: 2831,
+        prices: {
+          'Hari Kerja WNI': 10000,
+          'Hari Kerja WNA': 100000,
+          'Hari Libur WNI': 15000,
+          'Hari Libur WNA': 150000,
+        },
+      ),
+      Mountain(
+        image: 'assets/tiket_masuk/binaiya.jpg',
+        name: 'Gunung Binaiya',
+        managedBy: 'Balai Konservasi Sumber Daya Alam',
+        description:
+            'Gunung dengan jalur pendakian yang mudah dan panorama yang indah.',
+        location: 'Minahasa Utara, Sulawesi Utara',
+        height: 3011,
+        prices: {
+          'Hari Kerja WNI': 8000,
+          'Hari Kerja WNA': 80000,
+          'Hari Libur WNI': 12000,
+          'Hari Libur WNA': 120000,
+        },
+      ),
+      Mountain(
+        image: 'assets/tiket_masuk/bukit_raya.jpg',
+        name: 'Bukit Raya',
+        managedBy: 'Taman Nasional Bukit Baka Bukit Raya',
+        description:
+            'Gunung dengan hutan hujan tropis dan biodiversitas tinggi.',
+        location: 'Sintang, Kalimantan Barat',
+        height: 2278,
+        prices: {
+          'Hari Kerja WNI': 10000,
+          'Hari Kerja WNA': 100000,
+          'Hari Libur WNI': 15000,
+          'Hari Libur WNA': 150000,
+        },
+      ),
+      Mountain(
+        image: 'assets/tiket_masuk/cikuray.jpg',
+        name: 'Gunung Cikuray',
+        managedBy: 'Taman Nasional Gunung Halimun Salak',
+        description: 'Gunung dengan pemandangan danau dan vegetasi yang hijau.',
+        location: 'Sukabumi, Jawa Barat',
+        height: 2821,
+        prices: {
+          'Hari Kerja WNI': 12000,
+          'Hari Kerja WNA': 120000,
+          'Hari Libur WNI': 18000,
+          'Hari Libur WNA': 180000,
+        },
+      ),
+      Mountain(
+        image: 'assets/tiket_masuk/ciremai.jpg',
+        name: 'Gunung Ciremai',
+        managedBy: 'Perhutani',
+        description:
+            'Gunung dengan jalur pendakian yang populer dan pemandangan yang luas.',
+        location: 'Kuningan, Jawa Barat',
+        height: 3078,
+        prices: {
+          'Hari Kerja WNI': 10000,
+          'Hari Kerja WNA': 100000,
+          'Hari Libur WNI': 15000,
+          'Hari Libur WNA': 150000,
+        },
+      ),
+      Mountain(
+        image: 'assets/tiket_masuk/dempo.jpg',
+        name: 'Gunung Dempo',
+        managedBy: 'Taman Nasional Bukit Barisan Selatan',
+        description:
+            'Gunung dengan kawah aktif dan pemandangan yang spektakuler.',
+        location: 'Lubuk Linggau, Sumatera Selatan',
+        height: 3173,
+        prices: {
+          'Hari Kerja WNI': 15000,
+          'Hari Kerja WNA': 150000,
+          'Hari Libur WNI': 20000,
+          'Hari Libur WNA': 200000,
+        },
+      ),
+      Mountain(
+        image: 'assets/tiket_masuk/gamalama.jpg',
+        name: 'Gunung Gamalama',
+        managedBy: 'Balai Konservasi Sumber Daya Alam',
+        description: 'Gunung berapi aktif dengan pemandangan laut yang indah.',
+        location: 'Ternate, Maluku Utara',
+        height: 1715,
+        prices: {
+          'Hari Kerja WNI': 10000,
+          'Hari Kerja WNA': 100000,
+          'Hari Libur WNI': 15000,
+          'Hari Libur WNA': 150000,
+        },
+      ),
+      Mountain(
+        image: 'assets/tiket_masuk/gandang_dewata.jpg',
+        name: 'Gunung Gandang Dewata',
+        managedBy: 'Balai Konservasi Sumber Daya Alam',
+        description: 'Gunung dengan legenda dan pemandangan yang mistis.',
+        location: 'Lombok Timur, Nusa Tenggara Barat',
+        height: 2064,
+        prices: {
+          'Hari Kerja WNI': 8000,
+          'Hari Kerja WNA': 80000,
+          'Hari Libur WNI': 12000,
+          'Hari Libur WNA': 120000,
+        },
+      ),
+      Mountain(
+        image: 'assets/tiket_masuk/gede.jpg',
+        name: 'Gunung Gede',
+        managedBy: 'Taman Nasional Gunung Gede Pangrango',
+        description:
+            'Gunung dengan hutan hujan tropis dan jalur pendakian yang menantang.',
+        location: 'Cianjur, Jawa Barat',
+        height: 2958,
+        prices: {
+          'Hari Kerja WNI': 15000,
+          'Hari Kerja WNA': 150000,
+          'Hari Libur WNI': 20000,
+          'Hari Libur WNA': 200000,
+        },
+      ),
+      Mountain(
+        image: 'assets/tiket_masuk/halau_halau.jpg',
+        name: 'Gunung Halau-Halau',
+        managedBy: 'Balai Konservasi Sumber Daya Alam',
+        description: 'Gunung dengan pemandangan laut dan vegetasi yang unik.',
+        location: 'Sangihe, Sulawesi Utara',
+        height: 1227,
+        prices: {
+          'Hari Kerja WNI': 5000,
+          'Hari Kerja WNA': 50000,
+          'Hari Libur WNI': 8000,
+          'Hari Libur WNA': 80000,
+        },
+      ),
+      Mountain(
+        image: 'assets/tiket_masuk/halimun.jpg',
+        name: 'Gunung Halimun',
+        managedBy: 'Taman Nasional Gunung Halimun Salak',
+        description:
+            'Gunung dengan hutan yang masih alami dan biodiversitas tinggi.',
+        location: 'Bogor, Jawa Barat',
+        height: 1929,
+        prices: {
+          'Hari Kerja WNI': 10000,
+          'Hari Kerja WNA': 100000,
+          'Hari Libur WNI': 15000,
+          'Hari Libur WNA': 150000,
+        },
+      ),
+      Mountain(
+        image: 'assets/tiket_masuk/inerie.jpg',
+        name: 'Gunung Inerie',
+        managedBy: 'Balai Konservasi Sumber Daya Alam',
+        description:
+            'Gunung dengan pemandangan laut dan jalur pendakian yang unik.',
+        location: 'Biak Numfor, Papua',
+        height: 2267,
+        prices: {
+          'Hari Kerja WNI': 12000,
+          'Hari Kerja WNA': 120000,
+          'Hari Libur WNI': 18000,
+          'Hari Libur WNA': 180000,
+        },
+      ),
+      Mountain(
+        image: 'assets/tiket_masuk/kerinci.jpg',
+        name: 'Gunung Kerinci',
+        managedBy: 'Taman Nasional Kerinci Seblat',
+        description:
+            'Gunung tertinggi di Sumatera dengan pemandangan yang luar biasa.',
+        location: 'Kerinci, Jambi',
+        height: 3805,
+        prices: {
+          'Hari Kerja WNI': 20000,
+          'Hari Kerja WNA': 200000,
+          'Hari Libur WNI': 25000,
+          'Hari Libur WNA': 250000,
+        },
+      ),
+      Mountain(
+        image: 'assets/tiket_masuk/leuser.jpg',
+        name: 'Gunung Leuser',
+        managedBy: 'Taman Nasional Gunung Leuser',
+        description:
+            'Gunung dengan hutan hujan tropis dan satwa liar yang beragam.',
+        location: 'Aceh, Aceh',
+        height: 3381,
+        prices: {
+          'Hari Kerja WNI': 15000,
+          'Hari Kerja WNA': 150000,
+          'Hari Libur WNI': 20000,
+          'Hari Libur WNA': 200000,
+        },
+      ),
+      Mountain(
+        image: 'assets/tiket_masuk/marapi.jpg',
+        name: 'Gunung Marapi',
+        managedBy: 'Balai Konservasi Sumber Daya Alam',
+        description: 'Gunung berapi aktif dengan pemandangan yang spektakuler.',
+        location: 'Agam, Sumatera Barat',
+        height: 2891,
+        prices: {
+          'Hari Kerja WNI': 12000,
+          'Hari Kerja WNA': 120000,
+          'Hari Libur WNI': 18000,
+          'Hari Libur WNA': 180000,
+        },
+      ),
+      Mountain(
+        image: 'assets/tiket_masuk/mekongga.jpg',
+        name: 'Gunung Mekongga',
+        managedBy: 'Balai Konservasi Sumber Daya Alam',
+        description: 'Gunung dengan pemandangan laut dan vegetasi yang subur.',
+        location: 'Flores Timur, Nusa Tenggara Timur',
+        height: 1645,
+        prices: {
+          'Hari Kerja WNI': 8000,
+          'Hari Kerja WNA': 80000,
+          'Hari Libur WNI': 12000,
+          'Hari Libur WNA': 120000,
+        },
+      ),
+      Mountain(
+        image: 'assets/tiket_masuk/pangrango.jpg',
+        name: 'Gunung Pangrango',
+        managedBy: 'Taman Nasional Gunung Gede Pangrango',
+        description:
+            'Gunung dengan jalur pendakian yang menantang dan panorama yang indah.',
+        location: 'Bogor, Jawa Barat',
+        height: 3019,
+        prices: {
+          'Hari Kerja WNI': 15000,
+          'Hari Kerja WNA': 150000,
+          'Hari Libur WNI': 20000,
+          'Hari Libur WNA': 200000,
+        },
+      ),
+      Mountain(
+        image: 'assets/tiket_masuk/papandayan.jpg',
+        name: 'Gunung Papandayan',
+        managedBy: 'Taman Nasional Gunung Halimun Salak',
+        description: 'Gunung dengan kawah aktif dan pemandangan yang unik.',
+        location: 'Garut, Jawa Barat',
+        height: 2665,
+        prices: {
+          'Hari Kerja WNI': 10000,
+          'Hari Kerja WNA': 100000,
+          'Hari Libur WNI': 15000,
+          'Hari Libur WNA': 150000,
+        },
+      ),
+      Mountain(
+        image: 'assets/tiket_masuk/pesagi.jpg',
+        name: 'Gunung Pesagi',
+        managedBy: 'Balai Konservasi Sumber Daya Alam',
+        description:
+            'Gunung dengan pemandangan laut dan jalur pendakian yang menyenangkan.',
+        location: 'Lombok Utara, Nusa Tenggara Barat',
+        height: 617,
+        prices: {
+          'Hari Kerja WNI': 5000,
+          'Hari Kerja WNA': 50000,
+          'Hari Libur WNI': 8000,
+          'Hari Libur WNA': 80000,
+        },
+      ),
+      Mountain(
+        image: 'assets/tiket_masuk/puncak jaya.jpg',
+        name: 'Puncak Jaya',
+        managedBy: 'Taman Nasional Lorentz',
+        description:
+            'Gunung tertinggi di Indonesia dengan pemandangan es yang spektakuler.',
+        location: 'Papua, Papua',
+        height: 4884,
+        prices: {
+          'Hari Kerja WNI': 50000,
+          'Hari Kerja WNA': 500000,
+          'Hari Libur WNI': 60000,
+          'Hari Libur WNA': 600000,
+        },
+      ),
+      Mountain(
+        image: 'assets/tiket_masuk/sibuatan.jpg',
+        name: 'Gunung Sibuatan',
+        managedBy: 'Balai Konservasi Sumber Daya Alam',
+        description: 'Gunung dengan pemandangan laut dan vegetasi yang subur.',
+        location: 'Sangihe, Sulawesi Utara',
+        height: 1872,
+        prices: {
+          'Hari Kerja WNI': 8000,
+          'Hari Kerja WNA': 80000,
+          'Hari Libur WNI': 12000,
+          'Hari Libur WNA': 120000,
+        },
+      ),
+      Mountain(
+        image: 'assets/tiket_masuk/welirang.jpg',
+        name: 'Gunung Welirang',
+        managedBy: 'Balai Konservasi Sumber Daya Alam',
+        description:
+            'Gunung dengan kawah aktif dan pemandangan yang spektakuler.',
+        location: 'Mojokerto, Jawa Timur',
+        height: 3156,
+        prices: {
+          'Hari Kerja WNI': 15000,
+          'Hari Kerja WNA': 150000,
+          'Hari Libur WNI': 20000,
+          'Hari Libur WNA': 200000,
+        },
+      ),
+      Mountain(
+        image: 'assets/tiket_masuk/trikora.jpg',
+        name: 'Gunung Trikora',
+        managedBy: 'Balai Konservasi Sumber Daya Alam',
+        description:
+            'Gunung tertinggi di Papua dengan pemandangan es yang luar biasa.',
+        location: 'Jayawijaya, Papua',
+        height: 4750,
+        prices: {
+          'Hari Kerja WNI': 30000,
+          'Hari Kerja WNA': 300000,
+          'Hari Libur WNI': 35000,
+          'Hari Libur WNA': 350000,
+        },
+      ),
+      Mountain(
+        image: 'assets/tiket_masuk/talamau.jpg',
+        name: 'Gunung Talamau',
+        managedBy: 'Balai Konservasi Sumber Daya Alam',
+        description:
+            'Gunung dengan hutan hujan tropis dan biodiversitas tinggi.',
+        location: 'Minahasa, Sulawesi Utara',
+        height: 1680,
+        prices: {
+          'Hari Kerja WNI': 10000,
+          'Hari Kerja WNA': 100000,
+          'Hari Libur WNI': 15000,
+          'Hari Libur WNA': 150000,
+        },
+      ),
     ];
 
     if (selectedProvince == null || selectedProvince == 'Semua') {
@@ -287,7 +683,24 @@ class _TiketMasukPageState extends State<TiketMasukPage> {
 
   @override
   Widget build(BuildContext context) {
-    final mountains = _getFilteredMountains();
+    final allMountains = _getFilteredMountains();
+    final mountains = selectedProvince == null || selectedProvince == 'Semua'
+        ? allMountains
+        : allMountains
+              .where(
+                (mountain) => mountain.location.contains(selectedProvince!),
+              )
+              .toList();
+
+    // Extract unique provinces from mountains
+    Set<String> provinces = {'Semua'};
+    for (var mountain in allMountains) {
+      var parts = mountain.location.split(', ');
+      if (parts.length > 1) {
+        provinces.add(parts[1]);
+      }
+    }
+    List<String> sortedProvinces = provinces.toList()..sort();
 
     return Scaffold(
       appBar: AppBar(
@@ -433,71 +846,35 @@ class _TiketMasukPageState extends State<TiketMasukPage> {
                             ),
                           ),
                         ),
-                        value: selectedProvince,
+                        initialValue: selectedProvince,
                         style: TextStyle(
                           color: Color(0xFF2A4D3A),
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                         ),
                         dropdownColor: Colors.white,
-                        items: [
-                          DropdownMenuItem(
-                            value: 'Semua',
+                        items: sortedProvinces.map((province) {
+                          return DropdownMenuItem(
+                            value: province,
                             child: Row(
                               children: [
                                 Icon(
-                                  Icons.public,
+                                  province == 'Semua'
+                                      ? Icons.public
+                                      : Icons.location_on,
                                   color: Color(0xFF2A4D3A),
                                   size: 20,
                                 ),
                                 const SizedBox(width: 8),
-                                Text('Semua Provinsi'),
-                              ],
-                            ),
-                          ),
-                          DropdownMenuItem(
-                            value: 'Jawa Tengah',
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.location_on,
-                                  color: Color(0xFF2A4D3A),
-                                  size: 20,
+                                Text(
+                                  province == 'Semua'
+                                      ? 'Semua Provinsi'
+                                      : province,
                                 ),
-                                const SizedBox(width: 8),
-                                Text('Jawa Tengah'),
                               ],
                             ),
-                          ),
-                          DropdownMenuItem(
-                            value: 'Jawa Timur',
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.location_on,
-                                  color: Color(0xFF2A4D3A),
-                                  size: 20,
-                                ),
-                                const SizedBox(width: 8),
-                                Text('Jawa Timur'),
-                              ],
-                            ),
-                          ),
-                          DropdownMenuItem(
-                            value: 'Nusa Tenggara Barat',
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.location_on,
-                                  color: Color(0xFF2A4D3A),
-                                  size: 20,
-                                ),
-                                const SizedBox(width: 8),
-                                Text('Nusa Tenggara Barat'),
-                              ],
-                            ),
-                          ),
-                        ],
+                          );
+                        }).toList(),
                         onChanged: (value) =>
                             setState(() => selectedProvince = value),
                       ),

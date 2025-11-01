@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tapak_jejak/models/mountain.dart';
+import 'package:tapak_jejak/screens/home_page.dart';
 
 class PesananDetailPage extends StatefulWidget {
   final Mountain mountain;
@@ -235,7 +236,11 @@ class _PesananDetailPageState extends State<PesananDetailPage>
                 margin: const EdgeInsets.only(bottom: 24),
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Colors.white, Colors.grey.shade50],
+                  ),
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
@@ -250,299 +255,132 @@ class _PesananDetailPageState extends State<PesananDetailPage>
                   children: [
                     Row(
                       children: [
-                        Icon(
-                          Icons.receipt_long,
-                          color: Color(0xFF2A4D3A),
-                          size: 24,
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Color(0xFF2A4D3A).withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
+                            Icons.directions_car,
+                            color: Color(0xFF2A4D3A),
+                            size: 24,
+                          ),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 12),
                         Text(
-                          'Detail Pesanan',
+                          'Detail Perjalanan',
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 22,
                             fontWeight: FontWeight.bold,
                             color: Color(0xFF2A4D3A),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
-                    _buildDetailRow(
+                    const SizedBox(height: 20),
+                    _buildDetailRowWithIcon(
+                      Icons.confirmation_number,
                       'ID Pesanan',
                       '#${DateTime.now().millisecondsSinceEpoch}',
                     ),
-                    _buildDetailRow(
+                    _buildDetailRowWithIcon(
+                      Icons.schedule,
                       'Tanggal Pesan',
                       DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now()),
                     ),
-                    _buildDetailRow(
-                      'Tanggal Naik',
-                      widget.orderData['startDate'] != null
+                    _buildDetailRowWithIcon(
+                      Icons.location_on,
+                      'Lokasi Penjemputan',
+                      widget.orderData['selectedPickupLocation'] ?? '-',
+                    ),
+                    _buildDetailRowWithIcon(
+                      Icons.flag,
+                      'Tujuan',
+                      widget.orderData['selectedDestination'] ?? '-',
+                    ),
+                    _buildDetailRowWithIcon(
+                      Icons.directions_car,
+                      'Kendaraan',
+                      widget.orderData['selectedVehicle'] ?? '-',
+                    ),
+                    _buildDetailRowWithIcon(
+                      Icons.people,
+                      'Jumlah Penumpang',
+                      '${widget.orderData['passengerCount'] ?? 1} orang',
+                    ),
+                    _buildDetailRowWithIcon(
+                      Icons.directions_bus,
+                      'Jumlah Kendaraan',
+                      '${widget.orderData['vehicleCount'] ?? 1} unit',
+                    ),
+                    _buildDetailRowWithIcon(
+                      Icons.calendar_today,
+                      'Tanggal Penjemputan',
+                      widget.orderData['pickupDate'] != null
                           ? DateFormat(
                               'dd/MM/yyyy',
-                            ).format(widget.orderData['startDate'])
+                            ).format(widget.orderData['pickupDate'])
                           : '-',
                     ),
-                    _buildDetailRow(
-                      'Tanggal Turun',
-                      widget.orderData['endDate'] != null
-                          ? DateFormat(
-                              'dd/MM/yyyy',
-                            ).format(widget.orderData['endDate'])
+                    _buildDetailRowWithIcon(
+                      Icons.access_time,
+                      'Waktu Penjemputan',
+                      widget.orderData['pickupTime'] != null
+                          ? widget.orderData['pickupTime'].format(context)
                           : '-',
                     ),
-                    _buildDetailRow(
-                      'Jumlah Orang',
-                      '${widget.orderData['ticketCount'] ?? 1} orang',
-                    ),
-                    _buildDetailRow(
-                      'Pos Masuk',
-                      widget.orderData['selectedEntryPoint'] ?? '-',
-                    ),
-                    _buildDetailRow(
-                      'Pos Keluar',
-                      widget.orderData['selectedExitPoint'] ?? '-',
-                    ),
-                  ],
-                ),
-              ),
-
-              // Participants
-              Container(
-                margin: const EdgeInsets.only(bottom: 24),
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.group, color: Color(0xFF2A4D3A), size: 24),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Peserta Pendakian',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF2A4D3A),
-                          ),
-                        ),
-                      ],
+                    _buildDetailRowWithIcon(
+                      Icons.language,
+                      'Zona Waktu',
+                      widget.orderData['selectedTimeZone'] ?? 'WIB',
                     ),
                     const SizedBox(height: 16),
-                    ...(widget.orderData['personalData'] as List<dynamic>? ??
-                            [])
-                        .map((person) {
-                          return Container(
-                            margin: const EdgeInsets.only(bottom: 12),
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade50,
-                              borderRadius: BorderRadius.circular(12),
+                    Card(
+                      color: Colors.green.shade50,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Rincian Pembayaran',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF2A4D3A),
+                              ),
                             ),
-                            child: Row(
+                            const SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                CircleAvatar(
-                                  backgroundColor: Color(0xFF2A4D3A),
-                                  child: Text(
-                                    (person['name'] as String?)
-                                            ?.substring(0, 1)
-                                            .toUpperCase() ??
-                                        '?',
-                                    style: const TextStyle(color: Colors.white),
+                                const Text(
+                                  'Total:',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        person['name'] ?? 'Nama tidak tersedia',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                      Text(
-                                        'KTP: ${person['ktp'] ?? '-'}',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.grey.shade600,
-                                        ),
-                                      ),
-                                    ],
+                                Text(
+                                  'Rp ${NumberFormat('#,###').format(widget.orderData['totalPrice'] ?? 0)}',
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF2A4D3A),
                                   ),
                                 ),
-                                if (person['nationality'] == 'WNI')
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 4,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.red.shade50,
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Text(
-                                      'WNI',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.red.shade700,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ),
                               ],
                             ),
-                          );
-                        }),
-                  ],
-                ),
-              ),
-
-              // Price Summary
-              Container(
-                margin: const EdgeInsets.only(bottom: 24),
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.account_balance_wallet,
-                          color: Color(0xFF2A4D3A),
-                          size: 24,
+                          ],
                         ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Rincian Pembayaran',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF2A4D3A),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    // Payment Method Selection
-                    Row(
-                      children: [
-                        Icon(Icons.payment, color: Color(0xFF2A4D3A), size: 20),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Metode Pembayaran',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xFF2A4D3A),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade50,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.grey.shade300),
                       ),
-                      child: DropdownButtonFormField<String>(
-                        decoration: const InputDecoration(
-                          labelText: 'Pilih Metode Pembayaran',
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.zero,
-                        ),
-                        value: selectedPaymentMethod,
-                        items:
-                            [
-                              'Transfer Bank',
-                              'E-Wallet (GoPay, OVO, Dana)',
-                              'Kartu Kredit/Debit',
-                              'QRIS',
-                            ].map((method) {
-                              return DropdownMenuItem(
-                                value: method,
-                                child: Text(method),
-                              );
-                            }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            selectedPaymentMethod = value!;
-                          });
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    // Detailed Breakdown
-                    _buildDetailRow(
-                      'Durasi',
-                      widget.orderData['startDate'] != null &&
-                              widget.orderData['endDate'] != null
-                          ? '${widget.orderData['endDate'].difference(widget.orderData['startDate']).inDays + 1} hari'
-                          : '-',
-                    ),
-                    _buildDetailRow(
-                      'Jumlah Orang',
-                      '${widget.orderData['ticketCount'] ?? 1} orang',
-                    ),
-                    const SizedBox(height: 12),
-                    const Divider(),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Total Pembayaran',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        Text(
-                          _formatCurrency(
-                            widget.orderData['totalPrice'] ?? 0,
-                            widget.orderData['selectedCurrency'] ?? 'IDR',
-                          ),
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF2A4D3A),
-                          ),
-                        ),
-                      ],
                     ),
                   ],
                 ),
               ),
 
-              // Adventure Quote
+              // Travel Inspiration Card
               Container(
                 margin: const EdgeInsets.only(bottom: 24),
                 padding: const EdgeInsets.all(20),
@@ -563,10 +401,10 @@ class _PesananDetailPageState extends State<PesananDetailPage>
                 ),
                 child: Column(
                   children: [
-                    Icon(Icons.terrain, color: Colors.white, size: 48),
+                    Icon(Icons.directions_car, color: Colors.white, size: 48),
                     const SizedBox(height: 16),
                     Text(
-                      '"Petualangan sejati dimulai di luar zona nyaman"',
+                      '"Perjalanan adalah cara terbaik untuk menemukan diri sendiri"',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
@@ -577,8 +415,76 @@ class _PesananDetailPageState extends State<PesananDetailPage>
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      '- Pendaki Gunung',
+                      '- Petualang Jalanan',
                       style: TextStyle(fontSize: 14, color: Colors.white70),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Travel Tips Card
+              Container(
+                margin: const EdgeInsets.only(bottom: 24),
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.orange.shade50,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
+                            Icons.lightbulb,
+                            color: Colors.orange.shade600,
+                            size: 24,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          'Tips Perjalanan',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF2A4D3A),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTipRow(
+                      Icons.check_circle,
+                      'Pastikan kondisi kendaraan prima sebelum berangkat',
+                      Colors.green,
+                    ),
+                    _buildTipRow(
+                      Icons.check_circle,
+                      'Bawa dokumen penting dan simpan di tempat aman',
+                      Colors.green,
+                    ),
+                    _buildTipRow(
+                      Icons.check_circle,
+                      'Periksa cuaca dan kondisi jalan sebelum perjalanan',
+                      Colors.green,
+                    ),
+                    _buildTipRow(
+                      Icons.check_circle,
+                      'Siapkan rencana darurat dan nomor penting',
+                      Colors.green,
                     ),
                   ],
                 ),
@@ -590,10 +496,16 @@ class _PesananDetailPageState extends State<PesananDetailPage>
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        Navigator.of(context).pop();
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                HomeScreen(refreshCallback: () {}),
+                          ),
+                          (route) => false,
+                        );
                       },
-                      icon: const Icon(Icons.arrow_back),
-                      label: const Text('Kembali'),
+                      icon: const Icon(Icons.home),
+                      label: const Text('HomePage'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey.shade600,
                         foregroundColor: Colors.white,
@@ -608,12 +520,63 @@ class _PesananDetailPageState extends State<PesananDetailPage>
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              'Fitur cetak tiket akan segera hadir!',
-                            ),
-                          ),
+                        // Show creative floating notification
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            Future.delayed(const Duration(seconds: 3), () {
+                              Navigator.of(context).pop();
+                            });
+                            return Dialog(
+                              backgroundColor: Colors.transparent,
+                              elevation: 0,
+                              child: Center(
+                                child: Container(
+                                  padding: const EdgeInsets.all(24),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(20),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.3),
+                                        blurRadius: 20,
+                                        offset: const Offset(0, 10),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.celebration,
+                                        color: Color(0xFF2A4D3A),
+                                        size: 64,
+                                      ),
+                                      const SizedBox(height: 16),
+                                      Text(
+                                        'Pesanan Berhasil!',
+                                        style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF2A4D3A),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 12),
+                                      Text(
+                                        'Tunggulah beberapa saat setelah pesananmu di konfirmasi admin dan kamu menyelesaikan pembayaran.',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.grey.shade700,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
                         );
                       },
                       icon: const Icon(Icons.print),
@@ -674,6 +637,58 @@ class _PesananDetailPageState extends State<PesananDetailPage>
           Text(
             value,
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailRowWithIcon(IconData icon, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        children: [
+          Icon(icon, color: Color(0xFF2A4D3A), size: 20),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                ),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTipRow(IconData icon, String text, Color color) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        children: [
+          Icon(icon, color: color, size: 20),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey.shade700,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
           ),
         ],
       ),

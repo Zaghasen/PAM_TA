@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tapak_jejak/models/user.dart';
-import 'package:tapak_jejak/screens/main_screen.dart';
+import 'package:tapak_jejak/screens/main_page.dart';
 import 'package:tapak_jejak/services/hive_service.dart';
 import 'dart:convert';
 
@@ -107,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const MainScreen()),
+          MaterialPageRoute(builder: (context) => MainScreen()),
         );
         return;
       }

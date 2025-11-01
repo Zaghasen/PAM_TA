@@ -1,38 +1,12 @@
-# Rename \_page.dart to \_screen.dart Task
+# TODO: Modify travel&ojek_detail_page.dart
 
-## Information Gathered
-
-- Main screen files to rename: all_products_page.dart, cart_page.dart, home_page.dart, login_page.dart, main_page.dart, membership_page.dart, profile_page.dart, wishlist_page.dart
-- booking_page.dart has been deleted and replaced with pesanan_detail_page.dart
-- Detail pages to rename: product_detail_page.dart, tiket_detail_page.dart, weather_detail_page.dart
-- All import statements and class references need updating based on grep search results
-- Total ~21 files reference these pages that need import updates
-
-## Plan
-
-1. Rename all main screen files (\_page.dart → \_screen.dart)
-2. Rename detail page files (\_page.dart → \_screen.dart)
-3. Update class names inside renamed files (Page → Screen)
-4. Update all import statements in dependent files
-5. Update navigation references (MaterialPageRoute builders)
-6. Test compilation to ensure no errors
-
-## Dependent Files to Edit
-
-- lib/main.dart
-- lib/screens/main_page.dart (will become main_screen.dart)
-- lib/screens/home_page.dart (will become home_screen.dart)
-- lib/screens/cart_page.dart (will become cart_screen.dart)
-- lib/screens/wishlist_page.dart (will become wishlist_screen.dart)
-- lib/screens/profile_page.dart (will become profile_screen.dart)
-- lib/screens/login_page.dart (will become login_screen.dart)
-- lib/screens/all_products_page.dart (will become all_products_screen.dart)
-- lib/widgets/product_card.dart
-- lib/screens/icons/\*.dart files
-- lib/screens/icons/details/\*.dart files
-
-## Followup Steps
-
-- Run flutter analyze to check for errors
-- Run flutter run to test functionality
-- Verify all navigation still works
+1. Remove unused variables related to tickets (selectedEntryPoint, selectedExitPoint, startDate, endDate, ticketCount, personalData, leaderIndex, selectedCurrency)
+2. Remove the cards for 'Pos Perizinan', 'Tanggal Pendakian', 'Jumlah Tiket', 'Data Pribadi'
+3. Add new card for 'Lokasi Penjemputan' with dropdown (Jakarta, Semarang, Yogyakarta, Surabaya)
+4. Add new card for 'Lokasi Tujuan' with dropdown based on mountain basecamps
+5. Add new card for 'Pilih Kendaraan' with dropdown (existing vehicle list)
+6. Add new card for 'Jumlah Penumpang & Kendaraan' with counters
+7. Add new card for 'Waktu Penjemputan' with date/time pickers and timezone conversion
+8. Update \_calculatePrice method for travel pricing
+9. Update button actions for travel booking instead of ticket booking
+10. Remove unused methods (\_addPerson, \_removePerson, \_getBasecampOptions if not needed)
