@@ -10,8 +10,6 @@ class PorterGuidePage extends StatefulWidget {
 }
 
 class _PorterGuidePageState extends State<PorterGuidePage> {
-  String? selectedProvince;
-
   static String _formatCurrency(double value) {
     return value.toInt().toString().replaceAllMapped(
       RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
