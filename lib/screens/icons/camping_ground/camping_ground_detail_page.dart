@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:tapak_jejak/models/mountain.dart';
 
-class EatStayPage extends StatelessWidget {
-  const EatStayPage({super.key});
+class CampingGroundDetailPage extends StatelessWidget {
+  final Mountain mountain;
+  final DateTime date;
+  final int quantity;
+
+  const CampingGroundDetailPage({
+    super.key,
+    required this.mountain,
+    required this.date,
+    required this.quantity,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
         child: Container(
@@ -36,7 +45,7 @@ class EatStayPage extends StatelessWidget {
                 Image.asset('assets/LOGO.png', height: 40, width: 40),
                 const SizedBox(width: 8),
                 Text(
-                  'Eat & Stay',
+                  'Detail Camping Ground',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -95,19 +104,71 @@ class EatStayPage extends StatelessWidget {
           ),
         ),
       ),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image(image: AssetImage('assets/comingsoon1.png')),
-            SizedBox(height: 20),
-            SizedBox(
-              width: 120,
-              child: LinearProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
-              ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.green.shade50, Colors.white],
+          ),
+        ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Image "tidak_ada.png"
+                Image.asset(
+                  'assets/tidak_ada.png',
+                  height: 200,
+                  width: 200,
+                  fit: BoxFit.cover,
+                ),
+                const SizedBox(height: 20),
+                // Text "Camping Ground tidak ditemukan"
+                const Text(
+                  'Camping Ground tidak ditemukan',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF2A4D3A),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                // Text "Kami tidak dapat menemukan apa yang kamu cari"
+                const Text(
+                  'Kami tidak dapat menemukan apa yang kamu cari',
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 32),
+                // Button "Cari Kembali"
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(
+                      context,
+                    ); // Navigate back to camping_ground.dart
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF2E7D32),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 50,
+                      vertical: 15,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  child: const Text(
+                    'Cari Kembali',
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
