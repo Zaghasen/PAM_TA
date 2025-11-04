@@ -5,7 +5,6 @@ import 'package:tapak_jejak/models/product.dart';
 import 'package:tapak_jejak/screens/icons/sewa_alat/all_products_page.dart';
 import 'package:tapak_jejak/screens/icons/blog/blog.dart';
 import 'package:tapak_jejak/screens/icons/camping_ground/camping_ground.dart';
-import 'package:tapak_jejak/screens/icons/cuaca/cuaca.dart';
 import 'package:tapak_jejak/screens/icons/eat_stay/eat&stay.dart';
 import 'package:tapak_jejak/screens/icons/event/event.dart';
 import 'package:tapak_jejak/screens/icons/keamanan/keamanan.dart';
@@ -15,6 +14,7 @@ import 'package:tapak_jejak/screens/icons/sewa_alat/sewa_alat.dart';
 import 'package:tapak_jejak/screens/icons/tiket_masuk/tiket_masuk.dart';
 import 'package:tapak_jejak/screens/icons/travel_ojek/travel&ojek.dart';
 import 'package:tapak_jejak/screens/icons/tutorial/tutorial.dart';
+import 'package:tapak_jejak/screens/icons/cuaca/cuaca.dart';
 import 'package:tapak_jejak/screens/terms_page.dart';
 import 'package:tapak_jejak/widgets/product_card.dart';
 
