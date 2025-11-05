@@ -40,7 +40,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
-    _username = prefs.getString('username') ?? '';
+    setState(() {
+      _username = prefs.getString('username') ?? '';
+    });
 
     _userBox = await Hive.openBox('userBox');
     final user = await _hiveService.getUserData(_username);
@@ -251,172 +253,175 @@ class _ProfilePageState extends State<ProfilePage> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-              const SizedBox(height: 20),
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  GestureDetector(
-                    onTap: _chooseProfileImage,
-                    child: CircleAvatar(
-                      radius: 60,
-                      backgroundImage: _profileImage != null
-                          ? FileImage(_profileImage!)
-                          : const AssetImage('assets/profile.png'),
-                      child: _profileImage == null
-                          ? Container(
-                              width: 60,
-                              height: 60,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                              ),
-                            )
-                          : null,
-                    ),
-                  ),
-                  Positioned(
-                    bottom: -10,
-                    right: -10,
-                    child: GestureDetector(
+                const SizedBox(height: 20),
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    GestureDetector(
                       onTap: _chooseProfileImage,
-                      child: Container(
-                        padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          color: Colors.blueAccent,
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: const Icon(
-                          Icons.edit,
-                          color: Colors.white,
-                          size: 20,
+                      child: CircleAvatar(
+                        radius: 60,
+                        backgroundImage: _profileImage != null
+                            ? FileImage(_profileImage!)
+                            : const AssetImage('assets/profile.png'),
+                        child: _profileImage == null
+                            ? Container(
+                                width: 60,
+                                height: 60,
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                ),
+                              )
+                            : null,
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: GestureDetector(
+                        onTap: _chooseProfileImage,
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.green.shade400,
+                            borderRadius: BorderRadius.circular(50),
+                            border: Border.all(color: Colors.white, width: 2),
+                          ),
+                          child: const Icon(
+                            Icons.camera_alt,
+                            color: Colors.white,
+                            size: 24,
+                          ),
                         ),
                       ),
                     ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'Nama Pengguna: $_username',
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Text(
-                'Nama Pengguna: $_username',
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
                 ),
-              ),
-              const SizedBox(height: 20),
-              Card(
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Biodata',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                const SizedBox(height: 20),
+                Card(
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Biodata',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
+                            if (!_isEditingBiodata)
+                              IconButton(
+                                icon: const Icon(Icons.edit),
+                                onPressed: () {
+                                  setState(() {
+                                    _isEditingBiodata = !_isEditingBiodata;
+                                  });
+                                },
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        if (_isEditingBiodata) ...[
+                          _buildTextField(
+                            'Nama Lengkap',
+                            _fullName,
+                            (value) => _fullName = value,
                           ),
-                          if (!_isEditingBiodata)
-                            IconButton(
-                              icon: const Icon(Icons.edit),
-                              onPressed: () {
-                                setState(() {
-                                  _isEditingBiodata = !_isEditingBiodata;
-                                });
-                              },
-                            ),
+                          _buildTextField(
+                            'Alamat',
+                            _address,
+                            (value) => _address = value,
+                          ),
+                          _buildTextField(
+                            'Hobi',
+                            _hobbies,
+                            (value) => _hobbies = value,
+                          ),
+                          const SizedBox(height: 20),
+                          ElevatedButton(
+                            onPressed: _saveBio,
+                            child: const Text('Simpan Perubahan'),
+                          ),
+                        ] else ...[
+                          _buildBiodataRow('Nama Lengkap', _fullName),
+                          _buildBiodataRow('Alamat', _address),
+                          _buildBiodataRow('Hobi', _hobbies),
                         ],
-                      ),
-                      const SizedBox(height: 10),
-                      if (_isEditingBiodata) ...[
-                        _buildTextField(
-                          'Nama Lengkap',
-                          _fullName,
-                          (value) => _fullName = value,
-                        ),
-                        _buildTextField(
-                          'Alamat',
-                          _address,
-                          (value) => _address = value,
-                        ),
-                        _buildTextField(
-                          'Hobi',
-                          _hobbies,
-                          (value) => _hobbies = value,
-                        ),
-                        const SizedBox(height: 20),
-                        ElevatedButton(
-                          onPressed: _saveBio,
-                          child: const Text('Simpan Perubahan'),
-                        ),
-                      ] else ...[
-                        _buildBiodataRow('Nama Lengkap', _fullName),
-                        _buildBiodataRow('Alamat', _address),
-                        _buildBiodataRow('Hobi', _hobbies),
                       ],
-                    ],
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              Card(
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Saran dan Kesan Mata Kuliah Pemrograman Aplikasi Mobile',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                const SizedBox(height: 20),
+                Card(
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Saran dan Pesan Mata Kuliah Pemrograman Aplikasi Mobile',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                      _buildBiodataRow('Kesan', _impression),
-                      _buildBiodataRow(
-                        'Saran',
-                        'No Suggestion',
-                      ), // Placeholder for suggestion
-                    ],
+                        const SizedBox(height: 10),
+                        _buildBiodataRow('Pesan', _impression),
+                        _buildBiodataRow(
+                          'Saran',
+                          'No Suggestion',
+                        ), // Placeholder for suggestion
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _logout,
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 50),
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _logout,
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 50),
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('Logout'),
                 ),
-                child: const Text('Logout'),
-              ),
-              const SizedBox(height: 20),
-              _buildHomeCard(
-                context,
-                'Status Membership',
-                'Lihat keuntungan eksklusif Anda sebagai member.',
-                Icons.card_membership,
-                () => Navigator.push(
+                const SizedBox(height: 20),
+                _buildHomeCard(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => const MembershipPage(),
+                  'Status Membership',
+                  'Lihat keuntungan eksklusif Anda sebagai member.',
+                  Icons.card_membership,
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MembershipPage(),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -452,7 +457,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Colors.blue.shade200, Colors.blue.shade400],
+          colors: [Colors.green.shade200, Colors.green.shade400],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -476,7 +481,7 @@ class _ProfilePageState extends State<ProfilePage> {
               color: Colors.white.withOpacity(0.8),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, size: 30, color: Colors.blue.shade700),
+            child: Icon(icon, size: 30, color: Colors.green.shade700),
           ),
           title: Text(
             title,
