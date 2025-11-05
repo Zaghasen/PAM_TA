@@ -398,16 +398,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: _logout,
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 50),
-                    backgroundColor: Colors.red,
-                    foregroundColor: Colors.white,
-                  ),
-                  child: const Text('Logout'),
-                ),
-                const SizedBox(height: 20),
                 _buildHomeCard(
                   context,
                   'Status Membership',
@@ -419,6 +409,16 @@ class _ProfilePageState extends State<ProfilePage> {
                       builder: (context) => const MembershipPage(),
                     ),
                   ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _logout,
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 50),
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('Logout'),
                 ),
               ],
             ),
