@@ -22,9 +22,9 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController _bioController = TextEditingController();
 
   // Biodata fields
-  String _fullName = 'No Name';
-  String _address = 'No Address';
-  String _hobbies = 'No Hobbies';
+  String _fullName = 'Zalfa Ghalib Hussein';
+  String _address = 'Srowol, Progowati, Mendut, Magelang, Jawa Tengah';
+  String _hobbies = 'Mendaki, Berlari, Berenang, Eksplor alam';
   String _impression = 'No Impression';
   String _phoneNumber = 'No Phone Number';
 
@@ -234,11 +234,23 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.blue.shade50,
+              Colors.green.shade50,
+              Colors.purple.shade50,
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
               const SizedBox(height: 20),
               Stack(
                 clipBehavior: Clip.none,
@@ -339,16 +351,6 @@ class _ProfilePageState extends State<ProfilePage> {
                           _hobbies,
                           (value) => _hobbies = value,
                         ),
-                        _buildTextField(
-                          'Kesan',
-                          _impression,
-                          (value) => _impression = value,
-                        ),
-                        _buildTextField(
-                          'Nomor Telepon',
-                          _phoneNumber,
-                          (value) => _phoneNumber = value,
-                        ),
                         const SizedBox(height: 20),
                         ElevatedButton(
                           onPressed: _saveBio,
@@ -358,9 +360,35 @@ class _ProfilePageState extends State<ProfilePage> {
                         _buildBiodataRow('Nama Lengkap', _fullName),
                         _buildBiodataRow('Alamat', _address),
                         _buildBiodataRow('Hobi', _hobbies),
-                        _buildBiodataRow('Kesan', _impression),
-                        _buildBiodataRow('No Hp', _phoneNumber),
                       ],
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Card(
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Saran dan Kesan Mata Kuliah Pemrograman Aplikasi Mobile',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      _buildBiodataRow('Kesan', _impression),
+                      _buildBiodataRow(
+                        'Saran',
+                        'No Suggestion',
+                      ), // Placeholder for suggestion
                     ],
                   ),
                 ),
@@ -370,7 +398,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 onPressed: _logout,
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 50),
-                  backgroundColor: const Color(0xFF2A4D3A),
+                  backgroundColor: Colors.red,
                   foregroundColor: Colors.white,
                 ),
                 child: const Text('Logout'),
@@ -421,13 +449,57 @@ class _ProfilePageState extends State<ProfilePage> {
     IconData icon,
     VoidCallback onTap,
   ) {
-    return Card(
-      child: ListTile(
-        leading: Icon(icon, size: 40, color: const Color(0xFF2A4D3A)),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text(subtitle),
-        onTap: onTap,
-        trailing: const Icon(Icons.chevron_right),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.blue.shade200, Colors.blue.shade400],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Card(
+        color: Colors.transparent,
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        child: ListTile(
+          leading: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.8),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, size: 30, color: Colors.blue.shade700),
+          ),
+          title: Text(
+            title,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontSize: 18,
+            ),
+          ),
+          subtitle: Text(
+            subtitle,
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.9),
+              fontSize: 14,
+            ),
+          ),
+          onTap: onTap,
+          trailing: const Icon(
+            Icons.chevron_right,
+            color: Colors.white,
+            size: 30,
+          ),
+        ),
       ),
     );
   }

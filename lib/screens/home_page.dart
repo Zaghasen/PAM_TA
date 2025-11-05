@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:tapak_jejak/data/mock_data.dart';
 import 'package:tapak_jejak/models/brand.dart';
 import 'package:tapak_jejak/models/product.dart';
-import 'package:tapak_jejak/screens/icons/sewa_alat/all_products_page.dart';
 import 'package:tapak_jejak/screens/icons/blog/blog.dart';
 import 'package:tapak_jejak/screens/icons/camping_ground/camping_ground.dart';
 import 'package:tapak_jejak/screens/icons/eat_stay/eat&stay.dart';
