@@ -28,6 +28,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/
     - assets/LOGO.png
     - assets/banner_1.jpg
     - assets/banner_2.jpg
@@ -58,5 +59,10 @@ flutter:
     - assets/blog.png
     - assets/tutorial.png
     - assets/tiket_masuk/
+    - assets/antarestar/
+    - assets/eiger/
+    - assets/consina/
+    - assets/arei/
+    - assets/carumby/
     - assets/trip_kosong.png
     - assets/tidak_ada.png

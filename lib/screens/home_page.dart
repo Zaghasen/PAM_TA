@@ -143,8 +143,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisCount: 4,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    mainAxisSpacing: 16.0,
-                    crossAxisSpacing: 16.0,
+                    mainAxisSpacing:
+                        8.0, // Kurangi spacing untuk mencegah overflow
+                    crossAxisSpacing:
+                        8.0, // Kurangi spacing untuk mencegah overflow
                     children: [
                       _buildCustomServiceIcon(
                         Image.asset('assets/tiket_masuk.png'),
@@ -286,8 +288,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         crossAxisCount: 4,
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        mainAxisSpacing: 16.0,
-                        crossAxisSpacing: 16.0,
+                        mainAxisSpacing:
+                            8.0, // Kurangi spacing untuk mencegah overflow
+                        crossAxisSpacing:
+                            8.0, // Kurangi spacing untuk mencegah overflow
                         children: [
                           _buildCustomServiceIcon(
                             Image.asset('assets/keamanan.png'),
@@ -334,138 +338,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
-                // Lihat Semua Produk Section
-                Container(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 8.0,
-                  ),
-                  padding: const EdgeInsets.all(16.0),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Colors.green.shade200, Colors.green.shade100],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(16.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 10,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                  child: InkWell(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AllProductsScreen(
-                          refreshCallback: widget.refreshCallback,
-                        ),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.inventory_2,
-                          size: 50,
-                          color: const Color(0xFF2A4D3A),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Lihat Semua Produk',
-                                style: Theme.of(context).textTheme.titleMedium
-                                    ?.copyWith(
-                                      color: const Color(0xFF2A4D3A),
-                                      fontWeight: FontWeight.bold,
-                                      shadows: [
-                                        Shadow(
-                                          color: Colors.black.withOpacity(0.3),
-                                          offset: const Offset(1, 1),
-                                          blurRadius: 2,
-                                        ),
-                                      ],
-                                    ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                'Jelajahi semua koleksi alat pendakian kami.',
-                                style: Theme.of(context).textTheme.bodyMedium
-                                    ?.copyWith(color: Colors.black87),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Icon(
-                          Icons.chevron_right,
-                          color: Color(0xFF2A4D3A),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                // Brand Unggulan Section
-                Container(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 8.0,
-                  ),
-                  padding: const EdgeInsets.all(16.0),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Colors.green.shade300, Colors.green.shade200],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(16.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 10,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      Center(
-                        child: Text(
-                          'Brand Unggulan',
-                          style: Theme.of(context).textTheme.titleLarge
-                              ?.copyWith(
-                                color: const Color(0xFF2A4D3A),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 24,
-                                shadows: [
-                                  Shadow(
-                                    color: Colors.black.withOpacity(0.3),
-                                    offset: const Offset(1, 1),
-                                    blurRadius: 2,
-                                  ),
-                                ],
-                              ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      SizedBox(
-                        height: 200,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: mockBrands.length,
-                          itemBuilder: (context, index) =>
-                              _buildBrandCard(mockBrands[index]),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+
                 GridView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),

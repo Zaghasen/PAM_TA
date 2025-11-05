@@ -155,7 +155,7 @@ class _CartPageState extends State<CartPage> {
         children: [
           // Creative Category filter tabs
           Container(
-            height: 80,
+            height: 70, // Kurangi tinggi untuk mencegah overflow
             decoration: BoxDecoration(
               color: Colors.white,
               boxShadow: [
@@ -168,7 +168,10 @@ class _CartPageState extends State<CartPage> {
             ),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ), // Kurangi padding
               child: Row(
                 children: CartCategory.values.map((category) {
                   final isSelected = selectedCategory == category;
@@ -176,7 +179,7 @@ class _CartPageState extends State<CartPage> {
 
                   return AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
-                    margin: const EdgeInsets.only(right: 12),
+                    margin: const EdgeInsets.only(right: 8), // Kurangi margin
                     child: InkWell(
                       onTap: () {
                         setState(() {
@@ -186,8 +189,8 @@ class _CartPageState extends State<CartPage> {
                       borderRadius: BorderRadius.circular(20),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
+                          horizontal: 12, // Kurangi padding horizontal
+                          vertical: 6, // Kurangi padding vertical
                         ),
                         decoration: BoxDecoration(
                           gradient: isSelected
@@ -226,9 +229,9 @@ class _CartPageState extends State<CartPage> {
                               color: isSelected
                                   ? Colors.white
                                   : Colors.grey.shade600,
-                              size: 20,
+                              size: 18, // Kurangi ukuran icon
                             ),
-                            const SizedBox(width: 8),
+                            const SizedBox(width: 6), // Kurangi spacing
                             Text(
                               categoryData['label'] as String,
                               style: TextStyle(
@@ -238,7 +241,7 @@ class _CartPageState extends State<CartPage> {
                                 fontWeight: isSelected
                                     ? FontWeight.bold
                                     : FontWeight.w500,
-                                fontSize: 14,
+                                fontSize: 12, // Kurangi font size
                               ),
                             ),
                           ],

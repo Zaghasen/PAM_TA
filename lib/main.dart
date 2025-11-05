@@ -42,6 +42,18 @@ class MyApp extends StatelessWidget {
 
       // Menentukan halaman pertama yang akan ditampilkan saat aplikasi dibuka.
       home: const LoginScreen(),
+
+      // Tambahkan builder untuk mengatasi overflow di berbagai ukuran layar
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            textScaler: const TextScaler.linear(
+              1.0,
+            ), // Mencegah scaling text yang berlebihan
+          ),
+          child: child!,
+        );
+      },
     );
   }
 }

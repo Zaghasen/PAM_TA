@@ -232,7 +232,7 @@ class _CampingGroundPageState extends State<CampingGroundPage> {
             ),
           ),
           child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(20.0, 80.0, 20.0, 20.0),
+            padding: const EdgeInsets.fromLTRB(20.0, 100.0, 20.0, 20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
