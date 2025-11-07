@@ -381,18 +381,21 @@ class _ProfilePageState extends State<ProfilePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'Saran dan Pesan Mata Kuliah Pemrograman Aplikasi Mobile',
+                          'Kesan dan Pesan Mata Kuliah Pemrograman Aplikasi Mobile',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         const SizedBox(height: 10),
-                        _buildBiodataRow('Pesan', _impression),
                         _buildBiodataRow(
-                          'Saran',
-                          'No Suggestion',
-                        ), // Placeholder for suggestion
+                          'Kesan',
+                          'Jujur dari lubuk hati saya, saya suka dan tertarik dengan mata kuliah PAM ini, deadline yang diberikan juga benar benar menantang adrenalin saya. Saya itu adalah tipikal yang orang santai, kaum kaum deadliner lah, nah waktu mengerjakan projek ini pun saya masih sangat santai, sampai sampai begadang tiap malam, hanya untuk mengerjakan projek yang sangatlah seru dan santai ini ...',
+                        ),
+                        _buildBiodataRow(
+                          'Pesan',
+                          'Kalau bisa tenggat pengerjakan dan pengumpulannya cukup seminggu pak, kita pasti bisa, bisa tewas mengenaskan.',
+                        ),
                       ],
                     ),
                   ),
