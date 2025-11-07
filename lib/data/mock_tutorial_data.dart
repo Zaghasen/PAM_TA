@@ -5,7 +5,7 @@ List<Tutorial> mockTutorials = [
     id: 1,
     title: 'Persiapan Tas Pendakian',
     category: 'Persiapan Pendakian',
-    imageUrl: 'assets/arei/tas1.jpg',
+    imageUrl: 'assets/packing.jpg',
     duration: '5 menit',
     description:
         'Panduan lengkap packing tas pendakian dengan checklist item wajib.',
@@ -22,7 +22,7 @@ List<Tutorial> mockTutorials = [
     id: 2,
     title: 'Cara Memasang Tenda di Lapangan',
     category: 'Penggunaan Alat',
-    imageUrl: 'assets/eiger/tenda2.jpg',
+    imageUrl: 'assets/build.jpg',
     duration: '7 menit',
     description: 'Step-by-step memasang tenda di berbagai kondisi medan.',
     steps: [
@@ -38,7 +38,7 @@ List<Tutorial> mockTutorials = [
     id: 3,
     title: 'Teknik Hiking Aman di Medan Berat',
     category: 'Teknik Dasar',
-    imageUrl: 'assets/gunung.jpeg',
+    imageUrl: 'assets/hiking.jpg',
     duration: '10 menit',
     description: 'Tips berjalan efisien dan aman di jalur gunung.',
     steps: [
@@ -54,7 +54,7 @@ List<Tutorial> mockTutorials = [
     id: 4,
     title: 'Penggunaan Kompas dan GPS',
     category: 'Navigasi',
-    imageUrl: 'assets/keamanan.png',
+    imageUrl: 'assets/kompas.jpg',
     duration: '8 menit',
     description: 'Panduan navigasi menggunakan kompas dan aplikasi GPS.',
     steps: [
@@ -70,7 +70,7 @@ List<Tutorial> mockTutorials = [
     id: 5,
     title: 'Pertolongan Pertama di Gunung',
     category: 'Keamanan',
-    imageUrl: 'assets/keamanan.png',
+    imageUrl: 'assets/p3.jpg',
     duration: '12 menit',
     description: 'Penanganan cedera dasar saat pendakian.',
     steps: [

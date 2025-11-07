@@ -41,7 +41,7 @@ List<BlogPost> mockBlogPosts = [
     id: 4,
     title: 'Eksplorasi Alam: Flora dan Fauna di Gunung Bromo',
     category: 'Eksplorasi Alam',
-    imageUrl: 'assets/gunung.jpeg',
+    imageUrl: 'assets/FloraFauna.jpg',
     date: '1 Oktober 2023',
     description:
         'Jelajahi keanekaragaman hayati Gunung Bromo, dari padang rumput hingga kawah aktif.',
@@ -53,7 +53,7 @@ List<BlogPost> mockBlogPosts = [
     id: 5,
     title: 'Review Alat Pendakian Terbaik untuk Musim Hujan',
     category: 'Review Produk',
-    imageUrl: 'assets/eiger/tenda2.jpg',
+    imageUrl: 'assets/alat.jpg',
     date: '25 September 2023',
     description:
         'Ulasan tenda dan jaket anti-air dari brand terpercaya, cocok untuk kondisi hujan di gunung.',
