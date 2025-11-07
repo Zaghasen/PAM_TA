@@ -119,121 +119,169 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12.0),
                     child: SizedBox(
-                      height: 180,
+                      height: 200,
                       child: PageView.builder(
                         itemCount: 3,
                         itemBuilder: (context, index) {
-                          return Image.asset(
-                            'assets/banner_${index + 1}.jpg',
-                            fit: BoxFit.cover,
+                          return Container(
+                            width: MediaQuery.of(context).size.width - 32,
+                            child: Image.asset(
+                              'assets/banner_${index + 1}.jpg',
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                            ),
                           );
                         },
                       ),
                     ),
                   ),
                 ),
-                // Service Icons Grid (2x4)
-                Padding(
-                  padding: const EdgeInsets.symmetric(
+                // Service Icons Card
+                Container(
+                  margin: const EdgeInsets.symmetric(
                     horizontal: 16.0,
                     vertical: 8.0,
                   ),
-                  child: GridView.count(
-                    crossAxisCount: 4,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    mainAxisSpacing:
-                        8.0, // Kurangi spacing untuk mencegah overflow
-                    crossAxisSpacing:
-                        8.0, // Kurangi spacing untuk mencegah overflow
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.green.shade100, Colors.green.shade50],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildCustomServiceIcon(
-                        Image.asset('assets/tiket_masuk.png'),
-                        'Tiket Masuk',
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                TermsScreen(nextPage: const TiketMasukPage()),
-                          ),
+                      Center(
+                        child: Text(
+                          'Layanan Pendakian',
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(
+                                color: const Color(0xFF2A4D3A),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 24,
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.black.withOpacity(0.3),
+                                    offset: const Offset(1, 1),
+                                    blurRadius: 2,
+                                  ),
+                                ],
+                              ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
-                      _buildCustomServiceIcon(
-                        Image.asset('assets/travel_ojek.png'),
-                        'Travel & Ojek',
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                TermsScreen(nextPage: const TravelOjekPage()),
-                          ),
-                        ),
-                      ),
-                      _buildCustomServiceIcon(
-                        Image.asset('assets/porter_guide.png'),
-                        'Porter & Guide',
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                TermsScreen(nextPage: const PorterGuidePage()),
-                          ),
-                        ),
-                      ),
-                      _buildCustomServiceIcon(
-                        Image.asset('assets/sewa_alat.png'),
-                        'Sewa Alat',
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                TermsScreen(nextPage: const SewaAlatPage()),
-                          ),
-                        ),
-                      ),
-                      _buildCustomServiceIcon(
-                        Image.asset('assets/private_open_trip.png'),
-                        'Private & Open Trip',
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => TermsScreen(
-                              nextPage: const PrivateOpenTripPage(),
+                      const SizedBox(height: 20),
+                      GridView.count(
+                        crossAxisCount: 4,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        mainAxisSpacing:
+                            8.0, // Kurangi spacing untuk mencegah overflow
+                        crossAxisSpacing:
+                            8.0, // Kurangi spacing untuk mencegah overflow
+                        children: [
+                          _buildCustomServiceIcon(
+                            Image.asset('assets/tiket_masuk.png'),
+                            'Tiket',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TermsScreen(
+                                  nextPage: const TiketMasukPage(),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                      _buildCustomServiceIcon(
-                        Image.asset('assets/camping_ground.png'),
-                        'Camping Ground',
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => TermsScreen(
-                              nextPage: const CampingGroundPage(),
+                          _buildCustomServiceIcon(
+                            Image.asset('assets/travel_ojek.png'),
+                            'Travel',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TermsScreen(
+                                  nextPage: const TravelOjekPage(),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                      _buildCustomServiceIcon(
-                        Image.asset('assets/event.png'),
-                        'Event',
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const EventPage(),
+                          _buildCustomServiceIcon(
+                            Image.asset('assets/porter_guide.png'),
+                            'Porter',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TermsScreen(
+                                  nextPage: const PorterGuidePage(),
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      _buildCustomServiceIcon(
-                        Image.asset('assets/eat_stay.png'),
-                        'Eat & Stay',
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const EatStayPage(),
+                          _buildCustomServiceIcon(
+                            Image.asset('assets/sewa_alat.png'),
+                            'Sewa Alat',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    TermsScreen(nextPage: const SewaAlatPage()),
+                              ),
+                            ),
                           ),
-                        ),
+                          _buildCustomServiceIcon(
+                            Image.asset('assets/private_open_trip.png'),
+                            'Trip',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TermsScreen(
+                                  nextPage: const PrivateOpenTripPage(),
+                                ),
+                              ),
+                            ),
+                          ),
+                          _buildCustomServiceIcon(
+                            Image.asset('assets/camping_ground.png'),
+                            'Camping',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TermsScreen(
+                                  nextPage: const CampingGroundPage(),
+                                ),
+                              ),
+                            ),
+                          ),
+                          _buildCustomServiceIcon(
+                            Image.asset('assets/event.png'),
+                            'Event',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const EventPage(),
+                              ),
+                            ),
+                          ),
+                          _buildCustomServiceIcon(
+                            Image.asset('assets/eat_stay.png'),
+                            'Eat & Stay',
+                            () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const EatStayPage(),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
