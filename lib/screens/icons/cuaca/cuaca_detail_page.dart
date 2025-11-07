@@ -28,20 +28,41 @@ class WeatherDetailPage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Bulan: ${weatherData.month} ${weatherData.year}',
-              style: const TextStyle(fontSize: 16),
+              '${weatherData.month} ${weatherData.year}',
+              style: const TextStyle(fontSize: 16, color: Colors.grey),
             ),
-            const SizedBox(height: 16),
-            Text(
-              'Curah Hujan: ${weatherData.rainfall} mm',
-              style: const TextStyle(fontSize: 16),
+            const SizedBox(height: 24),
+            Card(
+              elevation: 4,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.water_drop, color: Colors.blue),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Curah Hujan: ${weatherData.rainfall} mm',
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        const Icon(Icons.calendar_today, color: Colors.orange),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Hari Hujan: ${weatherData.rainyDays} hari',
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
-            const SizedBox(height: 16),
-            Text(
-              'Hari Hujan: ${weatherData.rainyDays} hari',
-              style: const TextStyle(fontSize: 16),
-            ),
-            // Add more details as needed
           ],
         ),
       ),

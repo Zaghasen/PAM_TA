@@ -19,6 +19,8 @@ dependencies:
   shared_preferences: ^2.2.2
   image_picker: ^1.0.7
   intl: ^0.19.0
+  geolocator: ^14.0.2
+  permission_handler: ^12.0.1
 
 dev_dependencies:
   flutter_test:
@@ -41,10 +43,6 @@ flutter:
     - assets/carumby.jpg
     - assets/kosong.png
     - assets/comingsoon1.png
-    - assets/gunung.jpeg
-    - assets/tipe A.jpeg
-    - assets/tipe B.jpeg
-    - assets/tipe C.jpeg
     - assets/tiket_masuk.png
     - assets/travel_ojek.png
     - assets/porter_guide.png

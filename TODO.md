@@ -1,27 +1,45 @@
-# TODO List for Membership Page Enhancement
+# TODO: Optimize Cuaca Page for Android Performance
 
-## Completed Tasks
+## Plan Overview
 
-- [x] Create Membership model with levels and benefits
-- [x] Update MembershipPage to display detailed membership information
-- [x] Add current membership status card with gradient design
-- [x] Implement points display with progress bar
-- [x] List benefits with check icons
-- [x] Show all membership levels with color coding
-- [x] Add upgrade button with placeholder functionality
+The CuacaPage is heavy due to complex FlutterMap, large background image, multiple data fetches, and long weather data list. Optimize for Android by simplifying components and improving efficiency.
 
-## Pending Tasks
+## Steps to Complete
 
-- [ ] Integrate real user data instead of mock data
-- [ ] Add functionality to upgrade membership
-- [ ] Implement point earning system
-- [ ] Add animations for better UX
-- [ ] Connect to backend for membership management
-- [ ] Add notification system for level upgrades
+### 1. Replace Full Map with Static Image or Simplified View
 
-## Notes
+- [ ] Remove FlutterMap integration
+- [ ] Replace with a static map image or simplified placeholder
+- [ ] Update UI to reflect the change without losing functionality
 
-- Membership levels: Bronze, Silver, Gold, Platinum
-- Current mock data shows Gold level with 1250 points
-- Page uses gradient backgrounds for visual appeal
-- Cards have rounded corners and shadows for modern look
+### 2. Implement Lazy Loading and Pagination for Weather Data
+
+- [ ] Modify WeatherProvider to support pagination
+- [ ] Update ListView.builder to load data in chunks
+- [ ] Add loading indicators for pagination
+
+### 3. Optimize Background Image and Reduce Asset Sizes
+
+- [ ] Compress or resize background image (assets/gunung.jpeg)
+- [ ] Consider using a smaller resolution or alternative background
+- [ ] Optimize other assets if needed
+
+### 4. Cache Weather Data Locally
+
+- [ ] Implement local storage for weather data using Hive or similar
+- [ ] Modify WeatherService to check cache before fetching
+- [ ] Add cache expiration logic
+
+### 5. Simplify UI Animations and Reduce Nested Widgets
+
+- [ ] Remove or simplify animations in the UI
+- [ ] Refactor nested widgets to reduce complexity
+- [ ] Optimize layout for better performance
+
+## Progress Tracking
+
+- [ ] Step 1: Not Started
+- [ ] Step 2: Not Started
+- [ ] Step 3: Not Started
+- [ ] Step 4: Not Started
+- [ ] Step 5: Not Started
