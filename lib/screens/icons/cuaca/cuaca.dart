@@ -586,95 +586,100 @@ class _CuacaPageState extends State<CuacaPage> {
                             Row(
                               children: [
                                 Expanded(
-                                  child: Consumer<WeatherProvider>(
-                                    builder: (context, provider, child) {
-                                      return DropdownButtonFormField<String>(
-                                        decoration: InputDecoration(
-                                          border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              15,
-                                            ),
-                                            borderSide: BorderSide.none,
-                                          ),
-                                          filled: true,
-                                          fillColor: Colors.grey.shade50,
-                                          hintText: 'Pilih bulan',
-                                          prefixIcon: const Icon(
-                                            Icons.calendar_view_month,
-                                            color: Color(0xFF2E7D32),
-                                          ),
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                horizontal: 8,
-                                                vertical: 12,
+                                  child: Column(
+                                    children: [
+                                      Consumer<WeatherProvider>(
+                                        builder: (context, provider, child) {
+                                          return DropdownButtonFormField<
+                                            String
+                                          >(
+                                            decoration: InputDecoration(
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                borderSide: BorderSide.none,
                                               ),
-                                        ),
-                                        initialValue: provider.selectedMonth,
-                                        items: WeatherService.months.map((
-                                          month,
-                                        ) {
-                                          return DropdownMenuItem(
-                                            value: month,
-                                            child: Text(month),
-                                          );
-                                        }).toList(),
-                                        onChanged: (value) {
-                                          provider.setFilters(
-                                            month: value,
-                                            year: provider.selectedYear,
+                                              filled: true,
+                                              fillColor: Colors.grey.shade50,
+                                              hintText: 'Pilih bulan',
+                                              prefixIcon: const Icon(
+                                                Icons.calendar_view_month,
+                                                color: Color(0xFF2E7D32),
+                                              ),
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 8,
+                                                    vertical: 12,
+                                                  ),
+                                            ),
+                                            initialValue:
+                                                provider.selectedMonth,
+                                            items: WeatherService.months.map((
+                                              month,
+                                            ) {
+                                              return DropdownMenuItem(
+                                                value: month,
+                                                child: Text(month),
+                                              );
+                                            }).toList(),
+                                            onChanged: (value) {
+                                              provider.setFilters(
+                                                month: value,
+                                                year: provider.selectedYear,
+                                              );
+                                            },
                                           );
                                         },
-                                      );
-                                    },
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Consumer<WeatherProvider>(
-                                    builder: (context, provider, child) {
-                                      return DropdownButtonFormField<int>(
-                                        decoration: InputDecoration(
-                                          border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              15,
-                                            ),
-                                            borderSide: BorderSide.none,
-                                          ),
-                                          filled: true,
-                                          fillColor: Colors.grey.shade50,
-                                          hintText: 'Pilih tahun',
-                                          prefixIcon: const Icon(
-                                            Icons.date_range,
-                                            color: Color(0xFF2E7D32),
-                                          ),
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                horizontal: 8,
-                                                vertical: 12,
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Consumer<WeatherProvider>(
+                                        builder: (context, provider, child) {
+                                          return DropdownButtonFormField<int>(
+                                            decoration: InputDecoration(
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                borderSide: BorderSide.none,
                                               ),
-                                        ),
-                                        initialValue: provider.selectedYear,
-                                        items: WeatherService.getYears().map((
-                                          year,
-                                        ) {
-                                          return DropdownMenuItem(
-                                            value: year,
-                                            child: Text(year.toString()),
-                                          );
-                                        }).toList(),
-                                        onChanged: (value) {
-                                          provider.setFilters(
-                                            month: provider.selectedMonth,
-                                            year: value,
+                                              filled: true,
+                                              fillColor: Colors.grey.shade50,
+                                              hintText: 'Pilih tahun',
+                                              prefixIcon: const Icon(
+                                                Icons.date_range,
+                                                color: Color(0xFF2E7D32),
+                                              ),
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 8,
+                                                    vertical: 12,
+                                                  ),
+                                            ),
+                                            initialValue: provider.selectedYear,
+                                            items: WeatherService.getYears()
+                                                .map((year) {
+                                                  return DropdownMenuItem(
+                                                    value: year,
+                                                    child: Text(
+                                                      year.toString(),
+                                                    ),
+                                                  );
+                                                })
+                                                .toList(),
+                                            onChanged: (value) {
+                                              provider.setFilters(
+                                                month: provider.selectedMonth,
+                                                year: value,
+                                              );
+                                            },
                                           );
                                         },
-                                      );
-                                    },
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                const SizedBox(width: 8),
+                                const SizedBox(width: 12),
                                 SizedBox(
-                                  width: 70,
+                                  width: 80,
                                   child: ElevatedButton(
                                     onPressed: () {
                                       context
@@ -688,7 +693,7 @@ class _CuacaPageState extends State<CuacaPage> {
                                         borderRadius: BorderRadius.circular(15),
                                       ),
                                       padding: const EdgeInsets.symmetric(
-                                        horizontal: 4,
+                                        horizontal: 8,
                                         vertical: 12,
                                       ),
                                     ),
