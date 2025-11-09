@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:tapak_jejak/screens/login_page.dart';
 import 'package:tapak_jejak/services/hive_service.dart';
 
@@ -10,6 +11,18 @@ void main() async {
   await Hive.initFlutter();
   final hiveService = HiveService();
   await hiveService.initHive();
+
+  await AwesomeNotifications().initialize(null, [
+    NotificationChannel(
+      channelKey: 'alerts',
+      channelName: 'Alerts',
+      channelDescription: 'Notifikasi untuk pendakian dan langganan',
+      defaultColor: Colors.redAccent,
+      ledColor: Colors.blueAccent,
+      importance: NotificationImportance.High,
+      channelShowBadge: true,
+    ),
+  ], debug: true);
 
   runApp(const MyApp());
 }

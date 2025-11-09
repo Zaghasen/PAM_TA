@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tapak_jejak/models/membership.dart';
+import 'package:tapak_jejak/services/auth_service.dart';
+import 'package:tapak_jejak/services/notification_service.dart';
 
 class MembershipPage extends StatefulWidget {
   const MembershipPage({super.key});
@@ -11,6 +13,8 @@ class MembershipPage extends StatefulWidget {
 class _MembershipPageState extends State<MembershipPage> {
   late Membership membership;
   late List<Map<String, dynamic>> levels;
+  final AuthService _authService = AuthService();
+  final NotificationService _notificationService = NotificationService();
 
   @override
   void initState() {
@@ -328,12 +332,16 @@ class _MembershipPageState extends State<MembershipPage> {
                 // Upgrade Button
                 Center(
                   child: ElevatedButton(
-                    onPressed: () {
-                      // Add upgrade functionality
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Fitur upgrade akan segera hadir!'),
-                        ),
+                    onPressed: () async {
+                      // Add upgrade functionality with notifications
+                      await _authService.activateSubscription(
+                        days: 30,
+                        additionalQuota: 10,
+                        packageName: 'Premium',
+                      );
+                      _notificationService.showSuccess(
+                        context,
+                        'Langganan Premium berhasil diaktifkan!',
                       );
                     },
                     style: ElevatedButton.styleFrom(

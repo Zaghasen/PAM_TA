@@ -3,9 +3,11 @@ import 'package:tapak_jejak/models/user.dart';
 
 class HiveService {
   static const String userBoxName = 'userBox';
+  static const String sessionBoxName = 'sessionBox';
 
   Future<void> initHive() async {
     await Hive.openBox(userBoxName);
+    await Hive.openBox(sessionBoxName);
   }
 
   Future<void> saveUserData(String username, User user) async {
@@ -32,5 +34,21 @@ class HiveService {
     final box = await Hive.openBox(userBoxName);
     await box.delete('${username}_user');
     await box.delete('${username}_profileImage');
+  }
+
+  // Session management
+  Future<void> saveLoggedInUser(String username) async {
+    final box = await Hive.openBox(sessionBoxName);
+    await box.put('loggedInUser', username);
+  }
+
+  Future<String?> getLoggedInUser() async {
+    final box = await Hive.openBox(sessionBoxName);
+    return box.get('loggedInUser');
+  }
+
+  Future<void> logout() async {
+    final box = await Hive.openBox(sessionBoxName);
+    await box.delete('loggedInUser');
   }
 }

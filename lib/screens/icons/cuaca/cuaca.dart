@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import '../../../models/weather_data.dart';
 import '../../../services/weather_service.dart';
 import '../../../services/location_service.dart';
+import '../../../services/location_helper.dart';
 import 'cuaca_detail_page.dart';
 
 class WeatherProvider extends ChangeNotifier {
@@ -378,7 +379,38 @@ class _CuacaPageState extends State<CuacaPage> {
                                     )
                                   else
                                     GestureDetector(
-                                      onTap: _getCurrentLocation,
+                                      onTap: () async {
+                                        // Request permission and get location
+                                        final location =
+                                            await LocationHelper.getCurrentLocation();
+                                        if (location !=
+                                                'Lokasi tidak tersedia' &&
+                                            location !=
+                                                'Lokasi gagal diambil') {
+                                          setState(() {
+                                            _currentLocationName = location;
+                                          });
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'Lokasi berhasil diaktifkan: $location',
+                                              ),
+                                              backgroundColor: Colors.green,
+                                            ),
+                                          );
+                                        } else {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text(location),
+                                              backgroundColor: Colors.red,
+                                            ),
+                                          );
+                                        }
+                                      },
                                       child: Text(
                                         'Aktifkan Lokasi',
                                         style: TextStyle(

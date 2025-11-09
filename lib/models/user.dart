@@ -7,6 +7,9 @@ class User {
   String hobbies;
   String impression;
   String phoneNumber;
+  bool isSubscribed;
+  String? subscriptionUntil;
+  int remainingQuota;
 
   User({
     required this.username,
@@ -17,5 +20,8 @@ class User {
     this.hobbies = 'No Hobbies',
     this.impression = 'No Impression',
     this.phoneNumber = 'No Phone Number',
+    this.isSubscribed = false,
+    this.subscriptionUntil,
+    this.remainingQuota = 0,
   });
 }
