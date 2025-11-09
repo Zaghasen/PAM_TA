@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tapak_jejak/data/mock_tutorial_data.dart';
 import 'package:tapak_jejak/models/tutorial.dart';
 import 'package:tapak_jejak/screens/icons/tutorial/tutorial_detail_page.dart';
+import 'package:tapak_jejak/services/navigation_service.dart';
 
 enum TutorialCategory { all, persiapan, penggunaan, teknik, navigasi, keamanan }
 
@@ -372,14 +373,9 @@ class _TutorialPageState extends State<TutorialPage> {
                                     TextButton(
                                       onPressed: () {
                                         // Navigate to service page based on linkToService
-                                        ScaffoldMessenger.of(
+                                        NavigationService.navigateToService(
                                           context,
-                                        ).showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                              'Navigasi ke ${tutorial.linkToService}',
-                                            ),
-                                          ),
+                                          tutorial.linkToService!,
                                         );
                                       },
                                       child: Text(

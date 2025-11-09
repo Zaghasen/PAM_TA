@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tapak_jejak/models/tutorial.dart';
+import 'package:tapak_jejak/services/navigation_service.dart';
 
 class TutorialDetailPage extends StatefulWidget {
   final Tutorial tutorial;
@@ -216,12 +217,9 @@ class _TutorialDetailPageState extends State<TutorialDetailPage> {
                     ElevatedButton(
                       onPressed: () {
                         // Navigate to service page
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Navigasi ke ${tutorial.linkToService}',
-                            ),
-                          ),
+                        NavigationService.navigateToService(
+                          context,
+                          tutorial.linkToService!,
                         );
                       },
                       style: ElevatedButton.styleFrom(

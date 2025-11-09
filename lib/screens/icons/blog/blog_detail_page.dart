@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tapak_jejak/models/blog.dart';
+import 'package:tapak_jejak/services/navigation_service.dart';
 
 class BlogDetailPage extends StatelessWidget {
   final BlogPost post;
@@ -114,10 +115,9 @@ class BlogDetailPage extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () {
                         // Navigate to service page
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Navigasi ke ${post.linkToService}'),
-                          ),
+                        NavigationService.navigateToService(
+                          context,
+                          post.linkToService!,
                         );
                       },
                       style: ElevatedButton.styleFrom(
