@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tapak_jejak/models/mountain.dart';
 import 'package:tapak_jejak/models/product.dart';
-import 'package:tapak_jejak/screens/main_page.dart';
+import 'package:tapak_jejak/screens/home/main_page.dart';
 import 'pesanan(travel)_detail_page.dart';
 
 class TravelOjekDetailPage extends StatefulWidget {

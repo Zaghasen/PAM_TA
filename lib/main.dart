@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:tapak_jejak/screens/login_page.dart';
+import 'package:tapak_jejak/screens/login/login_page.dart';
+import 'package:tapak_jejak/screens/icons/sewa_alat/rental_page.dart';
+import 'package:tapak_jejak/screens/icons/sewa_alat/produk_page.dart';
+import 'package:tapak_jejak/screens/icons/blog/review_page.dart';
+import 'package:tapak_jejak/screens/icons/trip/trip_page.dart';
 import 'package:tapak_jejak/services/hive_service.dart';
+import 'package:tapak_jejak/models/user.dart';
 
 // -- ENTRY POINT APLIKASI --
 // Fungsi main() adalah yang pertama kali dijalankan saat aplikasi dibuka.
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
+
+  // Register Hive Adapter for User model
+  Hive.registerAdapter(UserAdapter());
+
   final hiveService = HiveService();
   await hiveService.initHive();
 
@@ -35,10 +44,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // MaterialApp adalah widget dasar untuk aplikasi yang menggunakan Material Design.
     return MaterialApp(
-      // Judul aplikasi yang muncul di task manager.
       title: 'Aplikasi Pendakian - TAPAK JEJAK',
-
-      // Pengaturan tema global untuk seluruh aplikasi.
       theme: ThemeData(
         primaryColor: const Color(0xFF2A4D3A),
         visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -49,21 +55,19 @@ class MyApp extends StatelessWidget {
           elevation: 1,
         ),
       ),
-
-      // Menghilangkan banner "Debug" di pojok kanan atas.
       debugShowCheckedModeBanner: false,
-
-      // Menentukan halaman pertama yang akan ditampilkan saat aplikasi dibuka.
       home: const LoginScreen(),
-
-      // Tambahkan builder untuk mengatasi overflow di berbagai ukuran layar
+      routes: {
+        '/rental': (context) => const RentalPage(),
+        '/produk': (context) => const ProdukPage(),
+        '/review': (context) => const ReviewPage(),
+        '/trip': (context) => const TripPage(),
+      },
       builder: (context, child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            textScaler: const TextScaler.linear(
-              1.0,
-            ), // Mencegah scaling text yang berlebihan
-          ),
+          data: MediaQuery.of(
+            context,
+          ).copyWith(textScaler: const TextScaler.linear(1.0)),
           child: child!,
         );
       },

@@ -4,9 +4,7 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:tapak_jejak/models/mountain.dart';
 import 'package:tapak_jejak/models/product.dart';
-import 'package:tapak_jejak/screens/main_page.dart';
-import 'package:tapak_jejak/screens/icons/tiket_masuk/pesanan(tiket)_detail_page.dart'
-    as tiket_detail;
+import 'package:tapak_jejak/screens/home/main_page.dart';
 
 class TiketDetailPage extends StatefulWidget {
   final Mountain mountain;
@@ -215,13 +213,15 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
   }
 
   double _calculatePrice() {
-    if (startDate == null || endDate == null) return 0;
+    if (startDate == null || endDate == null) return 0.0;
 
     int days = endDate!.difference(startDate!).inDays + 1;
-    double basePrice = 0;
+    double basePrice = 0.0;
 
     // Get price based on nationality of first person (assuming all same for simplicity)
-    String nationality = personalData[0]['nationality'];
+    String nationality = personalData.isNotEmpty
+        ? personalData[0]['nationality']
+        : 'WNI';
     bool isHoliday = _isHoliday(startDate!) || _isHoliday(endDate!);
 
     if (nationality == 'WNI') {
@@ -234,12 +234,13 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
           : widget.mountain.prices['Hari Kerja WNA']!.toDouble();
     }
 
-    double total = days * basePrice * ticketCount;
+    double total = (days * basePrice * ticketCount).toDouble();
 
     // Convert currency if needed
     if (selectedCurrency != 'IDR' && exchangeRates != null) {
-      double rate = exchangeRates![selectedCurrency] ?? 1;
-      total = total / exchangeRates!['IDR'] * rate;
+      double rate = (exchangeRates![selectedCurrency] ?? 1.0).toDouble();
+      double idrRate = (exchangeRates!['IDR'] ?? 1.0).toDouble();
+      total = total / idrRate * rate;
     }
 
     return total;
@@ -520,12 +521,23 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.white,
+                      Colors.green.shade50.withOpacity(0.3),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                   borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Color(0xFF2A4D3A).withOpacity(0.2),
+                    width: 1.5,
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 10,
+                      color: Color(0xFF2A4D3A).withOpacity(0.1),
+                      blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
                   ],
@@ -535,13 +547,29 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                   children: [
                     Row(
                       children: [
-                        Icon(
-                          Icons.location_pin,
-                          color: Color(0xFF2A4D3A),
-                          size: 24,
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Color(0xFF2A4D3A), Color(0xFF1B3A2E)],
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0xFF2A4D3A).withOpacity(0.3),
+                                blurRadius: 8,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.location_pin,
+                            color: Colors.white,
+                            size: 24,
+                          ),
                         ),
-                        const SizedBox(width: 8),
-                        Text(
+                        const SizedBox(width: 12),
+                        const Text(
                           'Pos Perizinan',
                           style: TextStyle(
                             fontSize: 20,
@@ -630,12 +658,23 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.white,
+                      Colors.green.shade50.withOpacity(0.3),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                   borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Color(0xFF2A4D3A).withOpacity(0.2),
+                    width: 1.5,
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 10,
+                      color: Color(0xFF2A4D3A).withOpacity(0.1),
+                      blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
                   ],
@@ -645,13 +684,29 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                   children: [
                     Row(
                       children: [
-                        Icon(
-                          Icons.calendar_today,
-                          color: Color(0xFF2A4D3A),
-                          size: 24,
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Color(0xFF2A4D3A), Color(0xFF1B3A2E)],
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0xFF2A4D3A).withOpacity(0.3),
+                                blurRadius: 8,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.calendar_today,
+                            color: Colors.white,
+                            size: 24,
+                          ),
                         ),
-                        const SizedBox(width: 8),
-                        Text(
+                        const SizedBox(width: 12),
+                        const Text(
                           'Tanggal Pendakian',
                           style: TextStyle(
                             fontSize: 20,
@@ -744,12 +799,23 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.white,
+                      Colors.green.shade50.withOpacity(0.3),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                   borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Color(0xFF2A4D3A).withOpacity(0.2),
+                    width: 1.5,
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 10,
+                      color: Color(0xFF2A4D3A).withOpacity(0.1),
+                      blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
                   ],
@@ -759,13 +825,29 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                   children: [
                     Row(
                       children: [
-                        Icon(
-                          Icons.confirmation_number,
-                          color: Color(0xFF2A4D3A),
-                          size: 24,
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Color(0xFF2A4D3A), Color(0xFF1B3A2E)],
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0xFF2A4D3A).withOpacity(0.3),
+                                blurRadius: 8,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.confirmation_number,
+                            color: Colors.white,
+                            size: 24,
+                          ),
                         ),
-                        const SizedBox(width: 8),
-                        Text(
+                        const SizedBox(width: 12),
+                        const Text(
                           'Jumlah Tiket',
                           style: TextStyle(
                             fontSize: 20,
@@ -818,12 +900,23 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.white,
+                      Colors.green.shade50.withOpacity(0.3),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                   borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Color(0xFF2A4D3A).withOpacity(0.2),
+                    width: 1.5,
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 10,
+                      color: Color(0xFF2A4D3A).withOpacity(0.1),
+                      blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
                   ],
@@ -833,9 +926,29 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.person, color: Color(0xFF2A4D3A), size: 24),
-                        const SizedBox(width: 8),
-                        Text(
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Color(0xFF2A4D3A), Color(0xFF1B3A2E)],
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0xFF2A4D3A).withOpacity(0.3),
+                                blurRadius: 8,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.person,
+                            color: Colors.white,
+                            size: 24,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        const Text(
                           'Data Pribadi',
                           style: TextStyle(
                             fontSize: 20,
@@ -990,68 +1103,436 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
               ),
               const SizedBox(height: 20),
 
-              // Price Summary
-              Card(
-                color: Colors.green.shade50,
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Rincian Harga',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF2A4D3A),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      if (startDate != null && endDate != null)
-                        Text(
-                          'Durasi: ${endDate!.difference(startDate!).inDays + 1} hari',
-                        ),
-                      Text('Jumlah orang: $ticketCount'),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Total:',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+              // Smart Recommendations Section
+              Container(
+                margin: const EdgeInsets.only(bottom: 20),
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.white,
+                      Colors.green.shade50.withOpacity(0.3),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Color(0xFF2A4D3A).withOpacity(0.2),
+                    width: 1.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color(0xFF2A4D3A).withOpacity(0.1),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Color(0xFF2A4D3A), Color(0xFF1B3A2E)],
                             ),
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0xFF2A4D3A).withOpacity(0.3),
+                                blurRadius: 8,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
                           ),
-                          Text(
-                            NumberFormat.currency(
-                              locale: 'id_ID',
-                              symbol: selectedCurrency == 'IDR' ? 'Rp ' : '\$',
-                            ).format(_calculatePrice()),
-                            style: const TextStyle(
-                              fontSize: 18,
+                          child: const Icon(
+                            Icons.lightbulb,
+                            color: Colors.white,
+                            size: 24,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        const Expanded(
+                          child: Text(
+                            'Rekomendasi Pintar',
+                            style: TextStyle(
+                              fontSize: 20,
                               fontWeight: FontWeight.bold,
                               color: Color(0xFF2A4D3A),
                             ),
                           ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    // Weather Recommendation
+                    if (startDate != null)
+                      Container(
+                        padding: const EdgeInsets.all(14),
+                        margin: const EdgeInsets.only(bottom: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Colors.orange.shade300,
+                            width: 1.5,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.orange.withOpacity(0.1),
+                              blurRadius: 6,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.orange.shade50,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Icon(
+                                Icons.wb_sunny,
+                                color: Colors.orange.shade600,
+                                size: 24,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Prediksi Cuaca',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  Text(
+                                    _isHoliday(startDate!)
+                                        ? 'Hari libur - Ramai pendaki'
+                                        : 'Cuaca cerah 85% - Cocok mendaki',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey.shade700,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    // Peak Season Alert
+                    if (startDate != null && _isHoliday(startDate!))
+                      Container(
+                        padding: const EdgeInsets.all(14),
+                        margin: const EdgeInsets.only(bottom: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Colors.red.shade300,
+                            width: 1.5,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.red.withOpacity(0.1),
+                              blurRadius: 6,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.red.shade50,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Icon(
+                                Icons.warning_amber,
+                                color: Colors.red.shade600,
+                                size: 24,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            const Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Peak Season Alert',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Tiket terbatas di hari libur - Pesan sekarang!',
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    // Package Deal
+                    Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.green.shade300,
+                          width: 1.5,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.green.withOpacity(0.1),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
                         ],
                       ),
-                      const SizedBox(height: 10),
-                      DropdownButton<String>(
-                        value: selectedCurrency,
-                        items: ['IDR', 'USD', 'EUR', 'JPY']
-                            .map(
-                              (currency) => DropdownMenuItem(
-                                value: currency,
-                                child: Text(currency),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.green.shade50,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              Icons.local_offer,
+                              color: Colors.green.shade600,
+                              size: 24,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          const Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Paket Hemat',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                Text(
+                                  'Bundle: Tiket + Guide + Rental Alat (Diskon 15%)',
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            size: 16,
+                            color: Colors.grey.shade600,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Price Summary - Enhanced
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.white,
+                      Colors.green.shade50.withOpacity(0.3),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Color(0xFF2A4D3A).withOpacity(0.2),
+                    width: 1.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color(0xFF2A4D3A).withOpacity(0.1),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Color(0xFF2A4D3A), Color(0xFF1B3A2E)],
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0xFF2A4D3A).withOpacity(0.3),
+                                blurRadius: 8,
+                                offset: const Offset(0, 3),
                               ),
-                            )
-                            .toList(),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.account_balance_wallet,
+                            color: Colors.white,
+                            size: 24,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        const Text(
+                          'Rincian Harga',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF2A4D3A),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    // Price Details
+                    if (startDate != null && endDate != null) ...[
+                      _buildPriceDetailRow(
+                        Icons.calendar_today,
+                        'Durasi',
+                        '${endDate!.difference(startDate!).inDays + 1} hari',
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+                    _buildPriceDetailRow(
+                      Icons.people,
+                      'Jumlah Pendaki',
+                      '$ticketCount orang',
+                    ),
+                    const SizedBox(height: 8),
+                    _buildPriceDetailRow(
+                      Icons.confirmation_number,
+                      'Tipe Tiket',
+                      personalData.isNotEmpty &&
+                              personalData[0]['nationality'] == 'WNI'
+                          ? 'WNI'
+                          : 'WNA',
+                    ),
+                    const SizedBox(height: 16),
+                    const Divider(thickness: 2),
+                    const SizedBox(height: 16),
+                    // Currency Selector
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: DropdownButtonFormField<String>(
+                        decoration: const InputDecoration(
+                          labelText: 'Mata Uang',
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                        initialValue: selectedCurrency,
+                        items: [
+                          _buildCurrencyMenuItem('IDR', '🇮🇩', 'Rupiah'),
+                          _buildCurrencyMenuItem('USD', '🇺🇸', 'US Dollar'),
+                          _buildCurrencyMenuItem('EUR', '🇪🇺', 'Euro'),
+                          _buildCurrencyMenuItem('JPY', '🇯🇵', 'Yen'),
+                        ],
                         onChanged: (value) =>
                             setState(() => selectedCurrency = value!),
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 20),
+                    // Total Price
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Color(0xFF2A4D3A), Color(0xFF1B3A2E)],
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0xFF2A4D3A).withOpacity(0.4),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Total Pembayaran',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white70,
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                'Termasuk biaya admin',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: Colors.white60,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                _formatCurrency(_calculatePrice()),
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              if (isLoadingRates)
+                                const SizedBox(
+                                  height: 12,
+                                  width: 12,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 20),
@@ -1150,30 +1631,15 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               action: SnackBarAction(
-                                label: 'Lihat Detail',
+                                label: 'Kembali Home',
                                 textColor: Colors.yellow,
                                 onPressed: () {
-                                  Navigator.push(
+                                  Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          tiket_detail.PesananDetailPage(
-                                            mountain: widget.mountain,
-                                            orderData: {
-                                              'selectedEntryPoint':
-                                                  selectedEntryPoint,
-                                              'selectedExitPoint':
-                                                  selectedExitPoint,
-                                              'startDate': startDate,
-                                              'endDate': endDate,
-                                              'ticketCount': ticketCount,
-                                              'personalData': personalData,
-                                              'totalPrice': _calculatePrice(),
-                                              'selectedCurrency':
-                                                  selectedCurrency,
-                                            },
-                                          ),
+                                      builder: (context) => const MainScreen(),
                                     ),
+                                    (route) => false,
                                   );
                                 },
                               ),
@@ -1196,6 +1662,119 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  // Helper method untuk format mata uang dengan simbol yang benar
+  String _formatCurrency(double amount) {
+    switch (selectedCurrency) {
+      case 'IDR':
+        return NumberFormat.currency(
+          locale: 'id_ID',
+          symbol: 'Rp ',
+          decimalDigits: 0,
+        ).format(amount);
+      case 'USD':
+        return NumberFormat.currency(
+          locale: 'en_US',
+          symbol: '\$ ',
+          decimalDigits: 2,
+        ).format(amount);
+      case 'EUR':
+        return NumberFormat.currency(
+          locale: 'de_DE',
+          symbol: '€ ',
+          decimalDigits: 2,
+        ).format(amount);
+      case 'JPY':
+        return NumberFormat.currency(
+          locale: 'ja_JP',
+          symbol: '¥ ',
+          decimalDigits: 0,
+        ).format(amount);
+      default:
+        return NumberFormat.currency(
+          locale: 'id_ID',
+          symbol: 'Rp ',
+          decimalDigits: 0,
+        ).format(amount);
+    }
+  }
+
+  // Helper method untuk price detail row
+  Widget _buildPriceDetailRow(IconData icon, String label, String value) {
+    return Row(
+      children: [
+        Icon(icon, size: 20, color: Color(0xFF2A4D3A)),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            label,
+            style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
+          ),
+        ),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF2A4D3A),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Helper method untuk currency dropdown item dengan bendera dan simbol yang benar
+  DropdownMenuItem<String> _buildCurrencyMenuItem(
+    String currency,
+    String flag,
+    String name,
+  ) {
+    // Simbol mata uang yang benar
+    String symbol;
+    switch (currency) {
+      case 'IDR':
+        symbol = 'Rp';
+        break;
+      case 'USD':
+        symbol = '\$';
+        break;
+      case 'EUR':
+        symbol = '€';
+        break;
+      case 'JPY':
+        symbol = '¥';
+        break;
+      default:
+        symbol = currency;
+    }
+
+    return DropdownMenuItem(
+      value: currency,
+      child: Row(
+        children: [
+          Text(flag, style: const TextStyle(fontSize: 24)),
+          const SizedBox(width: 8),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                '$symbol $currency',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              ),
+              Text(
+                name,
+                style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

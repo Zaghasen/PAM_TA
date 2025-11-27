@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 import '../../../models/weather_data.dart';
+import '../../../services/quest_service.dart';
 
 class WeatherDetailPage extends StatefulWidget {
   final WeatherData weatherData;
@@ -16,6 +17,7 @@ class _WeatherDetailPageState extends State<WeatherDetailPage>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
+  final QuestService _questService = QuestService();
 
   // Mock additional weather data
   late double temperature;
@@ -29,6 +31,9 @@ class _WeatherDetailPageState extends State<WeatherDetailPage>
   @override
   void initState() {
     super.initState();
+
+    // Track weather check
+    _questService.trackWeatherCheckToday();
 
     // Initialize animations
     _animationController = AnimationController(

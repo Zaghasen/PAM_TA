@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tapak_jejak/models/mountain.dart';
-import 'package:tapak_jejak/screens/home_page.dart';
+import 'package:tapak_jejak/screens/home/home_page.dart';
 
 class PesananDetailPage extends StatefulWidget {
   final Mountain mountain;

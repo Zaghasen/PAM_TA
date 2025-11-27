@@ -1,42 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:tapak_jejak/screens/icons/sewa_alat/all_products_page.dart';
-import 'package:tapak_jejak/screens/icons/tiket_masuk/pesanan(tiket)_detail_page.dart';
-import 'package:tapak_jejak/screens/main_page.dart';
+import 'package:tapak_jejak/screens/home/main_page.dart';
 
-enum CartCategory { semua, tiket_masuk, porter_guide, private_open_trip }
+enum WishlistCategory { semua, tiket_masuk, porter_guide, private_open_trip }
 
-class CartPage extends StatefulWidget {
+class WishlistPage extends StatefulWidget {
   final VoidCallback refreshCallback;
-  const CartPage({super.key, required this.refreshCallback});
+  const WishlistPage({super.key, required this.refreshCallback});
 
   @override
-  State<CartPage> createState() => _CartPageState();
+  State<WishlistPage> createState() => _WishlistPageState();
 }
 
-class _CartPageState extends State<CartPage> {
-  CartCategory selectedCategory = CartCategory.semua;
+class _WishlistPageState extends State<WishlistPage> {
+  WishlistCategory selectedCategory = WishlistCategory.semua;
 
-  Map<String, dynamic> _getCategoryData(CartCategory category) {
+  Map<String, dynamic> _getCategoryData(WishlistCategory category) {
     switch (category) {
-      case CartCategory.semua:
+      case WishlistCategory.semua:
         return {
           'icon': Icons.all_inclusive,
           'label': 'Semua',
           'color': Colors.orange,
         };
-      case CartCategory.tiket_masuk:
+      case WishlistCategory.tiket_masuk:
         return {
           'icon': Icons.confirmation_number,
           'label': 'Tiket Masuk',
           'color': Colors.orange,
         };
-      case CartCategory.porter_guide:
+      case WishlistCategory.porter_guide:
         return {
           'icon': Icons.hiking,
           'label': 'Porter & Guide',
           'color': Colors.orange,
         };
-      case CartCategory.private_open_trip:
+      case WishlistCategory.private_open_trip:
         return {
           'icon': Icons.group,
           'label': 'Private Trip',
@@ -47,21 +46,18 @@ class _CartPageState extends State<CartPage> {
 
   @override
   Widget build(BuildContext context) {
-    final cart = MainScreen.cartItems.where((product) {
+    final wishlist = MainScreen.wishlistItems.where((product) {
       switch (selectedCategory) {
-        case CartCategory.tiket_masuk:
+        case WishlistCategory.tiket_masuk:
           return product.category == 'tiket_masuk';
-        case CartCategory.porter_guide:
+        case WishlistCategory.porter_guide:
           return product.category == 'porter_guide';
-        case CartCategory.private_open_trip:
+        case WishlistCategory.private_open_trip:
           return product.category == 'private_open_trip';
         default:
           return true; // semua
       }
     }).toList();
-
-    double total = cart.fold(0, (sum, item) => sum + item.pricePerDay);
-
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
@@ -92,7 +88,7 @@ class _CartPageState extends State<CartPage> {
                 Image.asset('assets/LOGO.png', height: 40, width: 40),
                 const SizedBox(width: 8),
                 Text(
-                  'Keranjang Saya',
+                  'Wishlist Saya',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -170,7 +166,7 @@ class _CartPageState extends State<CartPage> {
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Row(
-                children: CartCategory.values.map((category) {
+                children: WishlistCategory.values.map((category) {
                   final isSelected = selectedCategory == category;
                   final categoryData = _getCategoryData(category);
 
@@ -251,7 +247,7 @@ class _CartPageState extends State<CartPage> {
             ),
           ),
           Expanded(
-            child: cart.isEmpty
+            child: wishlist.isEmpty
                 ? Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -263,7 +259,7 @@ class _CartPageState extends State<CartPage> {
                         ),
                         const SizedBox(height: 20),
                         const Text(
-                          'Keranjang Kosong',
+                          'Wishlist Kosong',
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -272,13 +268,13 @@ class _CartPageState extends State<CartPage> {
                         ),
                         const SizedBox(height: 10),
                         const Text(
-                          'Tidak ada apapun dalam keranjangmu,',
+                          'Tidak ada apapun dalam wishlistmu,',
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 16, color: Colors.black),
                         ),
                         const SizedBox(height: 5),
                         const Text(
-                          'tambahkan pesanan untuk melanjutkan',
+                          'tambahkan produk untuk melanjutkan',
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 16, color: Colors.black),
                         ),
@@ -299,15 +295,15 @@ class _CartPageState extends State<CartPage> {
                               ),
                             );
                           },
-                          child: const Text('Tambahkan Pesanan'),
+                          child: const Text('Tambahkan Produk'),
                         ),
                       ],
                     ),
                   )
                 : ListView.builder(
-                    itemCount: cart.length,
+                    itemCount: wishlist.length,
                     itemBuilder: (context, index) {
-                      final product = cart[index];
+                      final product = wishlist[index];
                       return ListTile(
                         leading: Image.network(
                           product.imageUrl,
@@ -320,14 +316,14 @@ class _CartPageState extends State<CartPage> {
                           'Rp ${product.pricePerDay.toInt()}/hari',
                         ),
                         trailing: IconButton(
-                          icon: const Icon(Icons.remove_circle_outline),
+                          icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () async {
                             final shouldDelete = await showDialog<bool>(
                               context: context,
                               builder: (context) => AlertDialog(
                                 title: const Text('Konfirmasi Hapus'),
                                 content: Text(
-                                  'Apakah Anda yakin ingin menghapus "${product.name}" dari keranjang?',
+                                  'Apakah Anda yakin ingin menghapus "${product.name}" dari wishlist?',
                                 ),
                                 actions: [
                                   TextButton(
@@ -346,7 +342,10 @@ class _CartPageState extends State<CartPage> {
 
                             if (shouldDelete == true) {
                               setState(() {
-                                MainScreen.cartItems.remove(product);
+                                product.isWishlisted = false;
+                                MainScreen.wishlistItems.removeWhere(
+                                  (p) => p.id == product.id,
+                                );
                               });
                               widget.refreshCallback();
                             }
@@ -356,63 +355,6 @@ class _CartPageState extends State<CartPage> {
                     },
                   ),
           ),
-          if (cart.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Total per Hari:',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      Text(
-                        'Rp ${total.toInt()}',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(double.infinity, 50),
-                      backgroundColor: const Color(0xFF2A4D3A),
-                      foregroundColor: Colors.white,
-                    ),
-                    onPressed: () {
-                      // For now, navigate to a placeholder - in real app, pass order data
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PesananDetailPage(
-                            mountain: MainScreen.cartItems.isNotEmpty
-                                ? MainScreen.cartItems.firstWhere(
-                                        (item) =>
-                                            item.category == 'tiket_masuk',
-                                        orElse: () =>
-                                            MainScreen.cartItems.first,
-                                      )
-                                      as dynamic // This needs proper Mountain object
-                                : null as dynamic,
-                            orderData: {
-                              'ticketCount': 1,
-                              'totalPrice': total,
-                              'personalData': [],
-                            },
-                          ),
-                        ),
-                      );
-                    },
-                    child: const Text('Lanjutkan ke Pemesanan'),
-                  ),
-                ],
-              ),
-            ),
         ],
       ),
     );

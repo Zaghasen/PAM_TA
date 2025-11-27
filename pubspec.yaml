@@ -22,6 +22,8 @@ dependencies:
   geolocator: ^14.0.2
   permission_handler: ^12.0.1
   awesome_notifications: ^0.10.1
+  flutter_compass: ^0.8.0
+  google_generative_ai: ^0.4.6
 
 dev_dependencies:
   flutter_test:
@@ -33,6 +35,7 @@ flutter:
   assets:
     - assets/
     - assets/LOGO.png
+    - assets/marsha.png
     - assets/banner_1.jpg
     - assets/banner_2.jpg
     - assets/banner_3.jpg

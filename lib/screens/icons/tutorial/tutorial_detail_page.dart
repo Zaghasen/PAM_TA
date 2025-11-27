@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tapak_jejak/models/tutorial.dart';
 import 'package:tapak_jejak/services/navigation_service.dart';
+import 'package:tapak_jejak/services/quest_service.dart';
 
 class TutorialDetailPage extends StatefulWidget {
   final Tutorial tutorial;
@@ -13,6 +14,14 @@ class TutorialDetailPage extends StatefulWidget {
 
 class _TutorialDetailPageState extends State<TutorialDetailPage> {
   int currentStep = 0;
+  final QuestService _questService = QuestService();
+
+  @override
+  void initState() {
+    super.initState();
+    // Track tutorial read when page opens
+    _questService.trackTutorialReadToday();
+  }
 
   @override
   Widget build(BuildContext context) {

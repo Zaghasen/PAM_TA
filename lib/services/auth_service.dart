@@ -1,5 +1,4 @@
 import 'package:hive/hive.dart';
-import 'package:tapak_jejak/models/user.dart';
 import 'package:tapak_jejak/services/notification_controller.dart';
 
 class AuthService {

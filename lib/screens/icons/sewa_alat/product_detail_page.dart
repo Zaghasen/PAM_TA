@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tapak_jejak/models/product.dart';
-import 'package:tapak_jejak/screens/main_page.dart';
+import 'package:tapak_jejak/screens/home/main_page.dart';
+import 'package:tapak_jejak/services/quest_service.dart';
+import 'package:tapak_jejak/widgets/quest_notification.dart';
 
-class ProductDetailPage extends StatelessWidget {
+class ProductDetailPage extends StatefulWidget {
   final Product product;
   final VoidCallback refreshCallback;
 
@@ -11,6 +13,20 @@ class ProductDetailPage extends StatelessWidget {
     required this.product,
     required this.refreshCallback,
   });
+
+  @override
+  State<ProductDetailPage> createState() => _ProductDetailPageState();
+}
+
+class _ProductDetailPageState extends State<ProductDetailPage> {
+  final QuestService _questService = QuestService();
+
+  @override
+  void initState() {
+    super.initState();
+    // Track product view when page opens
+    _questService.trackProductViewToday();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +60,7 @@ class ProductDetailPage extends StatelessWidget {
                 Image.asset('assets/LOGO.png', height: 40, width: 40),
                 const SizedBox(width: 8),
                 Text(
-                  product.name,
+                  widget.product.name,
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -111,7 +127,7 @@ class ProductDetailPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Image.network(
-                    product.imageUrl,
+                    widget.product.imageUrl,
                     fit: BoxFit.cover,
                     width: double.infinity,
                     height: 300,
@@ -122,12 +138,12 @@ class ProductDetailPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          product.name,
+                          widget.product.name,
                           style: Theme.of(context).textTheme.headlineMedium,
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'By ${product.brand}',
+                          'By ${widget.product.brand}',
                           style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 16,
@@ -135,7 +151,7 @@ class ProductDetailPage extends StatelessWidget {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          'Rp ${product.pricePerDay.toInt()}/hari',
+                          'Rp ${widget.product.pricePerDay.toInt()}/hari',
                           style: const TextStyle(
                             fontSize: 20,
                             color: Color(0xFF2A4D3A),
@@ -143,7 +159,7 @@ class ProductDetailPage extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        Text(product.description),
+                        Text(widget.product.description),
                       ],
                     ),
                   ),
@@ -159,14 +175,21 @@ class ProductDetailPage extends StatelessWidget {
                 backgroundColor: const Color(0xFF2A4D3A),
                 foregroundColor: Colors.white,
               ),
-              onPressed: () {
-                MainScreen.cartItems.add(product);
-                refreshCallback();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('${product.name} ditambahkan ke keranjang!'),
-                  ),
-                );
+              onPressed: () async {
+                MainScreen.cartItems.add(widget.product);
+                widget.refreshCallback();
+
+                // Track rental activity
+                await _questService.trackRental();
+
+                // Show points notification
+                if (mounted) {
+                  QuestNotification.showPointsEarned(
+                    context,
+                    '${widget.product.name} ditambahkan ke keranjang!',
+                    50,
+                  );
+                }
               },
               child: const Text('Tambah ke Keranjang'),
             ),

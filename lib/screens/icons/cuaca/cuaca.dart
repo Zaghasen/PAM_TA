@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../../models/weather_data.dart';
 import '../../../services/weather_service.dart';
 import '../../../services/location_service.dart';
-import '../../../services/location_helper.dart';
 import 'cuaca_detail_page.dart';
 
 class WeatherProvider extends ChangeNotifier {
@@ -108,10 +107,9 @@ class _CuacaPageState extends State<CuacaPage> {
   late WeatherProvider _weatherProvider;
 
   // Location-based services
-  final LocationService _locationService = LocationService();
-  Position? _currentPosition;
   String? _currentLocationName;
   bool _isLocationLoading = false;
+  final LocationService _locationService = LocationService();
 
   @override
   void initState() {
@@ -151,21 +149,239 @@ class _CuacaPageState extends State<CuacaPage> {
     });
 
     try {
-      _currentPosition = await _locationService.getCurrentPosition();
-      if (_currentPosition != null) {
-        _currentLocationName = await _locationService.getLocationName(
-          _currentPosition!.latitude,
-          _currentPosition!.longitude,
-        );
+      // Check if location service is enabled first
+      bool serviceEnabled = await _locationService.isLocationServiceEnabled();
+
+      if (!serviceEnabled) {
+        setState(() {
+          _isLocationLoading = false;
+        });
+
+        if (mounted) {
+          _showLocationServiceDialog();
+        }
+        return;
+      }
+
+      // Request permission (will show Android popup)
+      final permissionStatus = await _locationService
+          .requestLocationPermission();
+
+      // Handle permission result
+      if (!permissionStatus.isGranted) {
+        setState(() {
+          _isLocationLoading = false;
+        });
+
+        if (mounted) {
+          if (permissionStatus.isPermanentlyDenied) {
+            _showPermissionDeniedDialog();
+          } else {
+            _showPermissionRequiredDialog();
+          }
+        }
+        return;
+      }
+
+      // Get current position
+      final position = await _locationService.getCurrentPosition();
+
+      if (position != null) {
+        final locationName = await _locationService.getNearestRegion(position);
+
+        setState(() {
+          _currentLocationName = locationName;
+          _isLocationLoading = false;
+        });
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  const Icon(Icons.check_circle, color: Colors.white),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text('Lokasi berhasil diaktifkan: $locationName'),
+                  ),
+                ],
+              ),
+              backgroundColor: Colors.green,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          );
+        }
+      } else {
+        setState(() {
+          _isLocationLoading = false;
+        });
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Row(
+                children: [
+                  Icon(Icons.error, color: Colors.white),
+                  SizedBox(width: 12),
+                  Expanded(child: Text('Gagal mengambil lokasi. Coba lagi.')),
+                ],
+              ),
+              backgroundColor: Colors.red,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          );
+        }
       }
     } catch (e) {
-      // Handle error - bisa tambahkan snackbar atau dialog
-      print('Error getting location: $e');
-    } finally {
       setState(() {
         _isLocationLoading = false;
       });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.error, color: Colors.white),
+                const SizedBox(width: 12),
+                Expanded(child: Text('Error: ${e.toString()}')),
+              ],
+            ),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        );
+      }
     }
+  }
+
+  void _showLocationServiceDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Row(
+          children: [
+            Icon(Icons.location_off, color: Colors.orange, size: 28),
+            SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'Layanan Lokasi Nonaktif',
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+          ],
+        ),
+        content: const Text(
+          'Layanan lokasi di perangkat Anda tidak aktif. '
+          'Harap aktifkan GPS/Location Services di pengaturan perangkat.',
+          style: TextStyle(fontSize: 14),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Tutup'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showPermissionRequiredDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Row(
+          children: [
+            Icon(Icons.warning_amber, color: Colors.orange, size: 28),
+            SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'Izin Lokasi Ditolak',
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+          ],
+        ),
+        content: const Text(
+          'Aplikasi memerlukan izin lokasi untuk menampilkan cuaca di wilayah Anda. '
+          'Silakan izinkan akses lokasi saat diminta.',
+          style: TextStyle(fontSize: 14),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            style: TextButton.styleFrom(foregroundColor: Colors.black),
+            child: const Text('Batal'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              _getCurrentLocation(); // Try again
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Coba Lagi'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showPermissionDeniedDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Row(
+          children: [
+            Icon(Icons.block, color: Colors.red, size: 28),
+            SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'Izin Lokasi Diblokir',
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+          ],
+        ),
+        content: const Text(
+          'Izin lokasi telah diblokir secara permanen. '
+          'Untuk menggunakan fitur ini, silakan aktifkan izin lokasi di pengaturan aplikasi.',
+          style: TextStyle(fontSize: 14),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            style: TextButton.styleFrom(foregroundColor: Colors.black),
+            child: const Text('Tutup'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              _locationService.openLocationSettings();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Buka Pengaturan'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -341,7 +557,7 @@ class _CuacaPageState extends State<CuacaPage> {
                             Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 12,
-                                vertical: 6,
+                                vertical: 8,
                               ),
                               decoration: BoxDecoration(
                                 color: const Color(0xFF2E7D32).withOpacity(0.1),
@@ -350,16 +566,16 @@ class _CuacaPageState extends State<CuacaPage> {
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Icon(
+                                  const Icon(
                                     Icons.location_on,
                                     color: Color(0xFF2E7D32),
-                                    size: 14,
+                                    size: 16,
                                   ),
-                                  SizedBox(width: 5),
+                                  const SizedBox(width: 8),
                                   if (_isLocationLoading)
-                                    SizedBox(
-                                      width: 12,
-                                      height: 12,
+                                    const SizedBox(
+                                      width: 14,
+                                      height: 14,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 2,
                                         color: Color(0xFF2E7D32),
@@ -367,57 +583,61 @@ class _CuacaPageState extends State<CuacaPage> {
                                     )
                                   else if (_currentLocationName != null)
                                     Expanded(
-                                      child: Text(
-                                        'Cuaca di $_currentLocationName',
-                                        style: TextStyle(
-                                          color: Color(0xFF2E7D32),
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 12,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              'Cuaca di $_currentLocationName',
+                                              style: const TextStyle(
+                                                color: Color(0xFF2E7D32),
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 12,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          GestureDetector(
+                                            onTap: _getCurrentLocation,
+                                            child: Container(
+                                              padding: const EdgeInsets.all(4),
+                                              decoration: BoxDecoration(
+                                                color: const Color(
+                                                  0xFF2E7D32,
+                                                ).withOpacity(0.2),
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              child: const Icon(
+                                                Icons.refresh,
+                                                color: Color(0xFF2E7D32),
+                                                size: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     )
                                   else
                                     GestureDetector(
-                                      onTap: () async {
-                                        // Request permission and get location
-                                        final location =
-                                            await LocationHelper.getCurrentLocation();
-                                        if (location !=
-                                                'Lokasi tidak tersedia' &&
-                                            location !=
-                                                'Lokasi gagal diambil') {
-                                          setState(() {
-                                            _currentLocationName = location;
-                                          });
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                'Lokasi berhasil diaktifkan: $location',
-                                              ),
-                                              backgroundColor: Colors.green,
+                                      onTap: _getCurrentLocation,
+                                      child: const Row(
+                                        children: [
+                                          Text(
+                                            'Aktifkan Lokasi',
+                                            style: TextStyle(
+                                              color: Color(0xFF2E7D32),
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 12,
                                             ),
-                                          );
-                                        } else {
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              content: Text(location),
-                                              backgroundColor: Colors.red,
-                                            ),
-                                          );
-                                        }
-                                      },
-                                      child: Text(
-                                        'Aktifkan Lokasi',
-                                        style: TextStyle(
-                                          color: Color(0xFF2E7D32),
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 12,
-                                        ),
+                                          ),
+                                          SizedBox(width: 4),
+                                          Icon(
+                                            Icons.arrow_forward_ios,
+                                            color: Color(0xFF2E7D32),
+                                            size: 12,
+                                          ),
+                                        ],
                                       ),
                                     ),
                                 ],
@@ -810,35 +1030,70 @@ class _CuacaPageState extends State<CuacaPage> {
                                 ],
                               ),
                             ),
-                            // Search Bar
+                            // Search Bar with Location button
                             Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 20,
                               ),
-                              child: TextField(
-                                controller: _searchController,
-                                decoration: InputDecoration(
-                                  hintText: 'Cari daerah...',
-                                  prefixIcon: const Icon(
-                                    Icons.search,
-                                    color: Color(0xFF2E7D32),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: TextField(
+                                      controller: _searchController,
+                                      decoration: InputDecoration(
+                                        hintText: 'Cari daerah...',
+                                        prefixIcon: const Icon(
+                                          Icons.search,
+                                          color: Color(0xFF2E7D32),
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            15,
+                                          ),
+                                          borderSide: BorderSide.none,
+                                        ),
+                                        filled: true,
+                                        fillColor: Colors.grey.shade50,
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 12,
+                                            ),
+                                      ),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _searchQuery = value;
+                                        });
+                                      },
+                                    ),
                                   ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  filled: true,
-                                  fillColor: Colors.grey.shade50,
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 12,
-                                  ),
-                                ),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _searchQuery = value;
-                                  });
-                                },
+                                  if (_currentLocationName != null) ...[
+                                    const SizedBox(width: 8),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF2E7D32),
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      child: IconButton(
+                                        icon: const Icon(
+                                          Icons.my_location,
+                                          color: Colors.white,
+                                        ),
+                                        tooltip: 'Tampilkan cuaca terdekat',
+                                        onPressed: () {
+                                          setState(() {
+                                            _searchQuery = _currentLocationName!
+                                                .split('(')
+                                                .first
+                                                .trim();
+                                            _searchController.text =
+                                                _searchQuery;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ],
                               ),
                             ),
                             const SizedBox(height: 10),

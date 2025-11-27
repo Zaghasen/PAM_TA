@@ -11,7 +11,7 @@ import 'package:tapak_jejak/screens/icons/tiket_masuk/tiket_masuk.dart';
 import 'package:tapak_jejak/screens/icons/travel_ojek/travel&ojek.dart';
 import 'package:tapak_jejak/screens/icons/trip/private&open_trip.dart';
 import 'package:tapak_jejak/screens/icons/tutorial/tutorial.dart';
-import 'package:tapak_jejak/screens/terms_page.dart';
+import 'package:tapak_jejak/screens/terms/terms_page.dart';
 
 class NavigationService {
   static void navigateToService(BuildContext context, String serviceName) {
@@ -68,15 +68,13 @@ class NavigationService {
         return;
     }
 
-    if (page != null) {
-      if (needsTerms) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => TermsScreen(nextPage: page!)),
-        );
-      } else {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => page!));
-      }
+    if (needsTerms) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => TermsScreen(nextPage: page!)),
+      );
+    } else {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => page!));
     }
   }
 }

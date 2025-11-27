@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tapak_jejak/models/product.dart';
-import 'package:tapak_jejak/screens/main_page.dart';
+import 'package:tapak_jejak/screens/home/main_page.dart';
 import 'package:tapak_jejak/screens/icons/sewa_alat/product_detail_page.dart';
+import 'package:tapak_jejak/services/quest_service.dart';
 
 class ProductCard extends StatefulWidget {
   final Product product;
@@ -21,21 +22,23 @@ class ProductCard extends StatefulWidget {
   State<ProductCard> createState() => _ProductCardState();
 }
 
-String formatPrice(double price) {
-  String priceStr = price.toInt().toString();
-  String result = '';
-  int count = 0;
-  for (int i = priceStr.length - 1; i >= 0; i--) {
-    result = priceStr[i] + result;
-    count++;
-    if (count % 3 == 0 && i > 0) {
-      result = '.$result';
-    }
-  }
-  return result;
-}
-
 class _ProductCardState extends State<ProductCard> {
+  final QuestService _questService = QuestService();
+
+  String formatPrice(double price) {
+    String priceStr = price.toInt().toString();
+    String result = '';
+    int count = 0;
+    for (int i = priceStr.length - 1; i >= 0; i--) {
+      result = priceStr[i] + result;
+      count++;
+      if (count % 3 == 0 && i > 0) {
+        result = '.$result';
+      }
+    }
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -91,13 +94,15 @@ class _ProductCardState extends State<ProductCard> {
                         ? Colors.red
                         : Colors.grey,
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     setState(() {
                       widget.product.isWishlisted =
                           !widget.product.isWishlisted;
                       if (widget.product.isWishlisted) {
                         MainScreen.wishlistItems.add(widget.product);
                         widget.onLike(true);
+                        // Track wishlist add
+                        _questService.trackWishlistAdd();
                       } else {
                         MainScreen.wishlistItems.removeWhere(
                           (p) => p.id == widget.product.id,

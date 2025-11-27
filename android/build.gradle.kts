@@ -2,6 +2,8 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        // Use JitPack for additional dependencies
+        maven { url = uri("https://jitpack.io") }
     }
 }
 

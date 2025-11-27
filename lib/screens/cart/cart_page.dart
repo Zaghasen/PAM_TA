@@ -1,41 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:tapak_jejak/screens/icons/sewa_alat/all_products_page.dart';
-import 'package:tapak_jejak/screens/main_page.dart';
+import 'package:tapak_jejak/screens/home/main_page.dart';
 
-enum WishlistCategory { semua, tiket_masuk, porter_guide, private_open_trip }
+enum CartCategory { semua, tiket_masuk, porter_guide, private_open_trip }
 
-class WishlistPage extends StatefulWidget {
+class CartPage extends StatefulWidget {
   final VoidCallback refreshCallback;
-  const WishlistPage({super.key, required this.refreshCallback});
+  const CartPage({super.key, required this.refreshCallback});
 
   @override
-  State<WishlistPage> createState() => _WishlistPageState();
+  State<CartPage> createState() => _CartPageState();
 }
 
-class _WishlistPageState extends State<WishlistPage> {
-  WishlistCategory selectedCategory = WishlistCategory.semua;
+class _CartPageState extends State<CartPage> {
+  CartCategory selectedCategory = CartCategory.semua;
 
-  Map<String, dynamic> _getCategoryData(WishlistCategory category) {
+  Map<String, dynamic> _getCategoryData(CartCategory category) {
     switch (category) {
-      case WishlistCategory.semua:
+      case CartCategory.semua:
         return {
           'icon': Icons.all_inclusive,
           'label': 'Semua',
           'color': Colors.orange,
         };
-      case WishlistCategory.tiket_masuk:
+      case CartCategory.tiket_masuk:
         return {
           'icon': Icons.confirmation_number,
           'label': 'Tiket Masuk',
           'color': Colors.orange,
         };
-      case WishlistCategory.porter_guide:
+      case CartCategory.porter_guide:
         return {
           'icon': Icons.hiking,
           'label': 'Porter & Guide',
           'color': Colors.orange,
         };
-      case WishlistCategory.private_open_trip:
+      case CartCategory.private_open_trip:
         return {
           'icon': Icons.group,
           'label': 'Private Trip',
@@ -46,18 +46,21 @@ class _WishlistPageState extends State<WishlistPage> {
 
   @override
   Widget build(BuildContext context) {
-    final wishlist = MainScreen.wishlistItems.where((product) {
+    final cart = MainScreen.cartItems.where((product) {
       switch (selectedCategory) {
-        case WishlistCategory.tiket_masuk:
+        case CartCategory.tiket_masuk:
           return product.category == 'tiket_masuk';
-        case WishlistCategory.porter_guide:
+        case CartCategory.porter_guide:
           return product.category == 'porter_guide';
-        case WishlistCategory.private_open_trip:
+        case CartCategory.private_open_trip:
           return product.category == 'private_open_trip';
         default:
           return true; // semua
       }
     }).toList();
+
+    double total = cart.fold(0, (sum, item) => sum + item.pricePerDay);
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
@@ -88,7 +91,7 @@ class _WishlistPageState extends State<WishlistPage> {
                 Image.asset('assets/LOGO.png', height: 40, width: 40),
                 const SizedBox(width: 8),
                 Text(
-                  'Wishlist Saya',
+                  'Keranjang Saya',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -166,7 +169,7 @@ class _WishlistPageState extends State<WishlistPage> {
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Row(
-                children: WishlistCategory.values.map((category) {
+                children: CartCategory.values.map((category) {
                   final isSelected = selectedCategory == category;
                   final categoryData = _getCategoryData(category);
 
@@ -247,7 +250,7 @@ class _WishlistPageState extends State<WishlistPage> {
             ),
           ),
           Expanded(
-            child: wishlist.isEmpty
+            child: cart.isEmpty
                 ? Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -259,7 +262,7 @@ class _WishlistPageState extends State<WishlistPage> {
                         ),
                         const SizedBox(height: 20),
                         const Text(
-                          'Wishlist Kosong',
+                          'Keranjang Kosong',
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -268,13 +271,13 @@ class _WishlistPageState extends State<WishlistPage> {
                         ),
                         const SizedBox(height: 10),
                         const Text(
-                          'Tidak ada apapun dalam wishlistmu,',
+                          'Tidak ada apapun dalam keranjangmu,',
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 16, color: Colors.black),
                         ),
                         const SizedBox(height: 5),
                         const Text(
-                          'tambahkan produk untuk melanjutkan',
+                          'tambahkan pesanan untuk melanjutkan',
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 16, color: Colors.black),
                         ),
@@ -295,15 +298,15 @@ class _WishlistPageState extends State<WishlistPage> {
                               ),
                             );
                           },
-                          child: const Text('Tambahkan Produk'),
+                          child: const Text('Tambahkan Pesanan'),
                         ),
                       ],
                     ),
                   )
                 : ListView.builder(
-                    itemCount: wishlist.length,
+                    itemCount: cart.length,
                     itemBuilder: (context, index) {
-                      final product = wishlist[index];
+                      final product = cart[index];
                       return ListTile(
                         leading: Image.network(
                           product.imageUrl,
@@ -316,14 +319,14 @@ class _WishlistPageState extends State<WishlistPage> {
                           'Rp ${product.pricePerDay.toInt()}/hari',
                         ),
                         trailing: IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
+                          icon: const Icon(Icons.remove_circle_outline),
                           onPressed: () async {
                             final shouldDelete = await showDialog<bool>(
                               context: context,
                               builder: (context) => AlertDialog(
                                 title: const Text('Konfirmasi Hapus'),
                                 content: Text(
-                                  'Apakah Anda yakin ingin menghapus "${product.name}" dari wishlist?',
+                                  'Apakah Anda yakin ingin menghapus "${product.name}" dari keranjang?',
                                 ),
                                 actions: [
                                   TextButton(
@@ -342,10 +345,7 @@ class _WishlistPageState extends State<WishlistPage> {
 
                             if (shouldDelete == true) {
                               setState(() {
-                                product.isWishlisted = false;
-                                MainScreen.wishlistItems.removeWhere(
-                                  (p) => p.id == product.id,
-                                );
+                                MainScreen.cartItems.remove(product);
                               });
                               widget.refreshCallback();
                             }
@@ -355,6 +355,127 @@ class _WishlistPageState extends State<WishlistPage> {
                     },
                   ),
           ),
+          if (cart.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Total per Hari:',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      Text(
+                        'Rp ${total.toInt()}',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 50),
+                      backgroundColor: const Color(0xFF2A4D3A),
+                      foregroundColor: Colors.white,
+                    ),
+                    onPressed: () {
+                      // Tampilkan dialog konfirmasi checkout
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          title: Row(
+                            children: [
+                              Icon(
+                                Icons.shopping_bag_outlined,
+                                color: Color(0xFF2A4D3A),
+                                size: 28,
+                              ),
+                              const SizedBox(width: 12),
+                              const Text('Konfirmasi Checkout'),
+                            ],
+                          ),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Total: Rp ${total.toStringAsFixed(0)}',
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                'Anda akan melanjutkan pembayaran untuk ${MainScreen.cartItems.length} item',
+                                style: TextStyle(color: Colors.grey.shade700),
+                              ),
+                            ],
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text(
+                                'Batal',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                // Clear cart and show success
+                                setState(() {
+                                  MainScreen.cartItems.clear();
+                                });
+                                widget.refreshCallback();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.check_circle,
+                                          color: Colors.white,
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: const Text(
+                                            'Pembayaran berhasil! Pesanan Anda sedang diproses.',
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    backgroundColor: Colors.green.shade600,
+                                    behavior: SnackBarBehavior.floating,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    duration: const Duration(seconds: 3),
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xFF2A4D3A),
+                                foregroundColor: Colors.white,
+                              ),
+                              child: const Text('Bayar Sekarang'),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    child: const Text('Lanjutkan ke Pemesanan'),
+                  ),
+                ],
+              ),
+            ),
         ],
       ),
     );

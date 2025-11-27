@@ -4,8 +4,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:tapak_jejak/models/user.dart';
-import 'package:tapak_jejak/screens/login_page.dart';
-import 'package:tapak_jejak/screens/membership_page.dart';
+import 'package:tapak_jejak/screens/login/login_page.dart';
+import 'package:tapak_jejak/screens/membership/membership_page.dart';
 import 'package:tapak_jejak/services/hive_service.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -16,10 +16,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late Box _userBox;
   String _username = '';
   File? _profileImage;
-  final TextEditingController _bioController = TextEditingController();
 
   // Biodata fields
   String _fullName = 'Zalfa Ghalib Hussein';
@@ -44,7 +42,7 @@ class _ProfilePageState extends State<ProfilePage> {
       _username = prefs.getString('username') ?? '';
     });
 
-    _userBox = await Hive.openBox('userBox');
+    await Hive.openBox('userBox');
     final user = await _hiveService.getUserData(_username);
     if (user != null) {
       setState(() {
