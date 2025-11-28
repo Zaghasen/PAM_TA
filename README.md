@@ -3723,12 +3723,12 @@ Jika ada pertanyaan, bug report, feature request, atau feedback:
 
 ### 📬 Contact Channels:
 
-| Channel          | Link                                                      | Response Time  |
-| ---------------- | --------------------------------------------------------- | -------------- |
-| 📧 Email         | tapakjejak.support@gmail.com                              | 1-2 hari kerja |
-| 💬 GitHub Issues | [Create Issue](https://github.com/Zaghasen/PAM_TA/issues) | 1-3 hari       |
-| 📱 WhatsApp      | +62-xxx-xxx-xxxx                                          | Coming soon    |
-| 💼 LinkedIn      | [Zaghasen](https://linkedin.com/in/zaghasen)              | Coming soon    |
+| Channel      | Link                                                                 | Response Time  |
+| ------------ | -------------------------------------------------------------------- | -------------- |
+| 📧 Email     | zalfaghalib97@gmail.com                                              | 1-2 hari kerja |
+| 💬 Instagram | [Zaghasen\_\_11](https://instagram.com/zaghasen__11)                 | 1-3 hari       |
+| 📱 WhatsApp  | +62-81391843822                                                      | 1 Hari         |
+| 💼 LinkedIn  | [Zalfa Ghalib Hussein](https://linkedin.com/in/zalfa-ghalib-hussein) | 1-3 Hari       |
 
 ### 🐛 Reporting Bugs:
 
