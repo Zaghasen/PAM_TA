@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class RentalPage extends StatelessWidget {
-  const RentalPage({Key? key}) : super(key: key);
+  const RentalPage({super.key});
 
   @override
   Widget build(BuildContext context) {

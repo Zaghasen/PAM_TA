@@ -27,7 +27,7 @@ class LocationService {
 
       // Check permission
       LocationPermission permission = await Geolocator.checkPermission();
-      
+
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
@@ -53,8 +53,8 @@ class LocationService {
   /// Check if location permission is granted
   Future<bool> isLocationPermissionGranted() async {
     LocationPermission permission = await Geolocator.checkPermission();
-    return permission == LocationPermission.always || 
-           permission == LocationPermission.whileInUse;
+    return permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse;
   }
 
   /// Check if location services are enabled on device
