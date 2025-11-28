@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:geolocator/geolocator.dart';
 import '../../../models/weather_data.dart';
 import '../../../services/weather_service.dart';
 import '../../../services/location_service.dart';
@@ -168,13 +168,14 @@ class _CuacaPageState extends State<CuacaPage> {
           .requestLocationPermission();
 
       // Handle permission result
-      if (!permissionStatus.isGranted) {
+      if (permissionStatus == LocationPermission.denied ||
+          permissionStatus == LocationPermission.deniedForever) {
         setState(() {
           _isLocationLoading = false;
         });
 
         if (mounted) {
-          if (permissionStatus.isPermanentlyDenied) {
+          if (permissionStatus == LocationPermission.deniedForever) {
             _showPermissionDeniedDialog();
           } else {
             _showPermissionRequiredDialog();

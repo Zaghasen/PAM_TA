@@ -137,6 +137,9 @@ class _ProfilePageState extends State<ProfilePage> {
     await prefs.remove('username');
     await _hiveService.clearUserData(_username);
 
+    // Hapus session untuk auto-login
+    await _hiveService.logout();
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const LoginScreen()),

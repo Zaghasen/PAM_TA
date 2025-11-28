@@ -33,6 +33,13 @@ void main() async {
     ),
   ], debug: true);
 
+  // Request notification permission
+  await AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+    if (!isAllowed) {
+      AwesomeNotifications().requestPermissionToSendNotifications();
+    }
+  });
+
   runApp(const MyApp());
 }
 
@@ -44,7 +51,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // MaterialApp adalah widget dasar untuk aplikasi yang menggunakan Material Design.
     return MaterialApp(
-      title: 'Aplikasi Pendakian - TAPAK JEJAK',
+      title: 'Tapak Jejak',
       theme: ThemeData(
         primaryColor: const Color(0xFF2A4D3A),
         visualDensity: VisualDensity.adaptivePlatformDensity,

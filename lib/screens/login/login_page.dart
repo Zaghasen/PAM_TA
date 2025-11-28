@@ -27,6 +27,22 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final HiveService _hiveService = HiveService();
 
+  @override
+  void initState() {
+    super.initState();
+    _checkAutoLogin();
+  }
+
+  Future<void> _checkAutoLogin() async {
+    final loggedInUser = await _hiveService.getLoggedInUser();
+    if (loggedInUser != null && mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MainScreen()),
+      );
+    }
+  }
+
   Future<void> _signUp() async {
     final username = _usernameController.text.trim();
     final email = _emailController.text.trim();
@@ -67,6 +83,9 @@ class _LoginScreenState extends State<LoginScreen> {
     final user = User(username: username, password: password, email: email);
     await _hiveService.saveUserData(username, user);
 
+    // Simpan session untuk auto-login
+    await _hiveService.saveLoggedInUser(username);
+
     // Kirim notifikasi native Android
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
@@ -81,6 +100,10 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
 
+    // Simpan ke SharedPreferences juga
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('username', username);
+
     // Tampilkan pesan sukses
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -91,30 +114,27 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'Akun berhasil dibuat! Silakan login.',
+                  'Akun berhasil dibuat! Selamat datang!',
                   style: TextStyle(fontSize: 16),
                 ),
               ),
             ],
           ),
           backgroundColor: const Color(0xFF2A4D3A),
-          duration: const Duration(seconds: 3),
+          duration: const Duration(seconds: 2),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
         ),
       );
-    }
 
-    // Beralih ke mode sign in dan reset form
-    setState(() {
-      _isSignUp = false;
-      _errorMessage = null;
-      _usernameController.clear();
-      _emailController.clear();
-      _passwordController.clear();
-    });
+      // Langsung masuk ke aplikasi setelah register
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MainScreen()),
+      );
+    }
   }
 
   Future<void> _signIn() async {
@@ -139,6 +159,9 @@ class _LoginScreenState extends State<LoginScreen> {
       if (account['username'] == username && account['password'] == password) {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('username', username);
+
+        // Simpan session untuk auto-login
+        await _hiveService.saveLoggedInUser(username);
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

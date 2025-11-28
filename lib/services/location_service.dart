@@ -1,47 +1,41 @@
 import 'package:geolocator/geolocator.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class LocationService {
   /// Request location permission from user
-  /// Returns PermissionStatus to handle different permission states
-  Future<PermissionStatus> requestLocationPermission() async {
+  /// Returns LocationPermission to handle different permission states
+  Future<LocationPermission> requestLocationPermission() async {
     // Check current permission status
-    PermissionStatus status = await Permission.location.status;
+    LocationPermission permission = await Geolocator.checkPermission();
 
-    if (status.isGranted) {
-      return status;
+    if (permission == LocationPermission.denied) {
+      // Request permission (will show Android popup)
+      permission = await Geolocator.requestPermission();
     }
 
-    // If denied, request permission (will show Android popup)
-    if (status.isDenied) {
-      status = await Permission.location.request();
-      return status;
-    }
-
-    // If permanently denied, can't request again
-    if (status.isPermanentlyDenied) {
-      return status;
-    }
-
-    return status;
+    return permission;
   }
 
   /// Get current position with permission handling
   /// Returns Position if successful, null if failed or permission denied
   Future<Position?> getCurrentPosition() async {
     try {
-      // Request permission first
-      PermissionStatus permissionStatus = await requestLocationPermission();
-
-      // Handle different permission states
-      if (!permissionStatus.isGranted) {
-        return null;
-      }
-
       // Check if location services are enabled
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        // Location services are disabled
+        return null;
+      }
+
+      // Check permission
+      LocationPermission permission = await Geolocator.checkPermission();
+      
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          return null;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
         return null;
       }
 
@@ -51,14 +45,16 @@ class LocationService {
         timeLimit: const Duration(seconds: 10),
       );
     } catch (e) {
+      print('Error getting location: $e');
       return null;
     }
   }
 
   /// Check if location permission is granted
   Future<bool> isLocationPermissionGranted() async {
-    PermissionStatus status = await Permission.location.status;
-    return status.isGranted;
+    LocationPermission permission = await Geolocator.checkPermission();
+    return permission == LocationPermission.always || 
+           permission == LocationPermission.whileInUse;
   }
 
   /// Check if location services are enabled on device
@@ -68,7 +64,7 @@ class LocationService {
 
   /// Open app settings for manual permission grant
   Future<void> openLocationSettings() async {
-    await openAppSettings();
+    await Geolocator.openAppSettings();
   }
 
   Future<String> getLocationName(double latitude, double longitude) async {
