@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:tapak_jejak/screens/icons/blog/blog.dart';
-import 'package:tapak_jejak/screens/icons/camping_ground/camping_ground.dart';
-import 'package:tapak_jejak/screens/icons/cuaca/cuaca.dart';
-import 'package:tapak_jejak/screens/icons/eat_stay/eat&stay.dart';
-import 'package:tapak_jejak/screens/icons/event/event.dart';
-import 'package:tapak_jejak/screens/icons/keamanan/keamanan.dart';
-import 'package:tapak_jejak/screens/icons/porter_guide/porter&guide.dart';
-import 'package:tapak_jejak/screens/icons/sewa_alat/sewa_alat.dart';
-import 'package:tapak_jejak/screens/icons/tiket_masuk/tiket_masuk.dart';
-import 'package:tapak_jejak/screens/icons/travel_ojek/travel&ojek.dart';
-import 'package:tapak_jejak/screens/icons/trip/private&open_trip.dart';
-import 'package:tapak_jejak/screens/icons/tutorial/tutorial.dart';
+import 'package:tapak_jejak/screens/fitur/blog/blog.dart';
+import 'package:tapak_jejak/screens/fitur/camping_ground/camping_ground.dart';
+import 'package:tapak_jejak/screens/fitur/cuaca/cuaca.dart';
+import 'package:tapak_jejak/screens/fitur/eat_stay/eat&stay.dart';
+import 'package:tapak_jejak/screens/fitur/event/event.dart';
+import 'package:tapak_jejak/screens/fitur/keamanan/keamanan.dart';
+import 'package:tapak_jejak/screens/fitur/porter_guide/porter&guide.dart';
+import 'package:tapak_jejak/screens/fitur/sewa_alat/sewa_alat.dart';
+import 'package:tapak_jejak/screens/fitur/tiket_masuk/tiket_masuk.dart';
+import 'package:tapak_jejak/screens/fitur/travel_ojek/travel&ojek.dart';
+import 'package:tapak_jejak/screens/fitur/trip/private&open_trip.dart';
+import 'package:tapak_jejak/screens/fitur/tutorial/tutorial.dart';
 import 'package:tapak_jejak/screens/terms/terms_page.dart';
 
 class NavigationService {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tapak_jejak/data/mock_tutorial_data.dart';
 import 'package:tapak_jejak/models/tutorial.dart';
-import 'package:tapak_jejak/screens/icons/tutorial/tutorial_detail_page.dart';
+import 'package:tapak_jejak/screens/fitur/tutorial/tutorial_detail_page.dart';
 import 'package:tapak_jejak/services/navigation_service.dart';
 
 enum TutorialCategory { all, persiapan, penggunaan, teknik, navigasi, keamanan }

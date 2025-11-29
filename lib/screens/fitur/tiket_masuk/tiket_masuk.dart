@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:tapak_jejak/screens/icons/trip/trip_detail_page.dart';
+import 'package:tapak_jejak/screens/fitur/tiket_masuk/tiket_detail_page.dart';
 import 'package:tapak_jejak/models/mountain.dart';
 
-class PrivateOpenTripPage extends StatefulWidget {
-  const PrivateOpenTripPage({super.key});
+class TiketMasukPage extends StatefulWidget {
+  const TiketMasukPage({super.key});
 
   @override
-  State<PrivateOpenTripPage> createState() => _PrivateOpenTripPageState();
+  State<TiketMasukPage> createState() => _TiketMasukPageState();
 }
 
-class _PrivateOpenTripPageState extends State<PrivateOpenTripPage> {
+class _TiketMasukPageState extends State<TiketMasukPage> {
   String? selectedProvince;
 
   static String _formatCurrency(int value) {
@@ -703,7 +703,6 @@ class _PrivateOpenTripPageState extends State<PrivateOpenTripPage> {
     List<String> sortedProvinces = provinces.toList()..sort();
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
         child: Container(
@@ -733,7 +732,7 @@ class _PrivateOpenTripPageState extends State<PrivateOpenTripPage> {
                 Image.asset('assets/LOGO.png', height: 40, width: 40),
                 const SizedBox(width: 8),
                 Text(
-                  'Private & Open Trip',
+                  'Tiket Masuk',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -991,7 +990,7 @@ class _PrivateOpenTripPageState extends State<PrivateOpenTripPage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                TripDetailPage(mountain: mountain),
+                                TiketDetailPage(mountain: mountain),
                           ),
                         );
                       },
@@ -1143,6 +1142,91 @@ class _PrivateOpenTripPageState extends State<PrivateOpenTripPage> {
                                           ),
                                         ),
                                       ],
+                                    ),
+                                    const SizedBox(height: 20),
+
+                                    // Pricing Section
+                                    Container(
+                                      padding: const EdgeInsets.all(16),
+                                      decoration: BoxDecoration(
+                                        color: Colors.green.shade50,
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
+                                          color: Colors.green.shade200,
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                Icons.payment,
+                                                size: 20,
+                                                color: const Color(0xFF2A4D3A),
+                                              ),
+                                              const SizedBox(width: 8),
+                                              Text(
+                                                'Tarif Masuk',
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Color(0xFF2A4D3A),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 12),
+                                          ...mountain.prices.entries.map((
+                                            entry,
+                                          ) {
+                                            return Container(
+                                              margin: const EdgeInsets.only(
+                                                bottom: 8,
+                                              ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 12,
+                                                    vertical: 8,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                border: Border.all(
+                                                  color: Colors.grey.shade200,
+                                                ),
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    entry.key,
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    'Rp ${_formatCurrency(entry.value)}',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Color(0xFF2A4D3A),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          }),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),

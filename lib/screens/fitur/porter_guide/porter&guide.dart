@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tapak_jejak/screens/icons/porter_guide/porter_guide_detail_page.dart';
+import 'package:tapak_jejak/screens/fitur/porter_guide/porter_guide_detail_page.dart';
 import 'package:tapak_jejak/models/product.dart';
 
 class PorterGuidePage extends StatefulWidget {

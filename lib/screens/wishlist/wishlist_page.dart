@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tapak_jejak/screens/icons/sewa_alat/all_products_page.dart';
+import 'package:tapak_jejak/screens/fitur/sewa_alat/all_products_page.dart';
 import 'package:tapak_jejak/screens/home/main_page.dart';
 
 enum WishlistCategory { semua, tiket_masuk, porter_guide, private_open_trip }

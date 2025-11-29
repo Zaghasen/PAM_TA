@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tapak_jejak/data/mock_blog_data.dart';
 import 'package:tapak_jejak/models/blog.dart';
-import 'package:tapak_jejak/screens/icons/blog/blog_detail_page.dart';
+import 'package:tapak_jejak/screens/fitur/blog/blog_detail_page.dart';
 import 'package:tapak_jejak/services/navigation_service.dart';
 
 enum BlogCategory { all, tips, cerita, berita, eksplorasi, review }

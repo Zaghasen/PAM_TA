@@ -1010,7 +1010,7 @@ lib/
 │   ├── profile/                          # User profile
 │   ├── membership/                       # Membership & quests
 │   ├── terms/                            # Terms & conditions
-│   └── icons/                            # Feature screens
+│   └── Fitur/                            # Feature screens
 │       ├── sewa_alat/                    # Rental pages
 │       ├── tiket_masuk/                  # Ticket booking
 │       ├── travel_ojek/                  # Transportation

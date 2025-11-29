@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tapak_jejak/screens/icons/travel_ojek/travel&ojek_detail_page.dart';
+import 'package:tapak_jejak/screens/fitur/travel_ojek/travel&ojek_detail_page.dart';
 import 'package:tapak_jejak/models/mountain.dart';
 
 class TravelOjekPage extends StatefulWidget {

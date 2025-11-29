@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:tapak_jejak/screens/login/login_page.dart';
-import 'package:tapak_jejak/screens/icons/sewa_alat/rental_page.dart';
-import 'package:tapak_jejak/screens/icons/sewa_alat/produk_page.dart';
-import 'package:tapak_jejak/screens/icons/blog/review_page.dart';
-import 'package:tapak_jejak/screens/icons/trip/trip_page.dart';
+import 'package:tapak_jejak/screens/fitur/sewa_alat/rental_page.dart';
+import 'package:tapak_jejak/screens/fitur/sewa_alat/produk_page.dart';
+import 'package:tapak_jejak/screens/fitur/blog/review_page.dart';
+import 'package:tapak_jejak/screens/fitur/trip/trip_page.dart';
 import 'package:tapak_jejak/services/hive_service.dart';
 import 'package:tapak_jejak/models/user.dart';
 
