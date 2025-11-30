@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:tapak_jejak/screens/login/login_page.dart';
-import 'package:tapak_jejak/screens/fitur/sewa_alat/rental_page.dart';
-import 'package:tapak_jejak/screens/fitur/sewa_alat/produk_page.dart';
+import 'package:tapak_jejak/screens/splash/splash_screen.dart';
 import 'package:tapak_jejak/screens/fitur/blog/review_page.dart';
 import 'package:tapak_jejak/screens/fitur/trip/trip_page.dart';
 import 'package:tapak_jejak/services/hive_service.dart';
@@ -63,10 +61,8 @@ class MyApp extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
-      home: const LoginScreen(),
+      home: const SplashScreen(),
       routes: {
-        '/rental': (context) => const RentalPage(),
-        '/produk': (context) => const ProdukPage(),
         '/review': (context) => const ReviewPage(),
         '/trip': (context) => const TripPage(),
       },

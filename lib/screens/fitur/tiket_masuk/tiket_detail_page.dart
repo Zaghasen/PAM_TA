@@ -3,8 +3,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:tapak_jejak/models/mountain.dart';
-import 'package:tapak_jejak/models/product.dart';
+import 'package:tapak_jejak/models/ticket_order.dart';
 import 'package:tapak_jejak/screens/home/main_page.dart';
+import 'package:tapak_jejak/services/notification_controller.dart';
 
 class TiketDetailPage extends StatefulWidget {
   final Mountain mountain;
@@ -238,9 +239,12 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
 
     // Convert currency if needed
     if (selectedCurrency != 'IDR' && exchangeRates != null) {
-      double rate = (exchangeRates![selectedCurrency] ?? 1.0).toDouble();
+      // Exchange rates are based on USD, so we need to:
+      // 1. Convert IDR to USD first: IDR / IDR_rate
+      // 2. Then convert USD to target currency: USD * target_rate
       double idrRate = (exchangeRates!['IDR'] ?? 1.0).toDouble();
-      total = total / idrRate * rate;
+      double targetRate = (exchangeRates![selectedCurrency] ?? 1.0).toDouble();
+      total = (total / idrRate) * targetRate;
     }
 
     return total;
@@ -521,23 +525,12 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.white,
-                      Colors.green.shade50.withOpacity(0.3),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: Color(0xFF2A4D3A).withOpacity(0.2),
-                    width: 1.5,
-                  ),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
                   boxShadow: [
                     BoxShadow(
-                      color: Color(0xFF2A4D3A).withOpacity(0.1),
-                      blurRadius: 12,
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
                   ],
@@ -548,106 +541,124 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Color(0xFF2A4D3A), Color(0xFF1B3A2E)],
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0xFF2A4D3A).withOpacity(0.3),
-                                blurRadius: 8,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
+                            color: const Color(0xFF2E7D32).withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           child: const Icon(
                             Icons.location_pin,
-                            color: Colors.white,
-                            size: 24,
+                            color: Color(0xFF2E7D32),
+                            size: 20,
                           ),
                         ),
                         const SizedBox(width: 12),
-                        const Text(
-                          'Pos Perizinan',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF2A4D3A),
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Pos Perizinan',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF2A4D3A),
+                                ),
+                              ),
+                              Text(
+                                'Pilih pos masuk dan keluar',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
-                    Column(
-                      children: [
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade50,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.grey.shade300),
-                          ),
-                          child: DropdownButtonFormField<String>(
-                            decoration: const InputDecoration(
-                              labelText: 'Pos Masuk',
-                              border: InputBorder.none,
-                              contentPadding: EdgeInsets.zero,
-                            ),
-                            initialValue: selectedEntryPoint,
-                            items: _getBasecampOptions()
-                                .map(
-                                  (point) => DropdownMenuItem(
-                                    value: point,
-                                    child: Text(point),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: (value) =>
-                                setState(() => selectedEntryPoint = value),
-                            validator: (value) =>
-                                value == null ? 'Pilih pos masuk' : null,
-                          ),
+                    const SizedBox(height: 15),
+                    DropdownButtonFormField<String>(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide.none,
                         ),
-                        const SizedBox(height: 16),
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade50,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.grey.shade300),
-                          ),
-                          child: DropdownButtonFormField<String>(
-                            decoration: const InputDecoration(
-                              labelText: 'Pos Keluar',
-                              border: InputBorder.none,
-                              contentPadding: EdgeInsets.zero,
-                            ),
-                            initialValue: selectedExitPoint,
-                            items: _getBasecampOptions()
-                                .map(
-                                  (point) => DropdownMenuItem(
-                                    value: point,
-                                    child: Text(point),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: (value) =>
-                                setState(() => selectedExitPoint = value),
-                            validator: (value) =>
-                                value == null ? 'Pilih pos keluar' : null,
-                          ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintText: 'Pilih pos masuk',
+                        prefixIcon: const Icon(
+                          Icons.login,
+                          color: Color(0xFF2E7D32),
                         ),
-                      ],
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                      ),
+                      initialValue: selectedEntryPoint,
+                      items: _getBasecampOptions()
+                          .map(
+                            (point) => DropdownMenuItem(
+                              value: point,
+                              child: Text(
+                                point,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (value) =>
+                          setState(() => selectedEntryPoint = value),
+                      validator: (value) =>
+                          value == null ? 'Pilih pos masuk' : null,
+                      dropdownColor: Colors.white,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    const SizedBox(height: 12),
+                    DropdownButtonFormField<String>(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide.none,
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintText: 'Pilih pos keluar',
+                        prefixIcon: const Icon(
+                          Icons.logout,
+                          color: Color(0xFF2E7D32),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                      ),
+                      initialValue: selectedExitPoint,
+                      items: _getBasecampOptions()
+                          .map(
+                            (point) => DropdownMenuItem(
+                              value: point,
+                              child: Text(
+                                point,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (value) =>
+                          setState(() => selectedExitPoint = value),
+                      validator: (value) =>
+                          value == null ? 'Pilih pos keluar' : null,
+                      dropdownColor: Colors.white,
+                      borderRadius: BorderRadius.circular(15),
                     ),
                   ],
                 ),
@@ -658,23 +669,12 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.white,
-                      Colors.green.shade50.withOpacity(0.3),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: Color(0xFF2A4D3A).withOpacity(0.2),
-                    width: 1.5,
-                  ),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
                   boxShadow: [
                     BoxShadow(
-                      color: Color(0xFF2A4D3A).withOpacity(0.1),
-                      blurRadius: 12,
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
                   ],
@@ -685,110 +685,142 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Color(0xFF2A4D3A), Color(0xFF1B3A2E)],
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0xFF2A4D3A).withOpacity(0.3),
-                                blurRadius: 8,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
+                            color: const Color(0xFF2E7D32).withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           child: const Icon(
                             Icons.calendar_today,
-                            color: Colors.white,
-                            size: 24,
+                            color: Color(0xFF2E7D32),
+                            size: 20,
                           ),
                         ),
                         const SizedBox(width: 12),
-                        const Text(
-                          'Tanggal Pendakian',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF2A4D3A),
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Tanggal Pendakian',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF2A4D3A),
+                                ),
+                              ),
+                              Text(
+                                'Pilih tanggal naik dan turun',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: InkWell(
-                            onTap: () async {
-                              final picked = await showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime.now(),
-                                lastDate: DateTime.now().add(
-                                  const Duration(days: 365),
-                                ),
-                              );
-                              if (picked != null) {
-                                setState(() => startDate = picked);
-                              }
-                            },
-                            child: InputDecorator(
-                              decoration: const InputDecoration(
-                                labelText: 'Tanggal Naik',
-                                border: OutlineInputBorder(),
-                              ),
-                              child: Text(
-                                startDate != null
-                                    ? DateFormat(
-                                        'dd/MM/yyyy',
-                                      ).format(startDate!)
-                                    : 'Pilih tanggal',
-                              ),
-                            ),
-                          ),
+                    const SizedBox(height: 15),
+                    TextFormField(
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide.none,
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: InkWell(
-                            onTap: () async {
-                              if (startDate == null) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      'Pilih tanggal naik terlebih dahulu',
-                                    ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintText: 'Pilih tanggal naik',
+                        prefixIcon: const Icon(
+                          Icons.event,
+                          color: Color(0xFF2E7D32),
+                        ),
+                        suffixIcon: IconButton(
+                          icon: const Icon(
+                            Icons.calendar_today,
+                            color: Color(0xFF2E7D32),
+                          ),
+                          onPressed: () async {
+                            final picked = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime.now(),
+                              lastDate: DateTime.now().add(
+                                const Duration(days: 365),
+                              ),
+                            );
+                            if (picked != null) {
+                              setState(() => startDate = picked);
+                            }
+                          },
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                      ),
+                      controller: TextEditingController(
+                        text: startDate != null
+                            ? DateFormat('dd/MM/yyyy').format(startDate!)
+                            : '',
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextFormField(
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide.none,
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintText: 'Pilih tanggal turun',
+                        prefixIcon: const Icon(
+                          Icons.event,
+                          color: Color(0xFF2E7D32),
+                        ),
+                        suffixIcon: IconButton(
+                          icon: const Icon(
+                            Icons.calendar_today,
+                            color: Color(0xFF2E7D32),
+                          ),
+                          onPressed: () async {
+                            if (startDate == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Pilih tanggal naik terlebih dahulu',
                                   ),
-                                );
-                                return;
-                              }
-                              final picked = await showDatePicker(
-                                context: context,
-                                initialDate: startDate!,
-                                firstDate: startDate!,
-                                lastDate: startDate!.add(
-                                  const Duration(days: 30),
                                 ),
                               );
-                              if (picked != null) {
-                                setState(() => endDate = picked);
-                              }
-                            },
-                            child: InputDecorator(
-                              decoration: const InputDecoration(
-                                labelText: 'Tanggal Turun',
-                                border: OutlineInputBorder(),
+                              return;
+                            }
+                            final picked = await showDatePicker(
+                              context: context,
+                              initialDate: startDate!,
+                              firstDate: startDate!,
+                              lastDate: startDate!.add(
+                                const Duration(days: 30),
                               ),
-                              child: Text(
-                                endDate != null
-                                    ? DateFormat('dd/MM/yyyy').format(endDate!)
-                                    : 'Pilih tanggal',
-                              ),
-                            ),
-                          ),
+                            );
+                            if (picked != null) {
+                              setState(() => endDate = picked);
+                            }
+                          },
                         ),
-                      ],
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                      ),
+                      controller: TextEditingController(
+                        text: endDate != null
+                            ? DateFormat('dd/MM/yyyy').format(endDate!)
+                            : '',
+                      ),
                     ),
                   ],
                 ),
@@ -799,23 +831,12 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.white,
-                      Colors.green.shade50.withOpacity(0.3),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: Color(0xFF2A4D3A).withOpacity(0.2),
-                    width: 1.5,
-                  ),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
                   boxShadow: [
                     BoxShadow(
-                      color: Color(0xFF2A4D3A).withOpacity(0.1),
-                      blurRadius: 12,
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
                   ],
@@ -826,70 +847,115 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Color(0xFF2A4D3A), Color(0xFF1B3A2E)],
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0xFF2A4D3A).withOpacity(0.3),
-                                blurRadius: 8,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
+                            color: const Color(0xFF2E7D32).withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           child: const Icon(
                             Icons.confirmation_number,
-                            color: Colors.white,
-                            size: 24,
+                            color: Color(0xFF2E7D32),
+                            size: 20,
                           ),
                         ),
                         const SizedBox(width: 12),
-                        const Text(
-                          'Jumlah Tiket',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF2A4D3A),
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Jumlah Tiket',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF2A4D3A),
+                                ),
+                              ),
+                              Text(
+                                'Berapa tiket yang diperlukan?',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        IconButton(
-                          onPressed: ticketCount > 1
-                              ? () => setState(() => ticketCount--)
-                              : null,
-                          icon: const Icon(Icons.remove),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
+                    const SizedBox(height: 15),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(
+                              Icons.remove_circle,
+                              color: Color(0xFF2E7D32),
+                              size: 24,
+                            ),
+                            onPressed: () {
+                              if (ticketCount > 1) {
+                                setState(() {
+                                  ticketCount--;
+                                });
+                              }
+                            },
                           ),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(4),
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              child: TextFormField(
+                                textAlign: TextAlign.center,
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: 'Jumlah tiket',
+                                ),
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF2A4D3A),
+                                ),
+                                controller: TextEditingController(
+                                  text: ticketCount.toString(),
+                                ),
+                                onChanged: (value) {
+                                  int? newQuantity = int.tryParse(value);
+                                  if (newQuantity != null && newQuantity > 0) {
+                                    setState(() {
+                                      ticketCount = newQuantity;
+                                      while (personalData.length <
+                                          ticketCount) {
+                                        _addPerson();
+                                      }
+                                    });
+                                  }
+                                },
+                              ),
+                            ),
                           ),
-                          child: Text(
-                            ticketCount.toString(),
-                            style: const TextStyle(fontSize: 16),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.add_circle,
+                              color: Color(0xFF2E7D32),
+                              size: 24,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                ticketCount++;
+                                if (personalData.length < ticketCount) {
+                                  _addPerson();
+                                }
+                              });
+                            },
                           ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            setState(() => ticketCount++);
-                            if (personalData.length < ticketCount) {
-                              _addPerson();
-                            }
-                          },
-                          icon: const Icon(Icons.add),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -900,23 +966,12 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.white,
-                      Colors.green.shade50.withOpacity(0.3),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: Color(0xFF2A4D3A).withOpacity(0.2),
-                    width: 1.5,
-                  ),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
                   boxShadow: [
                     BoxShadow(
-                      color: Color(0xFF2A4D3A).withOpacity(0.1),
-                      blurRadius: 12,
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
                   ],
@@ -927,38 +982,44 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Color(0xFF2A4D3A), Color(0xFF1B3A2E)],
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0xFF2A4D3A).withOpacity(0.3),
-                                blurRadius: 8,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
+                            color: const Color(0xFF2E7D32).withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           child: const Icon(
                             Icons.person,
-                            color: Colors.white,
-                            size: 24,
+                            color: Color(0xFF2E7D32),
+                            size: 20,
                           ),
                         ),
                         const SizedBox(width: 12),
-                        const Text(
-                          'Data Pribadi',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF2A4D3A),
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Data Pribadi',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF2A4D3A),
+                                ),
+                              ),
+                              Text(
+                                'Isi informasi pendaki',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 15),
                     ...List.generate(personalData.length, (index) {
                       return Card(
                         margin: const EdgeInsets.only(bottom: 16),
@@ -1103,274 +1164,16 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
               ),
               const SizedBox(height: 20),
 
-              // Smart Recommendations Section
-              Container(
-                margin: const EdgeInsets.only(bottom: 20),
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.white,
-                      Colors.green.shade50.withOpacity(0.3),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: Color(0xFF2A4D3A).withOpacity(0.2),
-                    width: 1.5,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color(0xFF2A4D3A).withOpacity(0.1),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Color(0xFF2A4D3A), Color(0xFF1B3A2E)],
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0xFF2A4D3A).withOpacity(0.3),
-                                blurRadius: 8,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.lightbulb,
-                            color: Colors.white,
-                            size: 24,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        const Expanded(
-                          child: Text(
-                            'Rekomendasi Pintar',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF2A4D3A),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    // Weather Recommendation
-                    if (startDate != null)
-                      Container(
-                        padding: const EdgeInsets.all(14),
-                        margin: const EdgeInsets.only(bottom: 12),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: Colors.orange.shade300,
-                            width: 1.5,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.orange.withOpacity(0.1),
-                              blurRadius: 6,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: Colors.orange.shade50,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Icon(
-                                Icons.wb_sunny,
-                                color: Colors.orange.shade600,
-                                size: 24,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    'Prediksi Cuaca',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                  Text(
-                                    _isHoliday(startDate!)
-                                        ? 'Hari libur - Ramai pendaki'
-                                        : 'Cuaca cerah 85% - Cocok mendaki',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey.shade700,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    // Peak Season Alert
-                    if (startDate != null && _isHoliday(startDate!))
-                      Container(
-                        padding: const EdgeInsets.all(14),
-                        margin: const EdgeInsets.only(bottom: 12),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: Colors.red.shade300,
-                            width: 1.5,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.red.withOpacity(0.1),
-                              blurRadius: 6,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: Colors.red.shade50,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Icon(
-                                Icons.warning_amber,
-                                color: Colors.red.shade600,
-                                size: 24,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            const Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Peak Season Alert',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Tiket terbatas di hari libur - Pesan sekarang!',
-                                    style: TextStyle(fontSize: 12),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    // Package Deal
-                    Container(
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: Colors.green.shade300,
-                          width: 1.5,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.green.withOpacity(0.1),
-                            blurRadius: 6,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: Colors.green.shade50,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Icon(
-                              Icons.local_offer,
-                              color: Colors.green.shade600,
-                              size: 24,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          const Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Paket Hemat',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                Text(
-                                  'Bundle: Tiket + Guide + Rental Alat (Diskon 15%)',
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 16,
-                            color: Colors.grey.shade600,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
               // Price Summary - Enhanced
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.white,
-                      Colors.green.shade50.withOpacity(0.3),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: Color(0xFF2A4D3A).withOpacity(0.2),
-                    width: 1.5,
-                  ),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
                   boxShadow: [
                     BoxShadow(
-                      color: Color(0xFF2A4D3A).withOpacity(0.1),
-                      blurRadius: 12,
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
                   ],
@@ -1381,38 +1184,44 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Color(0xFF2A4D3A), Color(0xFF1B3A2E)],
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0xFF2A4D3A).withOpacity(0.3),
-                                blurRadius: 8,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
+                            color: const Color(0xFF2E7D32).withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           child: const Icon(
                             Icons.account_balance_wallet,
-                            color: Colors.white,
-                            size: 24,
+                            color: Color(0xFF2E7D32),
+                            size: 20,
                           ),
                         ),
                         const SizedBox(width: 12),
-                        const Text(
-                          'Rincian Harga',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF2A4D3A),
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Rincian Harga',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF2A4D3A),
+                                ),
+                              ),
+                              Text(
+                                'Detail pembayaran tiket',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 15),
                     // Price Details
                     if (startDate != null && endDate != null) ...[
                       _buildPriceDetailRow(
@@ -1440,32 +1249,37 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                     const Divider(thickness: 2),
                     const SizedBox(height: 16),
                     // Currency Selector
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.grey.shade300),
-                      ),
-                      child: DropdownButtonFormField<String>(
-                        decoration: const InputDecoration(
-                          labelText: 'Mata Uang',
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.zero,
+                    DropdownButtonFormField<String>(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide.none,
                         ),
-                        initialValue: selectedCurrency,
-                        items: [
-                          _buildCurrencyMenuItem('IDR', '🇮🇩', 'Rupiah'),
-                          _buildCurrencyMenuItem('USD', '🇺🇸', 'US Dollar'),
-                          _buildCurrencyMenuItem('EUR', '🇪🇺', 'Euro'),
-                          _buildCurrencyMenuItem('JPY', '🇯🇵', 'Yen'),
-                        ],
-                        onChanged: (value) =>
-                            setState(() => selectedCurrency = value!),
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintText: 'Pilih mata uang',
+                        prefixIcon: const Icon(
+                          Icons.currency_exchange,
+                          color: Color(0xFF2E7D32),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        isDense: true,
                       ),
+                      initialValue: selectedCurrency,
+                      items: [
+                        _buildCurrencyMenuItem('IDR', '🇮🇩', 'Rupiah'),
+                        _buildCurrencyMenuItem('USD', '🇺🇸', 'US Dollar'),
+                        _buildCurrencyMenuItem('EUR', '🇪🇺', 'Euro'),
+                        _buildCurrencyMenuItem('JPY', '🇯🇵', 'Yen'),
+                      ],
+                      onChanged: (value) =>
+                          setState(() => selectedCurrency = value!),
+                      dropdownColor: Colors.white,
+                      borderRadius: BorderRadius.circular(15),
+                      isExpanded: true,
                     ),
                     const SizedBox(height: 20),
                     // Total Price
@@ -1473,12 +1287,18 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [Color(0xFF2A4D3A), Color(0xFF1B3A2E)],
+                          colors: [
+                            Colors.green.shade400,
+                            Colors.green.shade300,
+                            Colors.green.shade200,
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(15),
                         boxShadow: [
                           BoxShadow(
-                            color: Color(0xFF2A4D3A).withOpacity(0.4),
+                            color: Colors.green.withOpacity(0.3),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           ),
@@ -1494,7 +1314,8 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                                 'Total Pembayaran',
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: Colors.white70,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                               SizedBox(height: 4),
@@ -1502,7 +1323,7 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                                 'Termasuk biaya admin',
                                 style: TextStyle(
                                   fontSize: 11,
-                                  color: Colors.white60,
+                                  color: Colors.white,
                                 ),
                               ),
                             ],
@@ -1542,118 +1363,246 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
                 children: [
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (_formKey.currentState?.validate() ?? false) {
-                          // Create a Product object from the form data
-                          Product ticketProduct = Product(
-                            id: DateTime.now()
-                                .millisecondsSinceEpoch, // Unique ID
-                            name: 'Tiket ${widget.mountain.name}',
-                            brand: widget.mountain.managedBy,
-                            pricePerDay: _calculatePrice(),
-                            imageUrl: widget.mountain.image,
-                            category: 'tiket_masuk',
-                            description:
-                                'Tiket pendakian untuk ${widget.mountain.name} dari ${startDate != null ? DateFormat('dd/MM/yyyy').format(startDate!) : ''} sampai ${endDate != null ? DateFormat('dd/MM/yyyy').format(endDate!) : ''}',
+                          if (selectedEntryPoint == null ||
+                              selectedExitPoint == null ||
+                              startDate == null ||
+                              endDate == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Mohon lengkapi semua data'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                            return;
+                          }
+
+                          // Validate personal data
+                          for (var person in personalData) {
+                            if (person['name'].toString().isEmpty ||
+                                person['ktp'].toString().isEmpty ||
+                                person['address'].toString().isEmpty ||
+                                person['birthDate'] == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Mohon lengkapi semua data pribadi',
+                                  ),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                              return;
+                            }
+                          }
+
+                          // Create ticket order for wishlist
+                          List<PersonData> persons = personalData
+                              .asMap()
+                              .entries
+                              .map(
+                                (entry) => PersonData(
+                                  name: entry.value['name'],
+                                  ktp: entry.value['ktp'],
+                                  address: entry.value['address'],
+                                  birthDate: entry.value['birthDate'],
+                                  nationality: entry.value['nationality'],
+                                  isLeader: entry.key == leaderIndex,
+                                ),
+                              )
+                              .toList();
+
+                          TicketOrder wishlistOrder = TicketOrder(
+                            id: 'WISH-${DateTime.now().millisecondsSinceEpoch}',
+                            mountainName: widget.mountain.name,
+                            mountainImage: widget.mountain.image,
+                            entryPoint: selectedEntryPoint!,
+                            exitPoint: selectedExitPoint!,
+                            startDate: startDate!,
+                            endDate: endDate!,
+                            ticketCount: ticketCount,
+                            personalData: persons,
+                            leaderIndex: leaderIndex,
+                            totalPrice: _calculatePrice(),
+                            currency: selectedCurrency,
+                            managedBy: widget.mountain.managedBy,
+                            orderDate: DateTime.now(),
                           );
 
-                          // Add to cart
-                          MainScreen.cartItems.add(ticketProduct);
+                          // Add to wishlist
+                          if (!MainScreen.wishlistTicketOrders.any(
+                            (o) => o.id == wishlistOrder.id,
+                          )) {
+                            MainScreen.wishlistTicketOrders.add(wishlistOrder);
+                          }
 
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.check_circle,
-                                    color: Colors.white,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      'Yeay! Tiket ${widget.mountain.name} sudah masuk keranjang. Ayo lanjutkan petualanganmu!',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              backgroundColor: Colors.green.shade600,
-                              duration: const Duration(seconds: 4),
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+                          // Send notification
+                          await NotificationController.showSuccessNotification(
+                            '💚 Ditambahkan ke Wishlist!',
+                            'Tiket ${widget.mountain.name} berhasil masuk wishlist. Jangan lupa booking ya!',
+                          );
+
+                          // Navigate to wishlist page
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const MainScreen(
+                                initialIndex: 1, // Wishlist tab
                               ),
                             ),
+                            (route) => false, // Remove all previous routes
                           );
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange,
+                        backgroundColor: Colors.pink.shade400,
                         padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        elevation: 3,
                       ),
-                      child: const Text(
-                        'Masukkan Keranjang',
-                        style: TextStyle(color: Colors.white),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.favorite, color: Colors.white, size: 20),
+                          SizedBox(width: 8),
+                          Text(
+                            'Tambah Wishlist',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (_formKey.currentState?.validate() ?? false) {
-                          // Create order logic
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.celebration,
-                                    color: Colors.white,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      'Horay! Pesanan tiket ${widget.mountain.name} berhasil dibuat. Siapkan dirimu untuk petualangan epik!',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                          if (selectedEntryPoint == null ||
+                              selectedExitPoint == null ||
+                              startDate == null ||
+                              endDate == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Mohon lengkapi semua data'),
+                                backgroundColor: Colors.red,
                               ),
-                              backgroundColor: Colors.blue.shade600,
-                              duration: const Duration(seconds: 5),
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              action: SnackBarAction(
-                                label: 'Kembali Home',
-                                textColor: Colors.yellow,
-                                onPressed: () {
-                                  Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const MainScreen(),
-                                    ),
-                                    (route) => false,
-                                  );
-                                },
+                            );
+                            return;
+                          }
+
+                          // Validate personal data
+                          for (var person in personalData) {
+                            if (person['name'].toString().isEmpty ||
+                                person['ktp'].toString().isEmpty ||
+                                person['address'].toString().isEmpty ||
+                                person['birthDate'] == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Mohon lengkapi semua data pribadi',
+                                  ),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                              return;
+                            }
+                          }
+
+                          // Create ticket order
+                          List<PersonData> persons = personalData
+                              .asMap()
+                              .entries
+                              .map(
+                                (entry) => PersonData(
+                                  name: entry.value['name'],
+                                  ktp: entry.value['ktp'],
+                                  address: entry.value['address'],
+                                  birthDate: entry.value['birthDate'],
+                                  nationality: entry.value['nationality'],
+                                  isLeader: entry.key == leaderIndex,
+                                ),
+                              )
+                              .toList();
+
+                          TicketOrder order = TicketOrder(
+                            id: DateTime.now().millisecondsSinceEpoch
+                                .toString(),
+                            mountainName: widget.mountain.name,
+                            mountainImage: widget.mountain.image,
+                            entryPoint: selectedEntryPoint!,
+                            exitPoint: selectedExitPoint!,
+                            startDate: startDate!,
+                            endDate: endDate!,
+                            ticketCount: ticketCount,
+                            personalData: persons,
+                            leaderIndex: leaderIndex,
+                            totalPrice: _calculatePrice(),
+                            currency: selectedCurrency,
+                            managedBy: widget.mountain.managedBy,
+                            orderDate: DateTime.now(),
+                          );
+
+                          // Add to cart (store in MainScreen)
+                          if (!MainScreen.ticketOrders.contains(order)) {
+                            MainScreen.ticketOrders.add(order);
+                          }
+
+                          // Send notification
+                          await NotificationController.showSuccessNotification(
+                            '🎉 Pesanan Dibuat!',
+                            'Tiket ${widget.mountain.name} siap dibayar! Cek keranjang untuk lihat barcode dan detail.',
+                          );
+
+                          // Navigate to cart page
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const MainScreen(
+                                initialIndex: 2, // Cart tab
                               ),
                             ),
+                            (route) => false, // Remove all previous routes
                           );
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF2A4D3A),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        padding: EdgeInsets.zero,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
                       ),
-                      child: const Text(
-                        'Buat Pesanan',
-                        style: TextStyle(color: Colors.white),
+                      child: Ink(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.green.shade400,
+                              Colors.green.shade300,
+                              Colors.green.shade200,
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          alignment: Alignment.center,
+                          child: const Text(
+                            'Buat Pesanan',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -1754,25 +1703,16 @@ class _TiketDetailPageState extends State<TiketDetailPage> {
     return DropdownMenuItem(
       value: currency,
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Text(flag, style: const TextStyle(fontSize: 24)),
+          Text(flag, style: const TextStyle(fontSize: 20)),
           const SizedBox(width: 8),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                '$symbol $currency',
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
-              ),
-              Text(
-                name,
-                style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
-              ),
-            ],
+          Flexible(
+            child: Text(
+              '$symbol $currency - $name',
+              style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ],
       ),

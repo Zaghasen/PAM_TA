@@ -6,6 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:tapak_jejak/models/user.dart';
 import 'package:tapak_jejak/screens/login/login_page.dart';
 import 'package:tapak_jejak/screens/membership/membership_page.dart';
+import 'package:tapak_jejak/screens/splash/splash_screen.dart';
 import 'package:tapak_jejak/services/hive_service.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -144,6 +145,127 @@ class _ProfilePageState extends State<ProfilePage> {
       context,
       MaterialPageRoute(builder: (context) => const LoginScreen()),
     );
+  }
+
+  Future<void> _deleteAccount() async {
+    // Show confirmation dialog
+    final bool? confirmDelete = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Row(
+            children: [
+              Icon(
+                Icons.warning_amber_rounded,
+                color: Colors.red.shade700,
+                size: 28,
+              ),
+              const SizedBox(width: 8),
+              const Text('Konfirmasi'),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Apakah Anda yakin ingin menghapus akun?',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                '⚠️ Tindakan ini tidak dapat dibatalkan!\n\nSemua data Anda akan dihapus secara permanen:',
+                style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '• Profil dan biodata\n• Foto profil\n• History pembelian\n• Wishlist\n• Keranjang belanja\n• Data membership',
+                style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text(
+                'Batal',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                'Hapus Akun',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    // If user confirms deletion
+    if (confirmDelete == true) {
+      try {
+        // Delete user data from Hive
+        await _hiveService.clearUserData(_username);
+
+        // Delete user account from user box
+        final userBox = await Hive.openBox('userBox');
+        await userBox.delete(_username);
+
+        // Delete profile image if exists
+        if (_profileImage != null && await _profileImage!.exists()) {
+          await _profileImage!.delete();
+        }
+
+        // Clear SharedPreferences
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.clear();
+
+        // Clear session
+        await _hiveService.logout();
+
+        // Show success message
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Akun berhasil dihapus'),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 2),
+            ),
+          );
+
+          // Navigate to splash screen then login page
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const SplashScreen()),
+            (route) => false,
+          );
+        }
+      } catch (e) {
+        // Show error message
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Gagal menghapus akun: $e'),
+              backgroundColor: Colors.red,
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+      }
+    }
   }
 
   @override
@@ -424,6 +546,24 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   child: const Text('Logout'),
                 ),
+                const SizedBox(height: 12),
+                OutlinedButton.icon(
+                  onPressed: _deleteAccount,
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 50),
+                    side: BorderSide(color: Colors.red.shade700, width: 2),
+                    foregroundColor: Colors.red.shade700,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  icon: const Icon(Icons.delete_forever),
+                  label: const Text(
+                    'Hapus Akun',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: 20),
               ],
             ),
           ),

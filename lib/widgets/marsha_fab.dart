@@ -21,7 +21,6 @@ class _MarshaFABState extends State<MarshaFAB>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _breathingAnimation;
-  late Animation<double> _rotationAnimation;
 
   @override
   void initState() {
@@ -35,17 +34,6 @@ class _MarshaFABState extends State<MarshaFAB>
     _breathingAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
-
-    _rotationAnimation =
-        Tween<double>(
-          begin: 0,
-          end: math.pi / 4, // 45 degrees for X icon
-        ).animate(
-          CurvedAnimation(
-            parent: _animationController,
-            curve: Curves.easeInOut,
-          ),
-        );
   }
 
   @override

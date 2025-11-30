@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tapak_jejak/models/mountain.dart';
 import 'package:tapak_jejak/models/product.dart';
+import 'package:tapak_jejak/models/cart_item.dart';
 import 'package:tapak_jejak/screens/home/main_page.dart';
-import 'pesanan(travel)_detail_page.dart';
 
 class TravelOjekDetailPage extends StatefulWidget {
   final Mountain mountain;
@@ -20,7 +20,6 @@ class _TravelOjekDetailPageState extends State<TravelOjekDetailPage> {
   String? selectedDestination;
   String? selectedVehicle;
   int passengerCount = 1;
-  int vehicleCount = 1;
   DateTime? pickupDate;
   TimeOfDay? pickupTime;
   String selectedTimeZone = 'WIB';
@@ -203,16 +202,22 @@ class _TravelOjekDetailPageState extends State<TravelOjekDetailPage> {
     return DateFormat('HH:mm').format(converted);
   }
 
-  List<String> _getBasecampOptions() {
-    return _getDestinationOptions();
-  }
-
   double _calculatePrice() {
-    // Simple pricing logic for travel ojek
-    double basePrice = 50000; // Base price per vehicle
-    double passengerMultiplier = passengerCount * 10000;
-    double vehicleMultiplier = vehicleCount * 20000;
-    return (basePrice + passengerMultiplier + vehicleMultiplier) * vehicleCount;
+    // Harga dasar berdasarkan kendaraan
+    double basePrice = 500000;
+    if (selectedVehicle != null) {
+      if (selectedVehicle!.contains('Hiace')) {
+        basePrice = 900000;
+      } else if (selectedVehicle!.contains('Elf')) {
+        basePrice = 1200000;
+      } else if (selectedVehicle!.contains('Pajero')) {
+        basePrice = 800000;
+      } else if (selectedVehicle!.contains('Innova')) {
+        basePrice = 600000;
+      }
+    }
+
+    return basePrice;
   }
 
   @override
@@ -751,52 +756,6 @@ class _TravelOjekDetailPageState extends State<TravelOjekDetailPage> {
                             ],
                           ),
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Kendaraan',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF2A4D3A),
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  IconButton(
-                                    onPressed: vehicleCount > 1
-                                        ? () => setState(() => vehicleCount--)
-                                        : null,
-                                    icon: const Icon(Icons.remove),
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                      vertical: 8,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.grey),
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                    child: Text(
-                                      vehicleCount.toString(),
-                                      style: const TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                  IconButton(
-                                    onPressed: () =>
-                                        setState(() => vehicleCount++),
-                                    icon: const Icon(Icons.add),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
                       ],
                     ),
                   ],
@@ -949,21 +908,138 @@ class _TravelOjekDetailPageState extends State<TravelOjekDetailPage> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
-                          // Create a Product object from the form data
+                          // Validate all fields
+                          if (selectedPickupLocation == null ||
+                              selectedDestination == null ||
+                              selectedVehicle == null ||
+                              pickupDate == null ||
+                              pickupTime == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Mohon lengkapi semua data'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                            return;
+                          }
+
+                          // Create a Product object for wishlist with unique ID
                           Product travelProduct = Product(
-                            id: DateTime.now()
-                                .millisecondsSinceEpoch, // Unique ID
-                            name: 'Travel Ojek ${widget.mountain.name}',
+                            id:
+                                DateTime.now().millisecondsSinceEpoch +
+                                1, // +1 for wishlist
+                            name: 'Travel ${widget.mountain.name}',
                             brand: widget.mountain.managedBy,
                             pricePerDay: _calculatePrice(),
                             imageUrl: widget.mountain.image,
                             category: 'travel_ojek',
                             description:
-                                'Travel ojek ke ${widget.mountain.name} dari $selectedPickupLocation ke $selectedDestination pada ${pickupDate != null ? DateFormat('dd/MM/yyyy').format(pickupDate!) : ''} pukul ${pickupTime != null ? pickupTime!.format(context) : ''}',
+                                'Travel ke ${widget.mountain.name} dari $selectedPickupLocation ke $selectedDestination pada ${DateFormat('dd/MM/yyyy').format(pickupDate!)} pukul ${pickupTime!.format(context)} $selectedTimeZone dengan $selectedVehicle untuk $passengerCount penumpang',
+                          );
+
+                          // Add to wishlist
+                          MainScreen.wishlistItems.add(travelProduct);
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.favorite,
+                                    color: Colors.white,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      'Travel ${widget.mountain.name} ditambahkan ke wishlist!',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              backgroundColor: Colors.pink.shade400,
+                              duration: const Duration(seconds: 3),
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          );
+
+                          // Navigate to wishlist page
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const MainScreen(
+                                initialIndex: 1, // Wishlist tab
+                              ),
+                            ),
+                            (route) => false,
+                          );
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.pink.shade400,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        elevation: 3,
+                      ),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.favorite, color: Colors.white, size: 20),
+                          SizedBox(width: 8),
+                          Text(
+                            'Tambah Wishlist',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          // Validate all fields
+                          if (selectedPickupLocation == null ||
+                              selectedDestination == null ||
+                              selectedVehicle == null ||
+                              pickupDate == null ||
+                              pickupTime == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Mohon lengkapi semua data'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                            return;
+                          }
+
+                          // Create a Product object for cart with unique ID
+                          Product travelProduct = Product(
+                            id: DateTime.now().millisecondsSinceEpoch,
+                            name: 'Travel ${widget.mountain.name}',
+                            brand: widget.mountain.managedBy,
+                            pricePerDay: _calculatePrice(),
+                            imageUrl: widget.mountain.image,
+                            category: 'travel_ojek',
+                            description:
+                                'Travel ke ${widget.mountain.name} dari $selectedPickupLocation ke $selectedDestination pada ${DateFormat('dd/MM/yyyy').format(pickupDate!)} pukul ${pickupTime!.format(context)} $selectedTimeZone dengan $selectedVehicle untuk $passengerCount penumpang',
                           );
 
                           // Add to cart
-                          MainScreen.cartItems.add(travelProduct);
+                          MainScreen.cartItems.add(
+                            CartItem(product: travelProduct),
+                          );
 
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -995,12 +1071,26 @@ class _TravelOjekDetailPageState extends State<TravelOjekDetailPage> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange,
+                        backgroundColor: Colors.pink.shade400,
                         padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        elevation: 3,
                       ),
-                      child: const Text(
-                        'Masukkan Keranjang',
-                        style: TextStyle(color: Colors.white),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.favorite, color: Colors.white, size: 20),
+                          SizedBox(width: 8),
+                          Text(
+                            'Tambah Wishlist',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -1009,19 +1099,50 @@ class _TravelOjekDetailPageState extends State<TravelOjekDetailPage> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
-                          // Create order logic
+                          // Validate all fields
+                          if (selectedPickupLocation == null ||
+                              selectedDestination == null ||
+                              selectedVehicle == null ||
+                              pickupDate == null ||
+                              pickupTime == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Mohon lengkapi semua data'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                            return;
+                          }
+
+                          // Create a Product object for cart with unique ID
+                          Product travelProduct = Product(
+                            id: DateTime.now().millisecondsSinceEpoch,
+                            name: 'Travel ${widget.mountain.name}',
+                            brand: widget.mountain.managedBy,
+                            pricePerDay: _calculatePrice(),
+                            imageUrl: widget.mountain.image,
+                            category: 'travel_ojek',
+                            description:
+                                'Travel ke ${widget.mountain.name} dari $selectedPickupLocation ke $selectedDestination pada ${DateFormat('dd/MM/yyyy').format(pickupDate!)} pukul ${pickupTime!.format(context)} $selectedTimeZone dengan $selectedVehicle untuk $passengerCount penumpang',
+                          );
+
+                          // Add to cart
+                          MainScreen.cartItems.add(
+                            CartItem(product: travelProduct),
+                          );
+
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Row(
                                 children: [
                                   const Icon(
-                                    Icons.celebration,
+                                    Icons.check_circle,
                                     color: Colors.white,
                                   ),
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: Text(
-                                      'Horay! Pesanan travel ojek ${widget.mountain.name} berhasil dibuat. Siapkan dirimu untuk petualangan epik!',
+                                      'Travel ${widget.mountain.name} berhasil dipesan!',
                                       style: const TextStyle(
                                         color: Colors.white,
                                       ),
@@ -1029,50 +1150,59 @@ class _TravelOjekDetailPageState extends State<TravelOjekDetailPage> {
                                   ),
                                 ],
                               ),
-                              backgroundColor: Colors.blue.shade600,
-                              duration: const Duration(seconds: 5),
+                              backgroundColor: Colors.green.shade600,
+                              duration: const Duration(seconds: 3),
                               behavior: SnackBarBehavior.floating,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              action: SnackBarAction(
-                                label: 'Lihat Detail',
-                                textColor: Colors.yellow,
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => PesananDetailPage(
-                                        mountain: widget.mountain,
-                                        orderData: {
-                                          'selectedPickupLocation':
-                                              selectedPickupLocation,
-                                          'selectedDestination':
-                                              selectedDestination,
-                                          'selectedVehicle': selectedVehicle,
-                                          'passengerCount': passengerCount,
-                                          'vehicleCount': vehicleCount,
-                                          'pickupDate': pickupDate,
-                                          'pickupTime': pickupTime,
-                                          'selectedTimeZone': selectedTimeZone,
-                                          'totalPrice': _calculatePrice(),
-                                        },
-                                      ),
-                                    ),
-                                  );
-                                },
+                            ),
+                          );
+
+                          // Navigate to cart page
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const MainScreen(
+                                initialIndex: 2, // Cart tab
                               ),
                             ),
+                            (route) => false,
                           );
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF2A4D3A),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        padding: EdgeInsets.zero,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
                       ),
-                      child: const Text(
-                        'Buat Pesanan',
-                        style: TextStyle(color: Colors.white),
+                      child: Ink(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.green.shade400,
+                              Colors.green.shade300,
+                              Colors.green.shade200,
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          alignment: Alignment.center,
+                          child: const Text(
+                            'Buat Pesanan',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),

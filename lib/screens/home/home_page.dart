@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tapak_jejak/data/mock_data.dart';
 import 'package:tapak_jejak/models/brand.dart';
 import 'package:tapak_jejak/models/product.dart';
-import 'package:tapak_jejak/screens/fitur/blog/blog.dart';
+import 'package:tapak_jejak/screens/fitur/blog/field_report.dart';
 import 'package:tapak_jejak/widgets/marsha_fab.dart';
 import 'package:tapak_jejak/widgets/marsha_chat_panel.dart';
 import 'package:tapak_jejak/screens/fitur/camping_ground/camping_ground.dart';
@@ -11,7 +11,7 @@ import 'package:tapak_jejak/screens/fitur/event/event.dart';
 import 'package:tapak_jejak/screens/fitur/keamanan/keamanan.dart';
 import 'package:tapak_jejak/screens/fitur/porter_guide/porter&guide.dart';
 import 'package:tapak_jejak/screens/fitur/trip/private&open_trip.dart';
-import 'package:tapak_jejak/screens/fitur/sewa_alat/sewa_alat.dart';
+import 'package:tapak_jejak/screens/fitur/sewa_alat/sewa_alat_maps_page.dart';
 import 'package:tapak_jejak/screens/fitur/tiket_masuk/tiket_masuk.dart';
 import 'package:tapak_jejak/screens/fitur/travel_ojek/travel&ojek.dart';
 import 'package:tapak_jejak/screens/fitur/tutorial/tutorial.dart';
@@ -278,7 +278,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => TermsScreen(
-                                      nextPage: const SewaAlatPage(),
+                                      nextPage: const SewaAlatMapsPage(),
                                     ),
                                   ),
                                 ),
@@ -408,11 +408,12 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               _buildCustomServiceIcon(
                                 Image.asset('assets/blog.png'),
-                                'Blog',
+                                'Field Report',
                                 () => Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const BlogPage(),
+                                    builder: (context) =>
+                                        const FieldReportPage(),
                                   ),
                                 ),
                               ),

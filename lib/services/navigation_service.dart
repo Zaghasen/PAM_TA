@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:tapak_jejak/screens/fitur/blog/blog.dart';
+import 'package:tapak_jejak/screens/fitur/blog/field_report.dart';
 import 'package:tapak_jejak/screens/fitur/camping_ground/camping_ground.dart';
 import 'package:tapak_jejak/screens/fitur/cuaca/cuaca.dart';
 import 'package:tapak_jejak/screens/fitur/eat_stay/eat&stay.dart';
 import 'package:tapak_jejak/screens/fitur/event/event.dart';
 import 'package:tapak_jejak/screens/fitur/keamanan/keamanan.dart';
 import 'package:tapak_jejak/screens/fitur/porter_guide/porter&guide.dart';
-import 'package:tapak_jejak/screens/fitur/sewa_alat/sewa_alat.dart';
+import 'package:tapak_jejak/screens/fitur/sewa_alat/sewa_alat_maps_page.dart';
 import 'package:tapak_jejak/screens/fitur/tiket_masuk/tiket_masuk.dart';
 import 'package:tapak_jejak/screens/fitur/travel_ojek/travel&ojek.dart';
 import 'package:tapak_jejak/screens/fitur/trip/private&open_trip.dart';
@@ -32,7 +32,7 @@ class NavigationService {
         needsTerms = true;
         break;
       case 'sewa_alat':
-        page = const SewaAlatPage();
+        page = const SewaAlatMapsPage();
         needsTerms = true;
         break;
       case 'trip':
@@ -56,7 +56,7 @@ class NavigationService {
         page = const CuacaPage();
         break;
       case 'blog':
-        page = const BlogPage();
+        page = const FieldReportPage();
         break;
       case 'tutorial':
         page = const TutorialPage();

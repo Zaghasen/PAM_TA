@@ -124,7 +124,7 @@ class _CampingGroundPageState extends State<CampingGroundPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: false,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
         child: Container(
@@ -232,7 +232,7 @@ class _CampingGroundPageState extends State<CampingGroundPage> {
             ),
           ),
           child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(20.0, 100.0, 20.0, 20.0),
+            padding: const EdgeInsets.all(20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

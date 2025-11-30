@@ -120,6 +120,8 @@ class QuestService {
   // Get quests with updated progress
   Future<List<Quest>> getDailyQuestsWithProgress() async {
     final box = await Hive.openBox(userActivityBoxName);
+    // Track user activity for potential future use
+    // ignore: unused_local_variable
     final activity = await getUserActivity();
 
     // Reset daily quests at midnight

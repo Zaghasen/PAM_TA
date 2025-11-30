@@ -24,6 +24,7 @@ dependencies:
   awesome_notifications: ^0.10.1
   flutter_compass: ^0.8.0
   google_generative_ai: ^0.4.6
+  barcode_widget: ^2.0.4
 
 dev_dependencies:
   flutter_test:

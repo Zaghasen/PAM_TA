@@ -703,7 +703,7 @@ class _PrivateOpenTripPageState extends State<PrivateOpenTripPage> {
     List<String> sortedProvinces = provinces.toList()..sort();
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: false,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
         child: Container(

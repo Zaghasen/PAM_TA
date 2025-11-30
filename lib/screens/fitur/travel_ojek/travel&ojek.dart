@@ -729,7 +729,14 @@ class _TravelOjekPageState extends State<TravelOjekPage> {
             elevation: 0,
             title: Row(
               children: [
-                Image.asset('assets/LOGO.png', height: 40, width: 40),
+                Image.asset(
+                  'assets/LOGO.png',
+                  height: 40,
+                  width: 40,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Icon(Icons.terrain, size: 40, color: Colors.white);
+                  },
+                ),
                 const SizedBox(width: 8),
                 Text(
                   'Travel & Ojek',
@@ -869,7 +876,7 @@ class _TravelOjekPageState extends State<TravelOjekPage> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
-                            '${_getFilteredMountains().length} Gunung',
+                            '${mountains.length} Gunung',
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
@@ -970,6 +977,9 @@ class _TravelOjekPageState extends State<TravelOjekPage> {
               child: ListView.builder(
                 padding: const EdgeInsets.all(16.0),
                 itemCount: mountains.length,
+                addAutomaticKeepAlives: false,
+                addRepaintBoundaries: true,
+                cacheExtent: 100,
                 itemBuilder: (context, index) {
                   final mountain = mountains[index];
                   return Container(
@@ -1009,6 +1019,19 @@ class _TravelOjekPageState extends State<TravelOjekPage> {
                                     height: 220,
                                     width: double.infinity,
                                     fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        height: 220,
+                                        color: Colors.grey.shade300,
+                                        child: Center(
+                                          child: Icon(
+                                            Icons.image_not_supported,
+                                            size: 50,
+                                            color: Colors.grey.shade600,
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
                                   Container(
                                     height: 220,

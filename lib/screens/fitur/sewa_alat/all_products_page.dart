@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tapak_jejak/data/mock_data.dart';
 import 'package:tapak_jejak/models/product.dart';
+import 'package:tapak_jejak/models/cart_item.dart';
 import 'package:tapak_jejak/screens/home/main_page.dart';
 import 'package:tapak_jejak/screens/fitur/sewa_alat/product_detail_page.dart';
 
@@ -295,7 +296,9 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                                         (p) => p.id == item.id,
                                       );
                                     } else {
-                                      MainScreen.cartItems.add(item);
+                                      MainScreen.cartItems.add(
+                                        CartItem(product: item),
+                                      );
                                     }
                                   });
                                   ScaffoldMessenger.of(context).showSnackBar(

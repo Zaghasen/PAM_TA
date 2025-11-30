@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tapak_jejak/models/product.dart';
+import 'package:tapak_jejak/models/cart_item.dart';
 import 'package:tapak_jejak/screens/home/main_page.dart';
 import 'package:tapak_jejak/services/quest_service.dart';
 import 'package:tapak_jejak/widgets/quest_notification.dart';
@@ -176,7 +177,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 foregroundColor: Colors.white,
               ),
               onPressed: () async {
-                MainScreen.cartItems.add(widget.product);
+                MainScreen.cartItems.add(CartItem(product: widget.product));
                 widget.refreshCallback();
 
                 // Track rental activity

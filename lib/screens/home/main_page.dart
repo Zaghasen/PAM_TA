@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-// removed unused import: cart_item
+import 'package:tapak_jejak/models/cart_item.dart';
 import 'package:tapak_jejak/models/product.dart';
+import 'package:tapak_jejak/models/ticket_order.dart';
 import 'package:tapak_jejak/screens/cart/cart_page.dart';
 import 'package:tapak_jejak/screens/home/home_page.dart';
 import 'package:tapak_jejak/screens/profile/profile_page.dart';
@@ -8,22 +9,27 @@ import 'package:tapak_jejak/screens/wishlist/wishlist_page.dart';
 
 class MainScreen extends StatefulWidget {
   static List<Product> wishlistItems = [];
-  static List<Product> cartItems = [];
+  static List<CartItem> cartItems = [];
+  static List<TicketOrder> ticketOrders = [];
+  static List<TicketOrder> wishlistTicketOrders = [];
 
-  const MainScreen({super.key});
+  final int? initialIndex;
+
+  const MainScreen({super.key, this.initialIndex});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _selectedIndex = 0;
+  late int _selectedIndex;
 
   late final List<Widget> _pages;
 
   @override
   void initState() {
     super.initState();
+    _selectedIndex = widget.initialIndex ?? 0;
     _pages = [
       HomeScreen(refreshCallback: () => setState(() {})),
       WishlistPage(refreshCallback: () => setState(() {})),
