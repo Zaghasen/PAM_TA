@@ -69,7 +69,9 @@ class _MarshaChatPanelState extends State<MarshaChatPanel>
     _scrollToBottom();
 
     try {
+      print('Sending message to Gemini: $text');
       final response = await _geminiService.sendMessage(text);
+      print('Received response: $response');
 
       setState(() {
         _messages.removeWhere((m) => m.type == MessageType.typing);
@@ -87,11 +89,12 @@ class _MarshaChatPanelState extends State<MarshaChatPanel>
         }
       });
     } catch (e) {
+      print('Error in _sendMessage: $e');
       setState(() {
         _messages.removeWhere((m) => m.type == MessageType.typing);
         _messages.add(
           ChatMessage.marsha(
-            'Ups! Ada masalah dengan koneksi saya. Coba lagi nanti ya! 😅',
+            'Ups! Terjadi error: ${e.toString()}\n\nCoba lagi ya! 😅',
           ),
         );
         _isTyping = false;
@@ -111,14 +114,88 @@ class _MarshaChatPanelState extends State<MarshaChatPanel>
     _scrollToBottom();
 
     try {
+      print('Quick action: $action, prompt: $prompt');
       String response;
+
       if (prompt == 'beginner') {
+        // Static response untuk beginner
         response = await _geminiService.getBeginnerGuide();
       } else if (prompt == 'safety') {
+        // Static response untuk safety
         response = await _geminiService.getSafetyTips();
+      } else if (prompt == 'Apa saja peralatan wajib untuk mendaki?') {
+        // Static response untuk checklist peralatan
+        response = '''🎒 **Checklist Peralatan Mendaki**
+
+**Peralatan Utama:**
+✅ Carrier/Ransel 40-60L
+✅ Tenda (2-4 orang)
+✅ Sleeping bag (sesuai suhu)
+✅ Matras/sleeping pad
+
+**Pakaian:**
+👕 Jaket windproof & waterproof
+🧥 Pakaian hangat (fleece/inner)
+👟 Sepatu hiking anti-slip
+🧦 Kaos kaki tebal 2-3 pasang
+🧢 Topi & buff/masker
+
+**Perlengkapan:**
+🔦 Headlamp + baterai cadangan
+🍽️ Nesting & kompor portable
+💧 Botol minum 2-3 liter
+🔪 Pisau lipat multifungsi
+
+**Kebutuhan Pribadi:**
+🏥 P3K (obat pribadi, plester, betadine)
+📱 Powerbank & kabel
+🧴 Sunblock & lip balm
+🧻 Tissue basah & kering
+
+**Tips:** 
+💡 Pemula? Bisa sewa peralatan dulu di fitur "Sewa Alat" sebelum beli sendiri!
+💚 Test semua peralatan sebelum berangkat
+
+Semoga lengkap ya persiapannya! 😊⛰️''';
+      } else if (prompt == 'Kapan waktu terbaik untuk mendaki?') {
+        // Static response untuk waktu terbaik
+        response = '''🌤️ **Waktu Terbaik untuk Mendaki**
+
+**Musim Kemarau (April - Oktober):**
+✅ Cuaca cerah & stabil
+✅ Jalur kering, tidak licin
+✅ View puncak lebih jelas
+✅ **Paling Recommended!**
+
+📅 **Peak Season:**
+- Juni - Agustus (liburan sekolah)
+- Lebih ramai, booking lebih awal
+
+**Musim Hujan (November - Maret):**
+⚠️ Cuaca tidak stabil
+⚠️ Jalur licin & berbahaya
+⚠️ Banyak gunung tutup jalur
+❌ **Tidak Disarankan**
+
+**Waktu Pendakian:**
+🌅 **Start:** Pagi (06:00-08:00) atau Siang (12:00-14:00)
+🎯 **Target:** Sampai camp sebelum gelap
+🌙 **Summit attack:** Tengah malam (00:00-02:00)
+
+**Tips:**
+📱 Cek prakiraan cuaca BMKG
+🏔️ Cek info jalur dari basecamp
+👥 Ikut komunitas untuk info update
+
+Selamat mendaki! 😊🏔️''';
       } else {
-        response = await _geminiService.sendMessage(action);
+        // Fallback ke API jika prompt lain
+        response = await _geminiService.sendMessage(prompt);
       }
+
+      print(
+        'Quick action response: ${response.substring(0, response.length > 100 ? 100 : response.length)}...',
+      );
 
       setState(() {
         _messages.removeWhere((m) => m.type == MessageType.typing);
@@ -128,9 +205,22 @@ class _MarshaChatPanelState extends State<MarshaChatPanel>
       });
 
       _scrollToBottom();
+
+      // Return to idle after explanation
+      Future.delayed(Duration(seconds: 2), () {
+        if (mounted) {
+          setState(() => _marshaState = MarshaState.idle);
+        }
+      });
     } catch (e) {
+      print('Error in _handleQuickAction: $e');
       setState(() {
         _messages.removeWhere((m) => m.type == MessageType.typing);
+        _messages.add(
+          ChatMessage.marsha(
+            'Ups! Terjadi error: ${e.toString()}\n\nCoba lagi ya! 😅',
+          ),
+        );
         _isTyping = false;
         _marshaState = MarshaState.idle;
       });

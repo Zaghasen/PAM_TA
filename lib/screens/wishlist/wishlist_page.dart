@@ -5,7 +5,13 @@ import 'package:tapak_jejak/models/cart_item.dart';
 import 'package:tapak_jejak/screens/fitur/sewa_alat/all_products_page.dart';
 import 'package:tapak_jejak/screens/home/main_page.dart';
 
-enum WishlistCategory { semua, tiket_masuk, porter_guide, private_open_trip }
+enum WishlistCategory {
+  semua,
+  tiket_masuk,
+  porter_guide,
+  travel_ojek,
+  private_open_trip,
+}
 
 class WishlistPage extends StatefulWidget {
   final VoidCallback refreshCallback;
@@ -48,6 +54,12 @@ class _WishlistPageState extends State<WishlistPage> {
           'label': 'Porter & Guide',
           'color': Colors.orange,
         };
+      case WishlistCategory.travel_ojek:
+        return {
+          'icon': Icons.directions_car,
+          'label': 'Travel & Ojek',
+          'color': Colors.green,
+        };
       case WishlistCategory.private_open_trip:
         return {
           'icon': Icons.group,
@@ -69,6 +81,8 @@ class _WishlistPageState extends State<WishlistPage> {
           return false; // tiket_masuk only shows TicketOrders
         case WishlistCategory.porter_guide:
           return product.category == 'porter_guide';
+        case WishlistCategory.travel_ojek:
+          return product.category == 'travel_ojek';
         case WishlistCategory.private_open_trip:
           return product.category == 'private_open_trip';
         default:
@@ -835,6 +849,11 @@ class _WishlistPageState extends State<WishlistPage> {
 
   // Build wishlist product card with swipe to delete
   Widget _buildWishlistProductCard(product) {
+    // For travel/ojek items, use detailed card format
+    if (product.category == 'travel_ojek') {
+      return _buildTravelOjekWishlistCard(product);
+    }
+
     // For porter/guide items, use detailed card format
     if (product.category == 'porter_guide') {
       return _buildPorterGuideWishlistCard(product);
@@ -928,6 +947,326 @@ class _WishlistPageState extends State<WishlistPage> {
             style: const TextStyle(fontWeight: FontWeight.w600),
           ),
           subtitle: Text('Rp ${product.pricePerDay.toInt()}/hari'),
+        ),
+      ),
+    );
+  }
+
+  // Build travel/ojek wishlist card with detailed view
+  Widget _buildTravelOjekWishlistCard(product) {
+    // Parse description to extract travel details
+    final description = product.description;
+    String routeInfo = '';
+    String dateInfo = '';
+    String vehicleInfo = '';
+    String passengerInfo = '';
+
+    // Extract information from description
+    if (description.contains('Travel ke')) {
+      final parts = description.split(' dari ');
+      if (parts.length > 1) {
+        final routeParts = parts[1].split(' pada ');
+        if (routeParts.length > 0) {
+          final destinations = routeParts[0].split(' ke ');
+          if (destinations.length == 2) {
+            routeInfo = '${destinations[0]} → ${destinations[1]}';
+          }
+        }
+        if (routeParts.length > 1) {
+          final timeParts = routeParts[1].split(' pukul ');
+          if (timeParts.length > 0) {
+            dateInfo = timeParts[0];
+          }
+          if (timeParts.length > 1) {
+            final vehicleParts = timeParts[1].split(' dengan ');
+            if (vehicleParts.length > 1) {
+              vehicleInfo = vehicleParts[1].split(' untuk ')[0];
+              if (vehicleParts[1].contains(' untuk ')) {
+                passengerInfo = vehicleParts[1]
+                    .split(' untuk ')[1]
+                    .split(' penumpang')[0];
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return Dismissible(
+      key: Key(product.id.toString()),
+      direction: DismissDirection.endToStart,
+      onDismissed: (direction) {
+        setState(() {
+          product.isWishlisted = false;
+          MainScreen.wishlistItems.removeWhere((p) => p.id == product.id);
+        });
+        widget.refreshCallback();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${product.name} dihapus dari wishlist'),
+            backgroundColor: Colors.orange.shade600,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      },
+      background: Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        decoration: BoxDecoration(
+          color: Colors.red,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
+        child: const Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.delete_forever, color: Colors.white, size: 32),
+            SizedBox(height: 4),
+            Text(
+              'Hapus',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+      child: Card(
+        margin: const EdgeInsets.only(bottom: 16),
+        elevation: 3,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Column(
+          children: [
+            // Header with mountain image
+            Container(
+              height: 140,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(16),
+                ),
+                image: DecorationImage(
+                  image: AssetImage(product.imageUrl),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(16),
+                  ),
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+                  ),
+                ),
+                padding: const EdgeInsets.all(16),
+                alignment: Alignment.bottomLeft,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      product.name,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      product.brand,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: Colors.white70,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            // Order details
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Route
+                  if (routeInfo.isNotEmpty)
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.route,
+                          size: 16,
+                          color: Colors.green.shade700,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            routeInfo,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  if (routeInfo.isNotEmpty) const SizedBox(height: 8),
+
+                  // Date
+                  if (dateInfo.isNotEmpty)
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.calendar_today,
+                          size: 16,
+                          color: Colors.green.shade700,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(dateInfo, style: const TextStyle(fontSize: 13)),
+                      ],
+                    ),
+                  if (dateInfo.isNotEmpty) const SizedBox(height: 8),
+
+                  // Vehicle
+                  if (vehicleInfo.isNotEmpty)
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.directions_car,
+                          size: 16,
+                          color: Colors.green.shade700,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            vehicleInfo,
+                            style: const TextStyle(fontSize: 13),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  if (vehicleInfo.isNotEmpty) const SizedBox(height: 8),
+
+                  // Passengers
+                  if (passengerInfo.isNotEmpty)
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.people,
+                          size: 16,
+                          color: Colors.green.shade700,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          '$passengerInfo Penumpang',
+                          style: const TextStyle(fontSize: 13),
+                        ),
+                      ],
+                    ),
+
+                  const SizedBox(height: 16),
+                  const Divider(),
+
+                  // Price
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Total Pembayaran',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        'Rp ${NumberFormat('#,###', 'id_ID').format(product.pricePerDay.toInt())}',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF2A4D3A),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Button
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        // Add to cart
+                        setState(() {
+                          MainScreen.cartItems.add(CartItem(product: product));
+                          product.isWishlisted = false;
+                          MainScreen.wishlistItems.removeWhere(
+                            (p) => p.id == product.id,
+                          );
+                        });
+                        widget.refreshCallback();
+
+                        // Show success message and navigate
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Row(
+                              children: [
+                                const Icon(
+                                  Icons.check_circle,
+                                  color: Colors.white,
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    '${product.name} berhasil dipesan!',
+                                  ),
+                                ),
+                              ],
+                            ),
+                            backgroundColor: Colors.green.shade600,
+                            behavior: SnackBarBehavior.floating,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+
+                        // Navigate to cart
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const MainScreen(
+                              initialIndex: 2, // Cart tab
+                            ),
+                          ),
+                          (route) => false,
+                        );
+                      },
+                      icon: const Icon(Icons.shopping_cart),
+                      label: const Text('Buat Pesanan'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF2A4D3A),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

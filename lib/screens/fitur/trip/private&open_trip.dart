@@ -12,13 +12,6 @@ class PrivateOpenTripPage extends StatefulWidget {
 class _PrivateOpenTripPageState extends State<PrivateOpenTripPage> {
   String? selectedProvince;
 
-  static String _formatCurrency(int value) {
-    return value.toString().replaceAllMapped(
-      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-      (Match m) => '${m[1]}.',
-    );
-  }
-
   List<Mountain> _getFilteredMountains() {
     final List<Mountain> allMountains = [
       Mountain(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tapak_jejak/data/mock_data.dart';
-import 'package:tapak_jejak/models/brand.dart';
 import 'package:tapak_jejak/models/product.dart';
 import 'package:tapak_jejak/screens/fitur/blog/field_report.dart';
 import 'package:tapak_jejak/widgets/marsha_fab.dart';
@@ -190,14 +189,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.all(16.0),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [Colors.green.shade100, Colors.green.shade50],
+                          colors: [
+                            Colors.green.shade100,
+                            Colors.green.shade50,
+                          ], // Warna gradient card service
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
                         borderRadius: BorderRadius.circular(16.0),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
+                            color: Colors.black.withOpacity(
+                              0.1,
+                            ), // Warna shadow card service
                             blurRadius: 10,
                             offset: const Offset(0, 5),
                           ),
@@ -211,12 +215,16 @@ class _HomeScreenState extends State<HomeScreen> {
                               'Layanan Pendakian',
                               style: Theme.of(context).textTheme.titleLarge
                                   ?.copyWith(
-                                    color: const Color(0xFF2A4D3A),
+                                    color: const Color(
+                                      0xFF2A4D3A,
+                                    ), // Warna teks judul service
                                     fontWeight: FontWeight.bold,
                                     fontSize: 24,
                                     shadows: [
                                       Shadow(
-                                        color: Colors.black.withOpacity(0.3),
+                                        color: Colors.black.withOpacity(
+                                          0.3,
+                                        ), // Warna shadow teks
                                         offset: const Offset(1, 1),
                                         blurRadius: 2,
                                       ),
@@ -341,14 +349,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.all(16.0),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [Colors.green.shade100, Colors.green.shade50],
+                          colors: [
+                            Colors.green.shade100,
+                            Colors.green.shade50,
+                          ], // Warna gradient card monitoring
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
                         borderRadius: BorderRadius.circular(16.0),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
+                            color: Colors.black.withOpacity(
+                              0.1,
+                            ), // Warna shadow card monitoring
                             blurRadius: 10,
                             offset: const Offset(0, 5),
                           ),
@@ -362,12 +375,16 @@ class _HomeScreenState extends State<HomeScreen> {
                               'Pantau Kondisi Gunung untuk Pendakian Aman!',
                               style: Theme.of(context).textTheme.titleLarge
                                   ?.copyWith(
-                                    color: const Color(0xFF2A4D3A),
+                                    color: const Color(
+                                      0xFF2A4D3A,
+                                    ), // Warna teks judul monitoring
                                     fontWeight: FontWeight.bold,
                                     fontSize: 24,
                                     shadows: [
                                       Shadow(
-                                        color: Colors.black.withOpacity(0.3),
+                                        color: Colors.black.withOpacity(
+                                          0.3,
+                                        ), // Warna shadow teks monitoring
                                         offset: const Offset(1, 1),
                                         blurRadius: 2,
                                       ),
@@ -436,7 +453,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     GridView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 16.0),
+                      padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 100.0),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
@@ -526,102 +543,6 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
   }
 
-  Widget _buildHomeCard(
-    BuildContext context,
-    String title,
-    String subtitle,
-    IconData icon,
-    VoidCallback onTap,
-  ) {
-    return Card(
-      child: ListTile(
-        leading: Icon(icon, size: 40, color: const Color(0xFF2A4D3A)),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text(subtitle),
-        onTap: onTap,
-        trailing: const Icon(Icons.chevron_right),
-      ),
-    );
-  }
-
-  Widget _buildBrandCard(Brand brand) {
-    return Container(
-      width: 150,
-      margin: const EdgeInsets.only(right: 16.0),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                brand.logoUrl,
-                height: 50,
-                width: 50,
-                fit: BoxFit.cover,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                brand.name,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                brand.description,
-                style: const TextStyle(fontSize: 12),
-                textAlign: TextAlign.center,
-                maxLines: 5,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildServiceIcon(IconData icon, String label, VoidCallback onTap) {
-    bool isHighlighted = false;
-    return StatefulBuilder(
-      builder: (context, setState) => InkWell(
-        onTap: onTap,
-        onHighlightChanged: (highlighted) {
-          setState(() => isHighlighted = highlighted);
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.all(8.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: isHighlighted ? 10 : 5,
-                offset: Offset(0, isHighlighted ? 4 : 2),
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              Icon(icon, size: 40, color: const Color(0xFF2A4D3A)),
-              const SizedBox(height: 4),
-              Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildCustomServiceIcon(
     Widget iconWidget,
     String label,
@@ -638,11 +559,11 @@ class _HomeScreenState extends State<HomeScreen> {
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.all(6.0), // Kurangi padding
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Colors.white, // Warna background icon service
             borderRadius: BorderRadius.circular(12.0),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withOpacity(0.1), // Warna shadow icon
                 blurRadius: isHighlighted ? 10 : 5,
                 offset: Offset(0, isHighlighted ? 4 : 2),
               ),
@@ -671,47 +592,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   overflow: TextOverflow
                       .ellipsis, // Tambah ellipsis jika terlalu panjang
                 ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMonitoringIcon(IconData icon, String label, VoidCallback onTap) {
-    bool isHighlighted = false;
-    return StatefulBuilder(
-      builder: (context, setState) => InkWell(
-        onTap: onTap,
-        onHighlightChanged: (highlighted) {
-          setState(() => isHighlighted = highlighted);
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.all(8.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: isHighlighted ? 10 : 5,
-                offset: Offset(0, isHighlighted ? 4 : 2),
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              Icon(icon, size: 40, color: const Color(0xFF2A4D3A)),
-              const SizedBox(height: 4),
-              Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-                textAlign: TextAlign.center,
               ),
             ],
           ),

@@ -104,7 +104,13 @@ class _RentalProductDetailPageState extends State<RentalProductDetailPage> {
           label: 'LIHAT',
           textColor: Colors.white,
           onPressed: () {
-            Navigator.pushNamed(context, '/cart');
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const MainScreen(initialIndex: 2),
+              ),
+              (route) => false,
+            );
           },
         ),
       ),
@@ -374,7 +380,7 @@ class _RentalProductDetailPageState extends State<RentalProductDetailPage> {
                               ],
                             ),
                           );
-                        }).toList(),
+                        }),
                         const SizedBox(height: 24),
                         const Divider(),
                         const SizedBox(height: 16),
@@ -685,6 +691,7 @@ class _RentalProductDetailPageState extends State<RentalProductDetailPage> {
                   onPressed: widget.product.isAvailable ? _addToCart : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF2A4D3A),
+                    foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),

@@ -6,7 +6,13 @@ import 'package:tapak_jejak/models/ticket_order.dart';
 import 'package:tapak_jejak/widgets/barcode_dialog.dart';
 import 'package:intl/intl.dart';
 
-enum CartCategory { semua, tiket_masuk, porter_guide, private_open_trip }
+enum CartCategory {
+  semua,
+  tiket_masuk,
+  porter_guide,
+  travel_ojek,
+  private_open_trip,
+}
 
 class CartPage extends StatefulWidget {
   final VoidCallback refreshCallback;
@@ -39,6 +45,12 @@ class _CartPageState extends State<CartPage> {
           'label': 'Porter & Guide',
           'color': Colors.orange,
         };
+      case CartCategory.travel_ojek:
+        return {
+          'icon': Icons.directions_car,
+          'label': 'Travel & Ojek',
+          'color': Colors.green,
+        };
       case CartCategory.private_open_trip:
         return {
           'icon': Icons.group,
@@ -57,6 +69,8 @@ class _CartPageState extends State<CartPage> {
           return product.category == 'tiket_masuk';
         case CartCategory.porter_guide:
           return product.category == 'porter_guide';
+        case CartCategory.travel_ojek:
+          return product.category == 'travel_ojek';
         case CartCategory.private_open_trip:
           return product.category == 'private_open_trip';
         default:

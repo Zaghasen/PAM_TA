@@ -1,8 +1,10 @@
-import 'dart:math' as math;
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:tapak_jejak/data/mock_outlet_data.dart';
-import 'package:tapak_jejak/models/outlet.dart';
-import 'package:tapak_jejak/screens/fitur/sewa_alat/outlet_detail_page.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
+import '../../../data/mock_outlet_data.dart';
+import '../../../models/outlet.dart';
+import 'outlet_detail_page.dart';
 
 class SewaAlatMapsPage extends StatefulWidget {
   const SewaAlatMapsPage({super.key});
@@ -12,86 +14,262 @@ class SewaAlatMapsPage extends StatefulWidget {
 }
 
 class _SewaAlatMapsPageState extends State<SewaAlatMapsPage> {
-  final List<Outlet> outlets = MockOutletData.getAllOutlets();
-  Outlet? selectedOutlet;
+  final Completer<GoogleMapController> _mapController = Completer();
+  Position? _currentPosition;
+  bool _isLoadingLocation = true;
+  List<Outlet> _outlets = [];
+  Set<Marker> _markers = {};
+  String _selectedFilter = 'Semua';
+  Outlet? _selectedOutlet;
 
-  // Simulasi user location (nanti bisa pakai geolocator)
-  final double userLat = -7.9666; // Malang
-  final double userLng = 112.6326;
+  static const CameraPosition _initialPosition = CameraPosition(
+    target: LatLng(-7.7526, 110.4085), // Seturan, Jogjakarta
+    zoom: 14.0,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _loadOutlets();
+    _getCurrentLocation();
+  }
+
+  void _loadOutlets() {
+    setState(() {
+      _outlets = MockOutletData.getAllOutlets();
+    });
+  }
+
+  Future<void> _getCurrentLocation() async {
+    try {
+      // Check location permission
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          _showError('Izin lokasi ditolak');
+          setState(() => _isLoadingLocation = false);
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        _showError(
+          'Izin lokasi ditolak permanen. Silakan aktifkan di pengaturan.',
+        );
+        setState(() => _isLoadingLocation = false);
+        return;
+      }
+
+      // Get current position
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      setState(() {
+        _currentPosition = position;
+        _isLoadingLocation = false;
+      });
+
+      // Move camera to user location
+      final GoogleMapController controller = await _mapController.future;
+      controller.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: LatLng(position.latitude, position.longitude),
+            zoom: 14.0,
+          ),
+        ),
+      );
+
+      // Update markers with distances
+      _updateMarkers();
+
+      // Listen to location changes
+      Geolocator.getPositionStream(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          distanceFilter: 10, // Update every 10 meters
+        ),
+      ).listen((Position position) {
+        setState(() {
+          _currentPosition = position;
+        });
+        _updateMarkers();
+      });
+    } catch (e) {
+      _showError('Gagal mendapatkan lokasi: $e');
+      setState(() => _isLoadingLocation = false);
+    }
+  }
+
+  void _updateMarkers() {
+    if (_currentPosition == null) return;
+
+    Set<Marker> markers = {};
+
+    // Add user location marker
+    markers.add(
+      Marker(
+        markerId: const MarkerId('user_location'),
+        position: LatLng(
+          _currentPosition!.latitude,
+          _currentPosition!.longitude,
+        ),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+        infoWindow: const InfoWindow(title: 'Lokasi Anda'),
+      ),
+    );
+
+    // Add outlet markers
+    for (var outlet in _getFilteredOutlets()) {
+      markers.add(
+        Marker(
+          markerId: MarkerId('outlet_${outlet.id}'),
+          position: LatLng(outlet.latitude, outlet.longitude),
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+            BitmapDescriptor.hueGreen,
+          ),
+          infoWindow: InfoWindow(
+            title: outlet.name,
+            snippet:
+                '${outlet.distanceFrom(_currentPosition!.latitude, _currentPosition!.longitude).toStringAsFixed(1)} km',
+          ),
+          onTap: () {
+            setState(() {
+              _selectedOutlet = outlet;
+            });
+          },
+        ),
+      );
+    }
+
+    setState(() {
+      _markers = markers;
+    });
+  }
+
+  List<Outlet> _getFilteredOutlets() {
+    if (_currentPosition == null) return _outlets;
+
+    List<Outlet> filtered = _outlets;
+
+    switch (_selectedFilter) {
+      case 'Buka Sekarang':
+        filtered = filtered.where((o) => o.isOpenNow()).toList();
+        break;
+      case 'Terdekat':
+        filtered = filtered
+            .where(
+              (o) =>
+                  o.distanceFrom(
+                    _currentPosition!.latitude,
+                    _currentPosition!.longitude,
+                  ) <
+                  5,
+            )
+            .toList();
+        break;
+      case 'Rating Tinggi':
+        filtered = filtered.where((o) => o.rating >= 4.5).toList();
+        break;
+    }
+
+    // Sort by distance
+    filtered.sort(
+      (a, b) => a
+          .distanceFrom(_currentPosition!.latitude, _currentPosition!.longitude)
+          .compareTo(
+            b.distanceFrom(
+              _currentPosition!.latitude,
+              _currentPosition!.longitude,
+            ),
+          ),
+    );
+
+    return filtered;
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: false,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(60),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Colors.green.shade400,
-                Colors.green.shade300,
-                Colors.green.shade200,
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 10,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
-          child: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () => Navigator.pop(context),
-            ),
-            title: const Text(
-              'Sewa Alat',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-            actions: [
-              IconButton(
-                icon: const Icon(
-                  Icons.filter_list_rounded,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  // Filter dialog
-                  _showFilterDialog();
-                },
-              ),
-            ],
-          ),
-        ),
+      appBar: AppBar(
+        title: const Text('Sewa Alat Outdoor'),
+        backgroundColor: const Color(0xFF2E7D32),
+        foregroundColor: Colors.white,
       ),
       body: Stack(
         children: [
-          // Map placeholder (nanti bisa pakai Google Maps / OpenStreetMap)
-          _buildMapPlaceholder(),
+          // Google Maps
+          GoogleMap(
+            mapType: MapType.normal,
+            initialCameraPosition: _initialPosition,
+            onMapCreated: (GoogleMapController controller) {
+              _mapController.complete(controller);
+            },
+            markers: _markers,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: true,
+            zoomControlsEnabled: true,
+            compassEnabled: true,
+          ),
 
-          // Info card current location
-          Positioned(top: 16, left: 16, right: 16, child: _buildLocationCard()),
+          // Loading indicator
+          if (_isLoadingLocation)
+            Container(
+              color: Colors.black45,
+              child: const Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircularProgressIndicator(color: Colors.white),
+                    SizedBox(height: 16),
+                    Text(
+                      'Mendapatkan lokasi Anda...',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ],
+                ),
+              ),
+            ),
 
-          // Bottom sheet outlet list
+          // Filter chips
+          Positioned(
+            top: 16,
+            left: 16,
+            right: 16,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  _buildFilterChip('Semua'),
+                  const SizedBox(width: 8),
+                  _buildFilterChip('Buka Sekarang'),
+                  const SizedBox(width: 8),
+                  _buildFilterChip('Terdekat'),
+                  const SizedBox(width: 8),
+                  _buildFilterChip('Rating Tinggi'),
+                ],
+              ),
+            ),
+          ),
+
+          // Bottom sheet with outlet list
           DraggableScrollableSheet(
-            initialChildSize: 0.35,
-            minChildSize: 0.15,
-            maxChildSize: 0.8,
+            initialChildSize: 0.3,
+            minChildSize: 0.1,
+            maxChildSize: 0.7,
             builder: (context, scrollController) {
               return Container(
                 decoration: const BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black26,
@@ -104,47 +282,229 @@ class _SewaAlatMapsPageState extends State<SewaAlatMapsPage> {
                   children: [
                     // Handle bar
                     Container(
-                      margin: const EdgeInsets.only(top: 12),
+                      margin: const EdgeInsets.symmetric(vertical: 12),
                       width: 40,
                       height: 4,
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade300,
+                        color: Colors.grey[300],
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),
-                    // Header
+
+                    // Title
                     Padding(
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 8,
+                      ),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Icon(
-                            Icons.store_rounded,
-                            color: Color(0xFF2A4D3A),
-                            size: 24,
-                          ),
-                          const SizedBox(width: 12),
                           Text(
-                            '${outlets.length} Outlet Tersedia',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF2A4D3A),
+                            'Outlet Terdekat',
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            '${_getFilteredOutlets().length} outlet',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 14,
                             ),
                           ),
                         ],
                       ),
                     ),
+
+                    const Divider(height: 1),
+
                     // Outlet list
                     Expanded(
-                      child: ListView.builder(
-                        controller: scrollController,
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        itemCount: outlets.length,
-                        itemBuilder: (context, index) {
-                          final outlet = outlets[index];
-                          return _buildOutletCard(outlet);
-                        },
-                      ),
+                      child: _isLoadingLocation
+                          ? const Center(child: CircularProgressIndicator())
+                          : _getFilteredOutlets().isEmpty
+                          ? Center(
+                              child: Text(
+                                'Tidak ada outlet ditemukan',
+                                style: TextStyle(color: Colors.grey[600]),
+                              ),
+                            )
+                          : ListView.builder(
+                              controller: scrollController,
+                              itemCount: _getFilteredOutlets().length,
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              itemBuilder: (context, index) {
+                                final outlet = _getFilteredOutlets()[index];
+                                final distance = _currentPosition != null
+                                    ? outlet.distanceFrom(
+                                        _currentPosition!.latitude,
+                                        _currentPosition!.longitude,
+                                      )
+                                    : 0.0;
+                                final isSelected =
+                                    _selectedOutlet?.id == outlet.id;
+
+                                return Container(
+                                  margin: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: isSelected
+                                        ? const Color(0xFFE8F5E9)
+                                        : Colors.white,
+                                    border: Border.all(
+                                      color: isSelected
+                                          ? const Color(0xFF2E7D32)
+                                          : Colors.grey[300]!,
+                                      width: isSelected ? 2 : 1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: ListTile(
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 8,
+                                    ),
+                                    leading: Container(
+                                      width: 50,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        color: const Color(
+                                          0xFF2E7D32,
+                                        ).withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: const Icon(
+                                        Icons.store,
+                                        color: Color(0xFF2E7D32),
+                                        size: 28,
+                                      ),
+                                    ),
+                                    title: Text(
+                                      outlet.name,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    subtitle: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const SizedBox(height: 4),
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.location_on,
+                                              size: 14,
+                                              color: Colors.grey[600],
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Expanded(
+                                              child: Text(
+                                                '${distance.toStringAsFixed(1)} km',
+                                                style: TextStyle(
+                                                  color: Colors.grey[600],
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.star,
+                                              size: 14,
+                                              color: Colors.amber,
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              '${outlet.rating}',
+                                              style: TextStyle(
+                                                color: Colors.grey[600],
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 6,
+                                                    vertical: 2,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color: outlet.isOpenNow()
+                                                    ? Colors.green.withOpacity(
+                                                        0.1,
+                                                      )
+                                                    : Colors.red.withOpacity(
+                                                        0.1,
+                                                      ),
+                                                borderRadius:
+                                                    BorderRadius.circular(4),
+                                              ),
+                                              child: Text(
+                                                outlet.isOpenNow()
+                                                    ? 'Buka'
+                                                    : 'Tutup',
+                                                style: TextStyle(
+                                                  color: outlet.isOpenNow()
+                                                      ? Colors.green
+                                                      : Colors.red,
+                                                  fontSize: 11,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    trailing: const Icon(
+                                      Icons.arrow_forward_ios,
+                                      size: 16,
+                                      color: Color(0xFF2E7D32),
+                                    ),
+                                    onTap: () async {
+                                      // Move camera to outlet
+                                      final controller =
+                                          await _mapController.future;
+                                      controller.animateCamera(
+                                        CameraUpdate.newCameraPosition(
+                                          CameraPosition(
+                                            target: LatLng(
+                                              outlet.latitude,
+                                              outlet.longitude,
+                                            ),
+                                            zoom: 16.0,
+                                          ),
+                                        ),
+                                      );
+
+                                      setState(() {
+                                        _selectedOutlet = outlet;
+                                      });
+
+                                      // Navigate to detail page
+                                      if (context.mounted) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                OutletDetailPage(
+                                                  outlet: outlet,
+                                                ),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
                     ),
                   ],
                 ),
@@ -156,357 +516,26 @@ class _SewaAlatMapsPageState extends State<SewaAlatMapsPage> {
     );
   }
 
-  Widget _buildMapPlaceholder() {
-    return Container(
-      color: Colors.grey.shade200,
-      child: CustomPaint(
-        painter: MapPainter(
-          outlets: outlets,
-          userLat: userLat,
-          userLng: userLng,
-          selectedOutlet: selectedOutlet,
-          onOutletTap: (outlet) {
-            setState(() {
-              selectedOutlet = outlet;
-            });
-          },
-        ),
-        child: Container(),
-      ),
-    );
-  }
-
-  Widget _buildLocationCard() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.green.shade50,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(
-              Icons.my_location_rounded,
-              color: Colors.green.shade700,
-              size: 20,
-            ),
-          ),
-          const SizedBox(width: 12),
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Lokasi Anda',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                SizedBox(height: 2),
-                Text(
-                  'Malang, Jawa Timur',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF2A4D3A),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildOutletCard(Outlet outlet) {
-    final distance = outlet.distanceFrom(userLat, userLng);
-    final isOpen = outlet.isOpenNow();
-
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => OutletDetailPage(outlet: outlet),
-          ),
-        );
+  Widget _buildFilterChip(String label) {
+    final isSelected = _selectedFilter == label;
+    return FilterChip(
+      label: Text(label),
+      selected: isSelected,
+      onSelected: (selected) {
+        setState(() {
+          _selectedFilter = label;
+          _updateMarkers();
+        });
       },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 16),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: selectedOutlet?.id == outlet.id
-                ? Color(0xFF2A4D3A)
-                : Colors.grey.shade200,
-            width: selectedOutlet?.id == outlet.id ? 2 : 1,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        outlet.name,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF2A4D3A),
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.location_on_rounded,
-                            size: 14,
-                            color: Colors.grey.shade600,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '${distance.toStringAsFixed(1)} km',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.grey.shade600,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Icon(
-                            Icons.star_rounded,
-                            size: 14,
-                            color: Colors.amber.shade600,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '${outlet.rating} (${outlet.reviewCount})',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.grey.shade600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isOpen ? Colors.green.shade50 : Colors.red.shade50,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.access_time_rounded,
-                        size: 14,
-                        color: isOpen
-                            ? Colors.green.shade700
-                            : Colors.red.shade700,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        isOpen ? 'Buka' : 'Tutup',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: isOpen
-                              ? Colors.green.shade700
-                              : Colors.red.shade700,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: outlet.brands.take(3).map((brand) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.orange.shade50,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.orange.shade200),
-                  ),
-                  child: Text(
-                    brand,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.orange.shade800,
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ],
-        ),
+      backgroundColor: Colors.white,
+      selectedColor: const Color(0xFF2E7D32).withOpacity(0.2),
+      checkmarkColor: const Color(0xFF2E7D32),
+      labelStyle: TextStyle(
+        color: isSelected ? const Color(0xFF2E7D32) : Colors.grey[700],
+        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
       ),
+      elevation: 2,
+      shadowColor: Colors.black26,
     );
   }
-
-  void _showFilterDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Filter Outlet'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CheckboxListTile(
-              title: const Text('Buka Sekarang'),
-              value: false,
-              onChanged: (value) {},
-            ),
-            CheckboxListTile(
-              title: const Text('Terdekat (< 5km)'),
-              value: false,
-              onChanged: (value) {},
-            ),
-            CheckboxListTile(
-              title: const Text('Rating > 4.5'),
-              value: false,
-              onChanged: (value) {},
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Tutup'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              // Apply filter
-            },
-            style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF2A4D3A)),
-            child: const Text('Terapkan'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// Custom painter for map visualization
-class MapPainter extends CustomPainter {
-  final List<Outlet> outlets;
-  final double userLat;
-  final double userLng;
-  final Outlet? selectedOutlet;
-  final Function(Outlet) onOutletTap;
-
-  MapPainter({
-    required this.outlets,
-    required this.userLat,
-    required this.userLng,
-    required this.selectedOutlet,
-    required this.onOutletTap,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    // Draw simple grid for map effect
-    final gridPaint = Paint()
-      ..color = Colors.grey.shade300
-      ..strokeWidth = 1;
-
-    for (var i = 0; i < 20; i++) {
-      canvas.drawLine(
-        Offset(0, size.height * i / 20),
-        Offset(size.width, size.height * i / 20),
-        gridPaint,
-      );
-      canvas.drawLine(
-        Offset(size.width * i / 20, 0),
-        Offset(size.width * i / 20, size.height),
-        gridPaint,
-      );
-    }
-
-    // Draw user location
-    final userPaint = Paint()
-      ..color = Colors.blue
-      ..style = PaintingStyle.fill;
-
-    canvas.drawCircle(
-      Offset(size.width * 0.5, size.height * 0.5),
-      12,
-      userPaint,
-    );
-
-    // Draw markers for outlets
-    for (var i = 0; i < outlets.length; i++) {
-      final outlet = outlets[i];
-      final angle = (i / outlets.length) * 2 * math.pi;
-      final radius = math.min(size.width, size.height) * 0.3;
-
-      final x = size.width * 0.5 + math.cos(angle) * radius;
-      final y = size.height * 0.5 + math.sin(angle) * radius;
-
-      final markerPaint = Paint()
-        ..color = selectedOutlet?.id == outlet.id
-            ? Color(0xFF2A4D3A)
-            : Colors.red.shade400
-        ..style = PaintingStyle.fill;
-
-      // Draw marker pin shape
-      final path = Path();
-      path.moveTo(x, y - 20);
-      path.lineTo(x - 10, y - 35);
-      path.lineTo(x + 10, y - 35);
-      path.close();
-
-      canvas.drawPath(path, markerPaint);
-      canvas.drawCircle(Offset(x, y - 35), 8, markerPaint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

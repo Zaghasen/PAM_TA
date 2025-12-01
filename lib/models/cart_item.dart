@@ -19,10 +19,26 @@ class CartItem {
     this.rentalStartDate,
     this.rentalEndDate,
     this.outletName,
-  }) : productId = productId ?? (product?.id ?? 0),
+  }) : productId = productId ?? _getProductId(product),
        name = name ?? (product?.name ?? ''),
        imageUrl = imageUrl ?? (product?.imageUrl ?? ''),
        pricePerDay = pricePerDay ?? (product?.pricePerDay ?? 0.0);
+
+  // Helper untuk mengkonversi product.id ke int
+  static int _getProductId(dynamic product) {
+    if (product == null) return 0;
+    final id = product.id;
+    if (id is int) return id;
+    if (id is String) {
+      try {
+        return int.parse(id);
+      } catch (e) {
+        // Jika string tidak bisa diparse, gunakan hashCode
+        return id.hashCode;
+      }
+    }
+    return 0;
+  }
 
   // Getter untuk category dari product
   String? get category => product?.category;

@@ -653,7 +653,7 @@ class _PorterGuideDetailPageState extends State<PorterGuideDetailPage>
                         ],
                       ),
                     );
-                  }).toList(),
+                  }),
 
                   const SizedBox(height: 12),
                   Container(
@@ -976,7 +976,7 @@ class _PorterGuideDetailPageState extends State<PorterGuideDetailPage>
                     dense: true,
                     contentPadding: EdgeInsets.zero,
                   );
-                }).toList(),
+                }),
               ],
             ),
 
@@ -1556,7 +1556,7 @@ ${selectedPackage!.includes.map((item) => '✓ $item').join('\n')}''';
                   dense: true,
                   contentPadding: EdgeInsets.zero,
                 );
-              }).toList(),
+              }),
             ],
           ),
         const SizedBox(height: 20),
