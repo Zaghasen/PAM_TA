@@ -57,7 +57,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
     String? storedData = await secureStorage.read(key: 'accounts');
     List<Map<String, String>> accounts = [];
-
     if (storedData != null) {
       var decodedData = json.decode(storedData);
       if (decodedData is List) {
@@ -142,18 +141,13 @@ class _LoginScreenState extends State<LoginScreen> {
     final password = _passwordController.text;
 
     String? storedData = await secureStorage.read(key: 'accounts');
-
-    if (storedData == null) {
-      setState(() {
-        _errorMessage = 'No accounts found. Please sign up first.';
-      });
-      return;
-    }
-
+  List<Map<String, String>> accounts = [];
+  if (storedData != null) {
     List<dynamic> decodedData = json.decode(storedData);
-    List<Map<String, String>> accounts = decodedData
-        .map((account) => Map<String, String>.from(account))
-        .toList();
+    accounts = decodedData
+      .map((account) => Map<String, String>.from(account))
+      .toList();
+  }
 
     for (var account in accounts) {
       if (account['username'] == username && account['password'] == password) {

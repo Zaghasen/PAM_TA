@@ -100,12 +100,10 @@ class QuestService {
     final box = await Hive.openBox(userActivityBoxName);
     String? joinDateStr = box.get('joinDate');
     DateTime joinDate;
-
-    if (joinDateStr == null) {
-      joinDate = DateTime.now();
-      await box.put('joinDate', joinDate.toIso8601String());
-    } else {
+    if (joinDateStr != null) {
       joinDate = DateTime.parse(joinDateStr);
+    } else {
+      joinDate = DateTime.now(); // default jika null
     }
 
     return Membership(
@@ -207,16 +205,17 @@ class QuestService {
     String? lastResetStr = box.get('lastDailyReset');
     DateTime now = DateTime.now();
 
+    DateTime lastReset;
     if (lastResetStr != null) {
-      DateTime lastReset = DateTime.parse(lastResetStr);
-      if (!_isSameDay(lastReset, now)) {
-        // Reset daily counters
-        await box.put('productsViewedToday', 0);
-        await box.put('tutorialsReadToday', 0);
-        await box.put('weatherChecksToday', 0);
-        await box.put('lastDailyReset', now.toIso8601String());
-      }
+      lastReset = DateTime.parse(lastResetStr);
     } else {
+      lastReset = now;
+    }
+    if (!_isSameDay(lastReset, now)) {
+      // Reset daily counters
+      await box.put('productsViewedToday', 0);
+      await box.put('tutorialsReadToday', 0);
+      await box.put('weatherChecksToday', 0);
       await box.put('lastDailyReset', now.toIso8601String());
     }
   }
